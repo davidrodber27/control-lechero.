@@ -1,4 +1,4 @@
-
+from modelos.vaca import Vaca
 import streamlit as st
 from datetime import date
 
@@ -97,6 +97,7 @@ with st.form("formulario_vaca"):
         "Registrar vaca"
     )
 
+    
     if enviar:
 
         if not identificacion.strip():
@@ -109,28 +110,34 @@ with st.form("formulario_vaca"):
                 "Debes escribir el nombre de la vaca."
             )
 
-        elif any(
-            vaca["identificacion"].casefold()
-            == identificacion.strip().casefold()
-            for vaca in st.session_state.vacas
-        ):
-            st.error(
-                "Ya existe una vaca con esa identificación."
-            )
-
         else:
-            nueva_vaca = {
-                "identificacion": identificacion.strip(),
-                "nombre": nombre.strip(),
-                "raza": raza,
-                "fecha_nacimiento": fecha_nacimiento
-            }
+            try:
+                nueva_vaca = Vaca(
+                    nombre=nombre,
+                    fecha_nacimiento=fecha_nacimiento,
+                    raza=raza,
+                    identificacion=identificacion
+                )
 
-            st.session_state.vacas.append(nueva_vaca)
+                agregada = (
+                    st.session_state.finca.agregar_vaca(
+                        nueva_vaca
+                    )
+                )
 
-            st.success(
-                f"Vaca {nombre.strip()} registrada correctamente."
-            )
+                if agregada:
+                    st.success(
+                        f"Vaca {nueva_vaca.nombre} "
+                        "registrada correctamente."
+                    )
+                else:
+                    st.error(
+                        "Ya existe una vaca con esa identificación."
+                    )
+
+            except (ValueError, TypeError) as error:
+                st.error(str(error))
+
 
 # --------------------------------------------------
 # 6. LISTADO DE VACAS
