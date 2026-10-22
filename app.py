@@ -1,9 +1,9 @@
-from modelos.vaca import Vaca
+
 import streamlit as st
 from datetime import date
 
 from modelos.control_lechero import ControlLechero
-
+from modelos.vaca import Vaca
 # --------------------------------------------------
 # 1. CONFIGURACIÓN DE LA APLICACIÓN
 # --------------------------------------------------
