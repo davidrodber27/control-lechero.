@@ -187,3 +187,102 @@ else:
         "Todavía no hay vacas registradas. "
         "Utiliza el formulario para agregar la primera."
     )
+
+
+# --------------------------------------------------
+# 7. REGISTRAR PRODUCCIÓN DE LECHE
+# --------------------------------------------------
+
+st.divider()
+st.header("Registrar producción de leche")
+
+vacas_disponibles = st.session_state.finca.vacas
+
+if not vacas_disponibles:
+
+    st.info("Primero debes registrar al menos una vaca.")
+
+else:
+
+    opciones_vacas = {
+        f"{vaca.identificacion} - {vaca.nombre}":
+        vaca.identificacion
+        for vaca in vacas_disponibles.values()
+    }
+
+    with st.form("formulario_produccion"):
+
+        vaca_seleccionada = st.selectbox(
+            "Selecciona la vaca",
+            options=list(opciones_vacas.keys())
+        )
+
+        fecha_produccion = st.date_input(
+            "Fecha de producción",
+            value=date.today(),
+            max_value=date.today()
+        )
+
+        col1, col2 = st.columns(2)
+
+        with col1:
+            litros_manana = st.number_input(
+                "Litros del ordeño de la mañana",
+                min_value=0,
+                step=1,
+                value=0
+            )
+
+        with col2:
+            litros_tarde = st.number_input(
+                "Litros del ordeño de la tarde",
+                min_value=0,
+                step=1,
+                value=0
+            )
+
+        potrero = st.selectbox(
+            "Potrero donde estuvo la vaca",
+            options=list(range(1, 13))
+        )
+
+        enviar_produccion = st.form_submit_button(
+            "Guardar producción"
+        )
+
+        if enviar_produccion:
+
+            identificacion = opciones_vacas[
+                vaca_seleccionada
+            ]
+
+            try:
+                registrado = (
+                    st.session_state.finca.registrar_produccion(
+                        identificacion=identificacion,
+                        fecha=fecha_produccion,
+                        litros_manana=int(litros_manana),
+                        litros_tarde=int(litros_tarde),
+                        potrero=potrero
+                    )
+                )
+
+                if registrado:
+                    total_dia = (
+                        int(litros_manana)
+                        + int(litros_tarde)
+                    )
+
+                    st.success(
+                        f"Producción registrada: {total_dia} L "
+                        f"para {vaca_seleccionada}."
+                    )
+                else:
+                    st.warning(
+                        "Esta vaca ya tiene un registro para esa fecha. "
+                        "No se modificaron los datos existentes."
+                    )
+
+            except (ValueError, TypeError) as error:
+                st.error(str(error))
+
