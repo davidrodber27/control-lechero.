@@ -43,7 +43,7 @@ st.divider()
 
 st.header("Resumen de la finca")
 
-total_vacas = len(st.session_state.vacas)
+total_vacas = st.session_state.finca.cantidad_vacas()
 
 col1, col2, col3 = st.columns(3)
 
