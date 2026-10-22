@@ -2,6 +2,8 @@
 import streamlit as st
 from datetime import date
 
+from modelos.control_lechero import ControlLechero
+
 # --------------------------------------------------
 # 1. CONFIGURACIÓN DE LA APLICACIÓN
 # --------------------------------------------------
