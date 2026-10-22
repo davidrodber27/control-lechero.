@@ -18,8 +18,10 @@ st.set_page_config(
 # 2. DATOS TEMPORALES DE LA SESIÓN
 # --------------------------------------------------
 
-if "vacas" not in st.session_state:
-    st.session_state.vacas = []
+if "finca" not in st.session_state:
+    st.session_state.finca = ControlLechero(
+        "Hato La Casita"
+    )
 
 # --------------------------------------------------
 # 3. ENCABEZADO
