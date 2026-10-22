@@ -139,7 +139,7 @@ with st.form("formulario_vaca"):
 st.divider()
 st.header("Vacas registradas")
 
-if st.session_state.vacas:
+if st.session_state.finca.vacas:
 
     for vaca in st.session_state.vacas:
 
