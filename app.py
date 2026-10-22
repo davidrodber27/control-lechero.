@@ -146,22 +146,34 @@ with st.form("formulario_vaca"):
 st.divider()
 st.header("Vacas registradas")
 
-if st.session_state.finca.vacas:
+vacas_registradas = st.session_state.finca.vacas
 
-    for vaca in st.session_state.vacas:
+if vacas_registradas:
+
+    for vaca in vacas_registradas.values():
 
         with st.expander(
-            f'{vaca["identificacion"]} - {vaca["nombre"]}'
+            f"{vaca.identificacion} - {vaca.nombre}"
         ):
-            st.write("**Nombre:**", vaca["nombre"])
+            st.write("**Nombre:**", vaca.nombre)
             st.write(
                 "**Identificación:**",
-                vaca["identificacion"]
+                vaca.identificacion
             )
-            st.write("**Raza:**", vaca["raza"])
+            st.write("**Raza:**", vaca.raza)
             st.write(
                 "**Fecha de nacimiento:**",
-                vaca["fecha_nacimiento"].strftime("%d/%m/%Y")
+                date.fromisoformat(
+                    vaca.fecha_nacimiento
+                ).strftime("%d/%m/%Y")
+            )
+            st.write(
+                "**Edad actual:**",
+                vaca.edad_actual
+            )
+            st.write(
+                "**Producción acumulada:**",
+                f"{vaca.produccion_acumulada()} L"
             )
 
 else:
@@ -169,9 +181,3 @@ else:
         "Todavía no hay vacas registradas. "
         "Utiliza el formulario para agregar la primera."
     )
-
-st.caption(
-    "Versión de aprendizaje: los registros actuales "
-    "se conservan solo durante la sesión."
-)
-
