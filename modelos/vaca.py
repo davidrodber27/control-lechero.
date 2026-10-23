@@ -128,6 +128,43 @@ class Vaca:
 
         return True
 
+    
+    def actualizar_produccion(
+        self,
+        fecha,
+        litros_manana: int,
+        litros_tarde: int,
+        potrero: int
+    ) -> bool:
+        """Actualiza un registro de producción existente."""
+
+        fecha_normalizada = normalizar_fecha(fecha).isoformat()
+
+        if date.fromisoformat(fecha_normalizada) > date.today():
+            raise ValueError(
+                "La fecha de producción no puede estar en el futuro."
+            )
+
+        self.validar_litros(litros_manana)
+        self.validar_litros(litros_tarde)
+
+        if type(potrero) is not int or not 1 <= potrero <= 12:
+            raise ValueError(
+                "El potrero debe ser un número entero entre 1 y 12."
+            )
+
+        if fecha_normalizada not in self.registros:
+            return False
+
+        self.registros[fecha_normalizada] = {
+            "litros_manana": litros_manana,
+            "litros_tarde": litros_tarde,
+            "potrero": potrero
+        }
+
+        return True
+
+
     def calcular_produccion(self, fecha):
         """Devuelve los litros del día o None si no hay registro."""
 
