@@ -74,6 +74,32 @@ class ControlLechero:
             potrero
         )
 
+
+    
+    def actualizar_produccion(
+        self,
+        identificacion: str,
+        fecha,
+        litros_manana: int,
+        litros_tarde: int,
+        potrero: int
+    ) -> bool:
+        """Actualiza la producción existente de una vaca."""
+
+        vaca = self.buscar_vaca(identificacion)
+
+        if vaca is None:
+            raise ValueError(
+                "No existe una vaca con esa identificación."
+            )
+
+        return vaca.actualizar_produccion(
+            fecha=fecha,
+            litros_manana=litros_manana,
+            litros_tarde=litros_tarde,
+            potrero=potrero
+        )
+
     def produccion_total(self, fecha) -> int:
         """Suma la producción de todas las vacas en una fecha."""
 
