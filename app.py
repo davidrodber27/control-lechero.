@@ -8,6 +8,11 @@ from servicios.persistencia import (
     guardar_produccion
 )
 
+st.set_page_config(
+    page_title="Control Lechero",
+    page_icon="🐄",
+    layout="wide"
+)
 
 # --------------------------------------------------
 # IDENTIDAD VISUAL - CONTROL LECHERO
@@ -76,11 +81,7 @@ st.markdown("""
 # 1. CONFIGURACIÓN DE LA APLICACIÓN
 # --------------------------------------------------
 
-st.set_page_config(
-    page_title="Control Lechero",
-    page_icon="🐄",
-    layout="wide"
-)
+
 
 from supabase import create_client
 
@@ -207,27 +208,7 @@ if "finca" not in st.session_state:
         st.stop()
 
 
-try:
-    respuesta_produccion = (
-        supabase.table("produccion")
-        .select("*")
-        .execute()
-    )
 
-    st.success("Conexión con la tabla produccion correcta.")
-    st.write(
-        "Registros encontrados:",
-        len(respuesta_produccion.data)
-    )
-
-except Exception as error:
-    st.error("No se pudo consultar la tabla produccion.")
-    st.write(str(error))
-
-if st.sidebar.button("Cerrar sesión"):
-    supabase.auth.sign_out()
-    st.session_state.usuario = None
-    st.rerun()
 
 
 # --------------------------------------------------
@@ -235,23 +216,7 @@ if st.sidebar.button("Cerrar sesión"):
 # --------------------------------------------------
 
 
-if "finca" not in st.session_state:
-    finca = ControlLechero("Hato La Casita")
 
-    try:
-        finca = cargar_vacas(
-            supabase=supabase,
-            finca=finca
-        )
-
-        st.session_state.finca = finca
-
-    except Exception:
-        st.error(
-            "No se pudieron cargar los datos de la finca "
-            "desde la base de datos."
-        )
-        st.stop()
 
 
 # --------------------------------------------------
