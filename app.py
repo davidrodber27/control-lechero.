@@ -70,15 +70,38 @@ if st.session_state.usuario is None:
 st.sidebar.write(
     f"Sesión: {st.session_state.usuario.email}"
 )
+
 try:
-    respuesta = supabase.table("vacas").select("*").execute()
+    finca_prueba = ControlLechero("Hato La Casita")
 
-    st.success("Conexión con la tabla vacas correcta.")
-    st.write("Registros encontrados:", len(respuesta.data))
+    finca_prueba = cargar_vacas(
+        supabase=supabase,
+        finca=finca_prueba
+    )
 
-except Exception as error:
-    st.error("No se pudo consultar la tabla vacas.")
-    st.write(str(error))
+    st.success("Carga de datos completada.")
+
+    st.write(
+        "Vacas cargadas:",
+        finca_prueba.cantidad_vacas()
+    )
+
+    total_registros = sum(
+        len(vaca.registros)
+        for vaca in finca_prueba.vacas.values()
+    )
+
+    st.write(
+        "Registros de producción cargados:",
+        total_registros
+    )
+
+except Exception:
+    st.error(
+        "No se pudo completar la carga de datos. "
+        "Revisa la configuración y los registros."
+    )
+
 
 try:
     respuesta_produccion = (
