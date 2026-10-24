@@ -3,7 +3,10 @@ from datetime import date
 
 from modelos.control_lechero import ControlLechero
 from modelos.vaca import Vaca
-from servicios.persistencia import cargar_vacas
+from servicios.persistencia import (
+    cargar_vacas,
+    guardar_produccion
+)
 
 # --------------------------------------------------
 # 1. CONFIGURACIÓN DE LA APLICACIÓN
