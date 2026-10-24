@@ -79,6 +79,23 @@ except Exception as error:
     st.error("No se pudo consultar la tabla vacas.")
     st.write(str(error))
 
+try:
+    respuesta_produccion = (
+        supabase.table("produccion")
+        .select("*")
+        .execute()
+    )
+
+    st.success("Conexión con la tabla produccion correcta.")
+    st.write(
+        "Registros encontrados:",
+        len(respuesta_produccion.data)
+    )
+
+except Exception as error:
+    st.error("No se pudo consultar la tabla produccion.")
+    st.write(str(error))
+
 if st.sidebar.button("Cerrar sesión"):
     supabase.auth.sign_out()
     st.session_state.usuario = None
