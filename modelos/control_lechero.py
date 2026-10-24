@@ -41,16 +41,18 @@ class ControlLechero:
 
         return self.vacas.get(identificacion.strip().upper())
 
+    
     def eliminar_vaca(self, identificacion: str) -> bool:
         """Elimina una vaca por su identificación."""
 
-        vaca = self.buscar_vaca(identificacion)
+        identificacion_normalizada = identificacion.strip().upper()
 
-        if vaca is None:
+        if identificacion_normalizada not in self.vacas:
             return False
 
-        del self.vacas[vaca.identificacion.casefold()]
+        del self.vacas[identificacion_normalizada]
         return True
+
 
     def registrar_produccion(
         self,
