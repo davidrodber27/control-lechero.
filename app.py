@@ -185,11 +185,7 @@ with st.sidebar.expander("📊 Informes"):
     if st.button("Reporte diario", key="menu_reporte_diario",
                  use_container_width=True):
         st.session_state.pagina = "Reporte diario"
-if st.session_state.pagina == "Inicio":
-    # Mostrar únicamente el resumen de la finca
 
-elif st.session_state.pagina == "Registrar vaca":
-    # Mostrar únicamente el formulario de registro
 # --------------------------------------------------
 # CARGAR LA FINCA DESDE SUPABASE
 # --------------------------------------------------
