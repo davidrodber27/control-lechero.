@@ -131,11 +131,65 @@ if st.session_state.usuario is None:
 
     st.stop()
 
-# Mostrar el usuario autenticado y permitir cerrar sesión.
+
+# --------------------------------------------------
+# MENÚ LATERAL Y NAVEGACIÓN
+# --------------------------------------------------
+
+st.sidebar.title("🐄 Control Lechero")
+st.sidebar.caption("Hato La Casita")
+st.sidebar.divider()
+
 st.sidebar.write(
     f"Sesión: {st.session_state.usuario.email}"
 )
 
+if st.sidebar.button("Cerrar sesión", use_container_width=True):
+    supabase.auth.sign_out()
+    st.session_state.usuario = None
+    st.rerun()
+
+st.sidebar.divider()
+
+if "pagina" not in st.session_state:
+    st.session_state.pagina = "Inicio"
+
+st.sidebar.subheader("Menú principal")
+
+if st.sidebar.button("🏠 Inicio", use_container_width=True):
+    st.session_state.pagina = "Inicio"
+
+with st.sidebar.expander("🐄 Vacas", expanded=True):
+    if st.button("Registrar vaca", key="menu_registrar_vaca",
+                 use_container_width=True):
+        st.session_state.pagina = "Registrar vaca"
+
+    if st.button("Vacas registradas", key="menu_vacas_registradas",
+                 use_container_width=True):
+        st.session_state.pagina = "Vacas registradas"
+
+    if st.button("Administrar vacas", key="menu_administrar_vacas",
+                 use_container_width=True):
+        st.session_state.pagina = "Administrar vacas"
+
+with st.sidebar.expander("🥛 Producción de leche"):
+    if st.button("Registrar producción", key="menu_registrar_produccion",
+                 use_container_width=True):
+        st.session_state.pagina = "Registrar producción"
+
+    if st.button("Editar producción", key="menu_editar_produccion",
+                 use_container_width=True):
+        st.session_state.pagina = "Editar producción"
+
+with st.sidebar.expander("📊 Informes"):
+    if st.button("Reporte diario", key="menu_reporte_diario",
+                 use_container_width=True):
+        st.session_state.pagina = "Reporte diario"
+if st.session_state.pagina == "Inicio":
+    # Mostrar únicamente el resumen de la finca
+
+elif st.session_state.pagina == "Registrar vaca":
+    # Mostrar únicamente el formulario de registro
 # --------------------------------------------------
 # CARGAR LA FINCA DESDE SUPABASE
 # --------------------------------------------------
