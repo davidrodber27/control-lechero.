@@ -69,6 +69,15 @@ if st.session_state.usuario is None:
 st.sidebar.write(
     f"Sesión: {st.session_state.usuario.email}"
 )
+try:
+    respuesta = supabase.table("vacas").select("*").execute()
+
+    st.success("Conexión con la tabla vacas correcta.")
+    st.write("Registros encontrados:", len(respuesta.data))
+
+except Exception as error:
+    st.error("No se pudo consultar la tabla vacas.")
+    st.write(str(error))
 
 if st.sidebar.button("Cerrar sesión"):
     supabase.auth.sign_out()
