@@ -298,7 +298,94 @@ with st.form("formulario_vaca"):
                 )
                 st.write(str(error))
 
+# --------------------------------------------------
+# 5.1. EDITAR DATOS DE UNA VACA
+# --------------------------------------------------
 
+st.divider()
+st.header("Editar datos de una vaca")
+
+vacas_edicion = st.session_state.finca.vacas
+
+if not vacas_edicion:
+    st.info("No hay vacas registradas para editar.")
+
+else:
+    opciones_edicion = {
+        f"{vaca.identificacion} - {vaca.nombre}":
+        vaca.identificacion
+        for vaca in vacas_edicion.values()
+    }
+
+    vaca_seleccionada_edicion = st.selectbox(
+        "Selecciona la vaca que deseas editar",
+        options=list(opciones_edicion.keys()),
+        key="vaca_seleccionada_edicion"
+    )
+
+    identificacion_edicion = opciones_edicion[
+        vaca_seleccionada_edicion
+    ]
+
+    vaca_edicion = st.session_state.finca.buscar_vaca(
+        identificacion_edicion
+    )
+
+    with st.form("formulario_editar_vaca"):
+
+        st.text_input(
+            "Identificación (no editable)",
+            value=vaca_edicion.identificacion,
+            disabled=True
+        )
+
+        nuevo_nombre = st.text_input(
+            "Nombre",
+            value=vaca_edicion.nombre
+        )
+
+        nueva_raza = st.selectbox(
+            "Raza",
+            [
+                "Holstein",
+                "Jersey",
+                "Normando",
+                "Cruce",
+                "Otra"
+            ],
+            index=[
+                "Holstein",
+                "Jersey",
+                "Normando",
+                "Cruce",
+                "Otra"
+            ].index(vaca_edicion.raza)
+            if vaca_edicion.raza in [
+                "Holstein",
+                "Jersey",
+                "Normando",
+                "Cruce",
+                "Otra"
+            ] else 4
+        )
+
+        nueva_fecha_nacimiento = st.date_input(
+            "Fecha de nacimiento",
+            value=date.fromisoformat(
+                vaca_edicion.fecha_nacimiento
+            ),
+            max_value=date.today()
+        )
+
+        guardar_cambios = st.form_submit_button(
+            "Guardar cambios"
+        )
+
+        if guardar_cambios:
+            st.info(
+                "Formulario preparado. En el siguiente paso "
+                "conectaremos estos cambios con Supabase."
+            )
 
 # --------------------------------------------------
 # 6. LISTADO DE VACAS
