@@ -298,8 +298,9 @@ with st.form("formulario_vaca"):
                 )
                 st.write(str(error))
 
+
 # --------------------------------------------------
-# 5.1. EDITAR DATOS DE UNA VACA
+# 5.1. ADMINISTRAR VACAS
 # --------------------------------------------------
 
 st.divider()
@@ -315,7 +316,7 @@ accion_vaca = st.radio(
 vacas_edicion = st.session_state.finca.vacas
 
 if not vacas_edicion:
-    st.info("No hay vacas registradas para editar.")
+    st.info("No hay vacas registradas para administrar.")
 
 else:
     opciones_edicion = {
@@ -325,7 +326,7 @@ else:
     }
 
     vaca_seleccionada_edicion = st.selectbox(
-        "Selecciona la vaca que deseas editar",
+        "Selecciona la vaca",
         options=list(opciones_edicion.keys()),
         key="vaca_seleccionada_edicion"
     )
@@ -338,101 +339,142 @@ else:
         identificacion_edicion
     )
 
-    with st.form("formulario_editar_vaca"):
+    if accion_vaca == "Editar vaca":
 
-        st.text_input(
-            "Identificación (no editable)",
-            value=vaca_edicion.identificacion,
-            disabled=True
-        )
+        razas_disponibles = [
+            "Holstein",
+            "Jersey",
+            "Normando",
+            "Cruce",
+            "Otra"
+        ]
 
-        nuevo_nombre = st.text_input(
-            "Nombre",
-            value=vaca_edicion.nombre
-        )
+        # Si la vaca tiene una raza que no está en la lista,
+        # se conserva como opción para no cambiarla accidentalmente.
+        if vaca_edicion.raza not in razas_disponibles:
+            razas_disponibles.append(vaca_edicion.raza)
 
-        nueva_raza = st.selectbox(
-            "Raza",
-            [
-                "Holstein",
-                "Jersey",
-                "Normando",
-                "Cruce",
-                "Otra"
-            ],
-            index=[
-                "Holstein",
-                "Jersey",
-                "Normando",
-                "Cruce",
-                "Otra"
-            ].index(vaca_edicion.raza)
-            if vaca_edicion.raza in [
-                "Holstein",
-                "Jersey",
-                "Normando",
-                "Cruce",
-                "Otra"
-            ] else 4
-        )
+        with st.form("formulario_editar_vaca"):
 
-        nueva_fecha_nacimiento = st.date_input(
-            "Fecha de nacimiento",
-            value=date.fromisoformat(
-                vaca_edicion.fecha_nacimiento
-            ),
-            max_value=date.today()
-        )
-
-        guardar_cambios = st.form_submit_button(
-            "Guardar cambios"
-        )
-
- if guardar_cambios:
-
-    if not nuevo_nombre.strip():
-        st.error("El nombre de la vaca no puede estar vacío.")
-
-    else:
-        try:
-            datos_actualizados = {
-                "nombre": nuevo_nombre.strip(),
-                "raza": nueva_raza,
-                "fecha_nacimiento": (
-                    nueva_fecha_nacimiento.isoformat()
-                )
-            }
-
-            respuesta = (
-                supabase
-                .table("vacas")
-                .update(datos_actualizados)
-                .eq("identificacion", identificacion_edicion)
-                .execute()
+            st.text_input(
+                "Identificación (no editable por ahora)",
+                value=vaca_edicion.identificacion,
+                disabled=True
             )
 
-            if respuesta.data:
-                # Actualizar los datos del objeto en memoria.
-                vaca_edicion.nombre = nuevo_nombre.strip().title()
-                vaca_edicion.raza = nueva_raza.title()
-                vaca_edicion.fecha_nacimiento = (
-                    nueva_fecha_nacimiento.isoformat()
-                )
+            nuevo_nombre = st.text_input(
+                "Nombre",
+                value=vaca_edicion.nombre
+            )
 
-                st.success(
-                    f"Datos de {vaca_edicion.nombre} actualizados."
+            nueva_raza = st.selectbox(
+                "Raza",
+                options=razas_disponibles,
+                index=razas_disponibles.index(
+                    vaca_edicion.raza
                 )
-                st.rerun()
+            )
+
+            nueva_fecha_nacimiento = st.date_input(
+                "Fecha de nacimiento",
+                value=date.fromisoformat(
+                    vaca_edicion.fecha_nacimiento
+                ),
+                max_value=date.today()
+            )
+
+            guardar_cambios = st.form_submit_button(
+                "Guardar cambios"
+            )
+
+        if guardar_cambios:
+
+            if not nuevo_nombre.strip():
+                st.error(
+                    "El nombre de la vaca no puede estar vacío."
+                )
 
             else:
-                st.error(
-                    "Supabase no confirmó la actualización. "
-                    "No se modificó la vaca en memoria."
-                )
+                try:
+                    datos_actualizados = {
+                        "nombre": nuevo_nombre.strip(),
+                        "raza": nueva_raza,
+                        "fecha_nacimiento": (
+                            nueva_fecha_nacimiento.isoformat()
+                        )
+                    }
 
-        except Exception as error:
-            st.error("No fue posible actualizar la vaca.")
-            st.code(str(error))
+                    respuesta = (
+                        supabase
+                        .table("vacas")
+                        .update(datos_actualizados)
+                        .eq(
+                            "identificacion",
+                            identificacion_edicion
+                        )
+                        .execute()
+                    )
+
+                    if respuesta.data:
+                        # Actualizar el objeto en memoria
+                        # después de confirmar el cambio en Supabase.
+                        vaca_edicion.nombre = (
+                            nuevo_nombre.strip().title()
+                        )
+                        vaca_edicion.raza = nueva_raza.title()
+                        vaca_edicion.fecha_nacimiento = (
+                            nueva_fecha_nacimiento.isoformat()
+                        )
+
+                        st.success(
+                            f"Datos de {vaca_edicion.nombre} "
+                            "actualizados correctamente."
+                        )
+                        st.rerun()
+
+                    else:
+                        st.error(
+                            "Supabase no confirmó la actualización. "
+                            "No se modificó la vaca en memoria."
+                        )
+
+                except Exception as error:
+                    st.error(
+                        "No fue posible actualizar la vaca."
+                    )
+                    st.code(str(error))
+
+    elif accion_vaca == "Eliminar vaca":
+
+        st.warning(
+            f"Vas a eliminar a {vaca_edicion.nombre} "
+            f"(identificación: {vaca_edicion.identificacion})."
+        )
+
+        st.info(
+            "La configuración actual de la base de datos puede "
+            "eliminar también todo el historial de producción "
+            "asociado a esta vaca."
+        )
+
+        confirmar_eliminacion = st.checkbox(
+            "Confirmo que deseo eliminar esta vaca "
+            "y comprendo que su historial podría borrarse.",
+            key="confirmar_eliminacion_vaca"
+        )
+
+        st.button(
+            "Eliminar vaca",
+            disabled=True,
+            key="boton_eliminar_vaca_pendiente"
+        )
+
+        if confirmar_eliminacion:
+            st.caption(
+                "Confirmación marcada. La eliminación todavía "
+                "no está habilitada; la conectaremos de forma "
+                "segura en el siguiente paso."
+            )
 
 # --------------------------------------------------
 # 6. LISTADO DE VACAS
