@@ -299,6 +299,7 @@ with st.form("formulario_vaca"):
                 st.write(str(error))
 
 
+
 # --------------------------------------------------
 # 5.1. ADMINISTRAR VACAS
 # --------------------------------------------------
@@ -339,7 +340,10 @@ else:
         identificacion_edicion
     )
 
-    if accion_vaca == "Editar vaca":
+    if vaca_edicion is None:
+        st.error("No se encontró la vaca seleccionada.")
+
+    elif accion_vaca == "Editar vaca":
 
         razas_disponibles = [
             "Holstein",
@@ -349,8 +353,6 @@ else:
             "Otra"
         ]
 
-        # Si la vaca tiene una raza que no está en la lista,
-        # se conserva como opción para no cambiarla accidentalmente.
         if vaca_edicion.raza not in razas_disponibles:
             razas_disponibles.append(vaca_edicion.raza)
 
@@ -380,6 +382,7 @@ else:
                 value=date.fromisoformat(
                     vaca_edicion.fecha_nacimiento
                 ),
+                min_value=date(1900, 1, 1),
                 max_value=date.today()
             )
 
@@ -416,12 +419,10 @@ else:
                     )
 
                     if respuesta.data:
-                        # Actualizar el objeto en memoria
-                        # después de confirmar el cambio en Supabase.
                         vaca_edicion.nombre = (
                             nuevo_nombre.strip().title()
                         )
-                        vaca_edicion.raza = nueva_raza.title()
+                        vaca_edicion.raza = nueva_raza
                         vaca_edicion.fecha_nacimiento = (
                             nueva_fecha_nacimiento.isoformat()
                         )
@@ -448,33 +449,65 @@ else:
 
         st.warning(
             f"Vas a eliminar a {vaca_edicion.nombre} "
-            f"(identificación: {vaca_edicion.identificacion})."
+            f"(identificación: "
+            f"{vaca_edicion.identificacion})."
         )
 
-        st.info(
-            "La configuración actual de la base de datos puede "
-            "eliminar también todo el historial de producción "
-            "asociado a esta vaca."
+        st.error(
+            "Atención: al eliminar esta vaca, también se puede "
+            "eliminar todo su historial de producción."
         )
 
         confirmar_eliminacion = st.checkbox(
-            "Confirmo que deseo eliminar esta vaca "
-            "y comprendo que su historial podría borrarse.",
+            "Confirmo que deseo eliminar esta vaca y su "
+            "posible historial de producción.",
             key="confirmar_eliminacion_vaca"
         )
 
-        st.button(
-            "Eliminar vaca",
-            disabled=True,
-            key="boton_eliminar_vaca_pendiente"
-        )
+        if st.button(
+            "Eliminar vaca definitivamente",
+            disabled=not confirmar_eliminacion,
+            key="boton_eliminar_vaca"
+        ):
+            try:
+                respuesta = (
+                    supabase
+                    .table("vacas")
+                    .delete()
+                    .eq(
+                        "identificacion",
+                        identificacion_edicion
+                    )
+                    .execute()
+                )
 
-        if confirmar_eliminacion:
-            st.caption(
-                "Confirmación marcada. La eliminación todavía "
-                "no está habilitada; la conectaremos de forma "
-                "segura en el siguiente paso."
-            )
+                if respuesta.data:
+                    clave_vaca = (
+                        identificacion_edicion.strip().upper()
+                    )
+
+                    del st.session_state.finca.vacas[
+                        clave_vaca
+                    ]
+
+                    st.success(
+                        f"La vaca {vaca_edicion.nombre} "
+                        "fue eliminada correctamente."
+                    )
+                    st.rerun()
+
+                else:
+                    st.error(
+                        "Supabase no confirmó la eliminación. "
+                        "La vaca se conserva en memoria."
+                    )
+
+            except Exception as error:
+                st.error(
+                    "No fue posible eliminar la vaca."
+                )
+                st.code(str(error))
+
 
 # --------------------------------------------------
 # 6. LISTADO DE VACAS
