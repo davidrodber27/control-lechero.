@@ -923,120 +923,120 @@ else:
 # --------------------------------------------------
 # 9. EDITAR PRODUCCIÓN REGISTRADA
 # --------------------------------------------------
-
-st.divider()
-st.header("Editar producción registrada")
-
-finca = st.session_state.finca
-vacas_con_registros = [
-    vaca
-    for vaca in finca.vacas.values()
-    if vaca.registros
-]
-
-if not vacas_con_registros:
-
-    st.info(
-        "Todavía no hay registros de producción para editar."
-    )
-
-else:
-
-    opciones_edicion = {
-        f"{vaca.identificacion} - {vaca.nombre}":
-        vaca.identificacion
-        for vaca in vacas_con_registros
-    }
-
-    with st.form("formulario_edicion_produccion"):
-
-        vaca_edicion = st.selectbox(
-            "Selecciona la vaca",
-            options=list(opciones_edicion.keys())
+if st.session_state.pagina == "Editar producción":
+    st.divider()
+    st.header("Editar producción registrada")
+    
+    finca = st.session_state.finca
+    vacas_con_registros = [
+        vaca
+        for vaca in finca.vacas.values()
+        if vaca.registros
+    ]
+    
+    if not vacas_con_registros:
+    
+        st.info(
+            "Todavía no hay registros de producción para editar."
         )
-
-        identificacion_edicion = opciones_edicion[
-            vaca_edicion
-        ]
-
-        vaca_objetivo = finca.buscar_vaca(
-            identificacion_edicion
-        )
-
-        fechas_disponibles = sorted(
-            vaca_objetivo.registros.keys(),
-            reverse=True
-        )
-
-        fecha_edicion_texto = st.selectbox(
-            "Selecciona la fecha del registro",
-            options=fechas_disponibles,
-            format_func=lambda fecha: (
-                date.fromisoformat(fecha).strftime("%d/%m/%Y")
+    
+    else:
+    
+        opciones_edicion = {
+            f"{vaca.identificacion} - {vaca.nombre}":
+            vaca.identificacion
+            for vaca in vacas_con_registros
+        }
+    
+        with st.form("formulario_edicion_produccion"):
+    
+            vaca_edicion = st.selectbox(
+                "Selecciona la vaca",
+                options=list(opciones_edicion.keys())
             )
-        )
-
-        registro_actual = vaca_objetivo.registros[
-            fecha_edicion_texto
-        ]
-
-        st.caption(
-            "Valores guardados actualmente. "
-            "Al guardar, se reemplazarán por los nuevos."
-        )
-
-        col1, col2 = st.columns(2)
-
-        with col1:
-            nuevos_litros_manana = st.number_input(
-                "Litros de la mañana",
-                min_value=0,
-                step=1,
-                value=registro_actual["litros_manana"],
-                key="editar_litros_manana"
+    
+            identificacion_edicion = opciones_edicion[
+                vaca_edicion
+            ]
+    
+            vaca_objetivo = finca.buscar_vaca(
+                identificacion_edicion
             )
-
-        with col2:
-            nuevos_litros_tarde = st.number_input(
-                "Litros de la tarde",
-                min_value=0,
-                step=1,
-                value=registro_actual["litros_tarde"],
-                key="editar_litros_tarde"
+    
+            fechas_disponibles = sorted(
+                vaca_objetivo.registros.keys(),
+                reverse=True
             )
-
-        nuevo_potrero = st.selectbox(
-            "Potrero",
-            options=list(range(1, 13)),
-            index=registro_actual["potrero"] - 1,
-            key="editar_potrero"
-        )
-
-        confirmar_edicion = st.form_submit_button(
-            "Guardar cambios"
-        )
-
-        if confirmar_edicion:
-
-            try:
-                actualizado = finca.actualizar_produccion(
-                    identificacion=identificacion_edicion,
-                    fecha=fecha_edicion_texto,
-                    litros_manana=int(nuevos_litros_manana),
-                    litros_tarde=int(nuevos_litros_tarde),
-                    potrero=nuevo_potrero
+    
+            fecha_edicion_texto = st.selectbox(
+                "Selecciona la fecha del registro",
+                options=fechas_disponibles,
+                format_func=lambda fecha: (
+                    date.fromisoformat(fecha).strftime("%d/%m/%Y")
                 )
-
-                if actualizado:
-                    st.success(
-                        "Producción actualizada correctamente."
+            )
+    
+            registro_actual = vaca_objetivo.registros[
+                fecha_edicion_texto
+            ]
+    
+            st.caption(
+                "Valores guardados actualmente. "
+                "Al guardar, se reemplazarán por los nuevos."
+            )
+    
+            col1, col2 = st.columns(2)
+    
+            with col1:
+                nuevos_litros_manana = st.number_input(
+                    "Litros de la mañana",
+                    min_value=0,
+                    step=1,
+                    value=registro_actual["litros_manana"],
+                    key="editar_litros_manana"
+                )
+    
+            with col2:
+                nuevos_litros_tarde = st.number_input(
+                    "Litros de la tarde",
+                    min_value=0,
+                    step=1,
+                    value=registro_actual["litros_tarde"],
+                    key="editar_litros_tarde"
+                )
+    
+            nuevo_potrero = st.selectbox(
+                "Potrero",
+                options=list(range(1, 13)),
+                index=registro_actual["potrero"] - 1,
+                key="editar_potrero"
+            )
+    
+            confirmar_edicion = st.form_submit_button(
+                "Guardar cambios"
+            )
+    
+            if confirmar_edicion:
+    
+                try:
+                    actualizado = finca.actualizar_produccion(
+                        identificacion=identificacion_edicion,
+                        fecha=fecha_edicion_texto,
+                        litros_manana=int(nuevos_litros_manana),
+                        litros_tarde=int(nuevos_litros_tarde),
+                        potrero=nuevo_potrero
                     )
-                    st.rerun()
-                else:
-                    st.warning(
-                        "No se encontró un registro para actualizar."
-                    )
-
-            except (ValueError, TypeError) as error:
-                st.error(str(error))
-
+    
+                    if actualizado:
+                        st.success(
+                            "Producción actualizada correctamente."
+                        )
+                        st.rerun()
+                    else:
+                        st.warning(
+                            "No se encontró un registro para actualizar."
+                        )
+    
+                except (ValueError, TypeError) as error:
+                    st.error(str(error))
+    
