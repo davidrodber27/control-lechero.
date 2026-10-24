@@ -192,6 +192,7 @@ with st.form("formulario_vaca"):
     )
 
     
+    
     if enviar:
 
         if not identificacion.strip():
@@ -207,30 +208,67 @@ with st.form("formulario_vaca"):
         else:
             try:
                 nueva_vaca = Vaca(
-                    nombre=nombre,
+                    nombre=nombre.strip(),
                     fecha_nacimiento=fecha_nacimiento,
                     raza=raza,
-                    identificacion=identificacion
+                    identificacion=identificacion.strip()
                 )
 
-                agregada = (
-                    st.session_state.finca.agregar_vaca(
-                        nueva_vaca
+                # Verificar que la vaca no exista en memoria.
+                existente = (
+                    st.session_state.finca.buscar_vaca(
+                        identificacion.strip()
                     )
                 )
 
-                if agregada:
-                    st.success(
-                        f"Vaca {nueva_vaca.nombre} "
-                        "registrada correctamente."
-                    )
-                else:
+                if existente:
                     st.error(
                         "Ya existe una vaca con esa identificación."
                     )
 
-            except (ValueError, TypeError) as error:
-                st.error(str(error))
+                else:
+                    # Guardar la vaca en Supabase.
+                    datos_vaca = {
+                        "identificacion": identificacion.strip(),
+                        "nombre": nombre.strip(),
+                        "raza": raza,
+                        "fecha_nacimiento": (
+                            fecha_nacimiento.isoformat()
+                        )
+                    }
+
+                    respuesta = (
+                        supabase.table("vacas")
+                        .insert(datos_vaca)
+                        .execute()
+                    )
+
+                    # Agregarla a la memoria de la aplicación.
+                    agregada = (
+                        st.session_state.finca.agregar_vaca(
+                            nueva_vaca
+                        )
+                    )
+
+                    if agregada:
+                        st.success(
+                            f"Vaca {nueva_vaca.nombre} "
+                            "registrada correctamente."
+                        )
+                    else:
+                        st.warning(
+                            "La vaca se guardó en Supabase, "
+                            "pero no se agregó a la memoria "
+                            "de la aplicación. "
+                            "No vuelvas a registrarla todavía."
+                        )
+
+            except Exception as error:
+                st.error(
+                    "No fue posible completar el registro."
+                )
+                st.write(str(error))
+
 
 
 # --------------------------------------------------
