@@ -388,11 +388,51 @@ else:
             "Guardar cambios"
         )
 
-        if guardar_cambios:
-            st.info(
-                "Formulario preparado. En el siguiente paso "
-                "conectaremos estos cambios con Supabase."
+ if guardar_cambios:
+
+    if not nuevo_nombre.strip():
+        st.error("El nombre de la vaca no puede estar vacío.")
+
+    else:
+        try:
+            datos_actualizados = {
+                "nombre": nuevo_nombre.strip(),
+                "raza": nueva_raza,
+                "fecha_nacimiento": (
+                    nueva_fecha_nacimiento.isoformat()
+                )
+            }
+
+            respuesta = (
+                supabase
+                .table("vacas")
+                .update(datos_actualizados)
+                .eq("identificacion", identificacion_edicion)
+                .execute()
             )
+
+            if respuesta.data:
+                # Actualizar los datos del objeto en memoria.
+                vaca_edicion.nombre = nuevo_nombre.strip().title()
+                vaca_edicion.raza = nueva_raza.title()
+                vaca_edicion.fecha_nacimiento = (
+                    nueva_fecha_nacimiento.isoformat()
+                )
+
+                st.success(
+                    f"Datos de {vaca_edicion.nombre} actualizados."
+                )
+                st.rerun()
+
+            else:
+                st.error(
+                    "Supabase no confirmó la actualización. "
+                    "No se modificó la vaca en memoria."
+                )
+
+        except Exception as error:
+            st.error("No fue posible actualizar la vaca.")
+            st.code(str(error))
 
 # --------------------------------------------------
 # 6. LISTADO DE VACAS
