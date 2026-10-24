@@ -25,7 +25,7 @@ class ControlLechero:
         if not isinstance(vaca, Vaca):
             raise TypeError("Solo se pueden agregar objetos de tipo Vaca.")
 
-        identificacion = vaca.identificacion.casefold()
+        identificacion = vaca.identificacion.strip().upper()
 
         if identificacion in self.vacas:
             return False
@@ -39,7 +39,7 @@ class ControlLechero:
         if not isinstance(identificacion, str):
             return None
 
-        return self.vacas.get(identificacion.strip().casefold())
+        return self.vacas.get(identificacion.strip().upper())
 
     def eliminar_vaca(self, identificacion: str) -> bool:
         """Elimina una vaca por su identificación."""
