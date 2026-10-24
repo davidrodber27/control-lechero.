@@ -331,118 +331,120 @@ with col3:
 # 5. FORMULARIO PARA REGISTRAR VACAS
 # --------------------------------------------------
 
-st.header("Registrar una vaca")
+# --------------------------------------------------
+# PANTALLA: REGISTRAR VACA
+# --------------------------------------------------
 
-with st.form("formulario_vaca"):
+elif st.session_state.pagina == "Registrar vaca":
 
-    identificacion = st.text_input(
-        "Identificación de la vaca",
-        placeholder="Ejemplo: V001"
+    st.title("Registrar una vaca")
+    st.write(
+        "Registra la identificación y los datos "
+        "generales de cada animal."
     )
 
-    nombre = st.text_input(
-        "Nombre de la vaca",
-        placeholder="Ejemplo: Roja"
-    )
+    with st.form("formulario_vaca"):
 
-    raza = st.selectbox(
-        "Raza",
-        [
-            "Holstein",
-            "Jersey",
-            "Normando",
-            "Cruce",
-            "Otra"
-        ]
-    )
+        identificacion = st.text_input(
+            "Identificación de la vaca",
+            placeholder="Ejemplo: V001"
+        )
 
-    fecha_nacimiento = st.date_input(
-        "Fecha de nacimiento",
-        value=date.today(),
-        max_value=date.today()
-    )
+        nombre = st.text_input(
+            "Nombre de la vaca",
+            placeholder="Ejemplo: Roja"
+        )
 
-    enviar = st.form_submit_button(
-        "Registrar vaca"
-    )
+        raza = st.selectbox(
+            "Raza",
+            [
+                "Holstein",
+                "Jersey",
+                "Normando",
+                "Cruce",
+                "Otra"
+            ]
+        )
 
-    
-    
-    if enviar:
+        fecha_nacimiento = st.date_input(
+            "Fecha de nacimiento",
+            value=date.today(),
+            max_value=date.today()
+        )
 
-        if not identificacion.strip():
-            st.error(
-                "Debes escribir la identificación de la vaca."
-            )
+        enviar = st.form_submit_button("Registrar vaca")
 
-        elif not nombre.strip():
-            st.error(
-                "Debes escribir el nombre de la vaca."
-            )
+        if enviar:
 
-        else:
-            try:
-                nueva_vaca = Vaca(
-                    nombre=nombre.strip(),
-                    fecha_nacimiento=fecha_nacimiento,
-                    raza=raza,
-                    identificacion=identificacion.strip()
-                )
-
-                # Verificar que la vaca no exista en memoria.
-                existente = (
-                    st.session_state.finca.buscar_vaca(
-                        identificacion.strip()
-                    )
-                )
-
-                if existente:
-                    st.error(
-                        "Ya existe una vaca con esa identificación."
-                    )
-
-                else:
-                    # Guardar la vaca en Supabase.
-                    datos_vaca = {
-                        "identificacion": identificacion.strip(),
-                        "nombre": nombre.strip(),
-                        "raza": raza,
-                        "fecha_nacimiento": (
-                            fecha_nacimiento.isoformat()
-                        )
-                    }
-
-                    respuesta = (
-                        supabase.table("vacas")
-                        .insert(datos_vaca)
-                        .execute()
-                    )
-
-                    # Agregarla a la memoria de la aplicación.
-                    agregada = (
-                        st.session_state.finca.agregar_vaca(
-                            nueva_vaca
-                        )
-                    )
-
-                    if agregada:
-                        st.success(
-                            f"Vaca {nueva_vaca.nombre} "
-                            "registrada correctamente."
-                        )
-                    else:
-                        st.warning(
-                            "La vaca se guardó en Supabase, "
-                            "pero no se agregó a la memoria "
-                            "de la aplicación. "
-                            "No vuelvas a registrarla todavía."
-                        )
-
-            except Exception as error:
+            if not identificacion.strip():
                 st.error(
-                    "No fue posible completar el registro."
+                    "Debes escribir la identificación de la vaca."
                 )
-                st.write(str(error))
+
+            elif not nombre.strip():
+                st.error(
+                    "Debes escribir el nombre de la vaca."
+                )
+
+            else:
+                try:
+                    nueva_vaca = Vaca(
+                        nombre=nombre.strip(),
+                        fecha_nacimiento=fecha_nacimiento,
+                        raza=raza,
+                        identificacion=identificacion.strip()
+                    )
+
+                    existente = (
+                        st.session_state.finca.buscar_vaca(
+                            identificacion.strip()
+                        )
+                    )
+
+                    if existente:
+                        st.error(
+                            "Ya existe una vaca con esa identificación."
+                        )
+
+                    else:
+                        datos_vaca = {
+                            "identificacion": identificacion.strip(),
+                            "nombre": nombre.strip(),
+                            "raza": raza,
+                            "fecha_nacimiento": (
+                                fecha_nacimiento.isoformat()
+                            )
+                        }
+
+                        respuesta = (
+                            supabase.table("vacas")
+                            .insert(datos_vaca)
+                            .execute()
+                        )
+
+                        agregada = (
+                            st.session_state.finca.agregar_vaca(
+                                nueva_vaca
+                            )
+                        )
+
+                        if agregada:
+                            st.success(
+                                f"Vaca {nueva_vaca.nombre} "
+                                "registrada correctamente."
+                            )
+                        else:
+                            st.warning(
+                                "La vaca se guardó en Supabase, "
+                                "pero no se agregó a la memoria. "
+                                "No vuelvas a registrarla todavía."
+                            )
+
+                except Exception as error:
+                    st.error(
+                        "No fue posible completar el registro."
+                    )
+                    st.write(str(error))
 
 
 
