@@ -4,6 +4,8 @@ from datetime import date
 
 from modelos.control_lechero import ControlLechero
 from modelos.vaca import Vaca
+
+
 # --------------------------------------------------
 # 1. CONFIGURACIÓN DE LA APLICACIÓN
 # --------------------------------------------------
@@ -13,6 +15,66 @@ st.set_page_config(
     page_icon="🐄",
     layout="wide"
 )
+
+from supabase import create_client
+
+# Crear un cliente independiente por sesión de Streamlit.
+if "supabase" not in st.session_state:
+    st.session_state.supabase = create_client(
+        st.secrets["SUPABASE_URL"],
+        st.secrets["SUPABASE_PUBLISHABLE_KEY"]
+    )
+
+supabase = st.session_state.supabase
+
+# Inicializar el estado de autenticación.
+if "usuario" not in st.session_state:
+    st.session_state.usuario = None
+
+# Mostrar el inicio de sesión si no hay usuario autenticado.
+if st.session_state.usuario is None:
+    st.title("Control Lechero")
+    st.subheader("Iniciar sesión")
+
+    with st.form("formulario_login"):
+        correo = st.text_input("Correo electrónico")
+        contrasena = st.text_input(
+            "Contraseña",
+            type="password"
+        )
+        ingresar = st.form_submit_button("Ingresar")
+
+    if ingresar:
+        try:
+            respuesta = supabase.auth.sign_in_with_password({
+                "email": correo.strip(),
+                "password": contrasena
+            })
+
+            if respuesta.user is not None:
+                st.session_state.usuario = respuesta.user
+                st.rerun()
+            else:
+                st.error("No fue posible iniciar sesión.")
+
+        except Exception:
+            st.error(
+                "No se pudo iniciar sesión. "
+                "Verifica tus credenciales e inténtalo de nuevo."
+            )
+
+    st.stop()
+
+# Mostrar el usuario autenticado y permitir cerrar sesión.
+st.sidebar.write(
+    f"Sesión: {st.session_state.usuario.email}"
+)
+
+if st.sidebar.button("Cerrar sesión"):
+    supabase.auth.sign_out()
+    st.session_state.usuario = None
+    st.rerun()
+
 
 # --------------------------------------------------
 # 2. DATOS TEMPORALES DE LA SESIÓN
