@@ -412,34 +412,74 @@ else:
             ]
 
             try:
-                registrado = (
-                    st.session_state.finca.registrar_produccion(
-                        identificacion=identificacion,
-                        fecha=fecha_produccion,
-                        litros_manana=int(litros_manana),
-                        litros_tarde=int(litros_tarde),
-                        potrero=potrero
-                    )
+                # 1. Buscar la vaca en la finca.
+                vaca = st.session_state.finca.buscar_vaca(
+                    identificacion
                 )
 
-                if registrado:
-                    total_dia = (
-                        int(litros_manana)
-                        + int(litros_tarde)
-                    )
+                if vaca is None:
+                    st.error("No se encontró la vaca seleccionada.")
 
-                    st.success(
-                        f"Producción registrada: {total_dia} L "
-                        f"para {vaca_seleccionada}."
-                    )
-                else:
+                # 2. Comprobar si ya existe producción para esa fecha.
+                elif fecha_produccion.isoformat() in vaca.registros:
                     st.warning(
                         "Esta vaca ya tiene un registro para esa fecha. "
                         "No se modificaron los datos existentes."
                     )
 
-            except (ValueError, TypeError) as error:
-                st.error(str(error))
+                else:
+                    # 3. Guardar primero en Supabase.
+                    respuesta = guardar_produccion(
+                        supabase=supabase,
+                        identificacion=identificacion,
+                        fecha=fecha_produccion,
+                        litros_manana=int(litros_manana),
+                        litros_tarde=int(litros_tarde),
+                        potrero=int(potrero)
+                    )
+
+                    # 4. Actualizar la finca en memoria
+                    # solo si Supabase devuelve el registro.
+                    if respuesta:
+                        registrado = (
+                            st.session_state.finca.registrar_produccion(
+                                identificacion=identificacion,
+                                fecha=fecha_produccion,
+                                litros_manana=int(litros_manana),
+                                litros_tarde=int(litros_tarde),
+                                potrero=int(potrero)
+                            )
+                        )
+
+                        if registrado:
+                            total_dia = (
+                                int(litros_manana)
+                                + int(litros_tarde)
+                            )
+
+                            st.success(
+                                f"Producción guardada en Supabase: "
+                                f"{total_dia} L para "
+                                f"{vaca_seleccionada}."
+                            )
+                        else:
+                            st.warning(
+                                "El registro se guardó en Supabase, "
+                                "pero no se pudo actualizar la finca "
+                                "en memoria. Recarga la aplicación."
+                            )
+                    else:
+                        st.error(
+                            "Supabase no confirmó el registro. "
+                            "No se actualizó la finca en memoria."
+                        )
+
+            except Exception as error:
+                st.error(
+                    "No se pudo guardar la producción. "
+                    "Verifica los datos e inténtalo de nuevo."
+                )
+                st.code(str(error))
 
 
 # --------------------------------------------------
