@@ -1,10 +1,8 @@
-
 import streamlit as st
 from datetime import date
 
 from modelos.control_lechero import ControlLechero
 from modelos.vaca import Vaca
-from modelos.control_lechero import ControlLechero
 from servicios.persistencia import cargar_vacas
 
 # --------------------------------------------------
@@ -71,36 +69,25 @@ st.sidebar.write(
     f"Sesión: {st.session_state.usuario.email}"
 )
 
-try:
-    finca_prueba = ControlLechero("Hato La Casita")
+# --------------------------------------------------
+# CARGAR LA FINCA DESDE SUPABASE
+# --------------------------------------------------
 
-    finca_prueba = cargar_vacas(
-        supabase=supabase,
-        finca=finca_prueba
-    )
+if "finca" not in st.session_state:
+    try:
+        finca = ControlLechero("Hato La Casita")
 
-    st.success("Carga de datos completada.")
+        finca = cargar_vacas(
+            supabase=supabase,
+            finca=finca
+        )
 
-    st.write(
-        "Vacas cargadas:",
-        finca_prueba.cantidad_vacas()
-    )
+        st.session_state.finca = finca
 
-    total_registros = sum(
-        len(vaca.registros)
-        for vaca in finca_prueba.vacas.values()
-    )
-
-    st.write(
-        "Registros de producción cargados:",
-        total_registros
-    )
-
-except Exception:
-    st.error(
-        "No se pudo completar la carga de datos. "
-        "Revisa la configuración y los registros."
-    )
+    except Exception as error:
+        st.error("No se pudieron cargar los datos de la finca.")
+        st.code(str(error))
+        st.stop()
 
 
 try:
@@ -130,10 +117,25 @@ if st.sidebar.button("Cerrar sesión"):
 # 2. DATOS TEMPORALES DE LA SESIÓN
 # --------------------------------------------------
 
+
 if "finca" not in st.session_state:
-    st.session_state.finca = ControlLechero(
-        "Hato La Casita"
-    )
+    finca = ControlLechero("Hato La Casita")
+
+    try:
+        finca = cargar_vacas(
+            supabase=supabase,
+            finca=finca
+        )
+
+        st.session_state.finca = finca
+
+    except Exception:
+        st.error(
+            "No se pudieron cargar los datos de la finca "
+            "desde la base de datos."
+        )
+        st.stop()
+
 
 # --------------------------------------------------
 # 3. ENCABEZADO
