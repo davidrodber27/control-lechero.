@@ -63,3 +63,36 @@ def cargar_vacas(supabase, finca):
         finca.agregar_vaca(nueva_vaca)
 
     return finca
+
+
+def guardar_produccion(
+    supabase,
+    identificacion,
+    fecha,
+    litros_manana,
+    litros_tarde,
+    potrero
+):
+    """
+    Guarda un registro diario de producción en Supabase.
+    """
+
+    fecha_normalizada = normalizar_fecha(fecha).isoformat()
+
+    datos = {
+        "identificacion_vaca": identificacion.strip().upper(),
+        "fecha": fecha_normalizada,
+        "litros_manana": litros_manana,
+        "litros_tarde": litros_tarde,
+        "potrero": potrero
+    }
+
+    respuesta = (
+        supabase
+        .table("produccion")
+        .insert(datos)
+        .execute()
+    )
+
+    return respuesta.data
+
