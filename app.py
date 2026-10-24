@@ -8,6 +8,70 @@ from servicios.persistencia import (
     guardar_produccion
 )
 
+
+# --------------------------------------------------
+# IDENTIDAD VISUAL - CONTROL LECHERO
+# --------------------------------------------------
+
+st.markdown("""
+<style>
+    /* Fondo general */
+    .stApp {
+        background-color: #FFFFFF;
+    }
+
+    /* Barra lateral */
+    [data-testid="stSidebar"] {
+        background-color: #244A36;
+    }
+
+    [data-testid="stSidebar"] * {
+        color: #FFFFFF;
+    }
+
+    /* Títulos */
+    h1, h2, h3 {
+        color: #244A36;
+    }
+
+    /* Botones principales */
+    .stButton > button,
+    .stFormSubmitButton > button {
+        background-color: #244A36;
+        color: #FFFFFF;
+        border: 1px solid #244A36;
+        border-radius: 10px;
+        font-weight: 600;
+        transition: all 0.2s ease;
+    }
+
+    /* Efecto al pasar el cursor */
+    .stButton > button:hover,
+    .stFormSubmitButton > button:hover {
+        background-color: #78966A;
+        border-color: #78966A;
+        color: #FFFFFF;
+    }
+
+    /* Campos de entrada */
+    [data-testid="stTextInput"] input,
+    [data-testid="stNumberInput"] input,
+    [data-testid="stDateInput"] input {
+        border-radius: 8px;
+    }
+
+    /* Líneas divisorias */
+    hr {
+        border-color: #DCE5D7;
+    }
+
+    /* Mensajes y contenedores suaves */
+    [data-testid="stAlert"] {
+        border-radius: 10px;
+    }
+</style>
+""", unsafe_allow_html=True)
+
 # --------------------------------------------------
 # 1. CONFIGURACIÓN DE LA APLICACIÓN
 # --------------------------------------------------
