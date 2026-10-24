@@ -269,27 +269,7 @@ if st.session_state.pagina == "Inicio":
 # 4. RESUMEN DE LA FINCA
 # --------------------------------------------------
 
-st.header("Resumen de la finca")
 
-total_vacas = st.session_state.finca.cantidad_vacas()
-
-produccion_hoy = (
-    st.session_state.finca.produccion_total(date.today())
-)
-
-col1, col2, col3 = st.columns(3)
-
-with col1:
-    st.metric("Vacas registradas", total_vacas)
-
-with col2:
-    st.metric(
-        "Producción de hoy",
-        f"{produccion_hoy} L"
-    )
-
-with col3:
-    st.metric("Potreros", 12)
 
 
 # --------------------------------------------------
