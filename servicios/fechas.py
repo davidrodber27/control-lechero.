@@ -34,3 +34,4 @@ def normalizar_fecha(fecha):
     raise ValueError(
         "Fecha inválida. Usa AAAA-MM-DD o DD/MM/AAAA."
     )
+
