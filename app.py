@@ -303,7 +303,14 @@ with st.form("formulario_vaca"):
 # --------------------------------------------------
 
 st.divider()
-st.header("Editar datos de una vaca")
+st.header("Administrar vacas")
+
+accion_vaca = st.radio(
+    "¿Qué deseas hacer?",
+    ["Editar vaca", "Eliminar vaca"],
+    horizontal=True,
+    key="accion_vaca"
+)
 
 vacas_edicion = st.session_state.finca.vacas
 
