@@ -1,7 +1,6 @@
 
 
 from modelos.vaca import Vaca
-from modelos.control_lechero import ControlLechero
 from servicios.fechas import normalizar_fecha
 
 
@@ -25,8 +24,7 @@ def cargar_vacas(supabase, finca):
         .execute()
     )
 
-    # Crear un diccionario temporal para asociar
-    # cada registro con la identificación de su vaca.
+    # Agrupar la producción por identificación de vaca.
     produccion_por_vaca = {}
 
     for registro in respuesta_produccion.data:
@@ -37,7 +35,7 @@ def cargar_vacas(supabase, finca):
 
         produccion_por_vaca[identificacion].append(registro)
 
-    # Reconstruir los objetos Vaca.
+    # Reconstruir cada objeto Vaca.
     for datos in respuesta_vacas.data:
         nueva_vaca = Vaca(
             nombre=datos["nombre"],
@@ -46,7 +44,6 @@ def cargar_vacas(supabase, finca):
             identificacion=datos["identificacion"]
         )
 
-        # Cargar los registros diarios de esa vaca.
         registros = produccion_por_vaca.get(
             nueva_vaca.identificacion,
             []
@@ -95,4 +92,3 @@ def guardar_produccion(
     )
 
     return respuesta.data
-
