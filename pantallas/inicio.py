@@ -172,25 +172,50 @@ def mostrar_inicio(finca):
     # 3. CABECERA CON FOTOGRAFÍA DE FONDO
     # ----------------------------------------------
 
+        # 3. CABECERA CON FOTOGRAFÍA
+    st.image(
+        "https://images.unsplash.com/photo-1500595046743-cd271d694d30"
+        "?auto=format&fit=crop&w=1800&q=85",
+        use_container_width=True,
+    )
+
     st.markdown(
         """
-        <div class="hato-hero">
-            <div class="hato-eyebrow">
+        <div style="
+            background-color: #244A36;
+            padding: 28px;
+            border-radius: 14px;
+            margin-top: -8px;
+            margin-bottom: 24px;
+            color: white;
+        ">
+            <div style="
+                color: #D5E6D6;
+                font-size: 12px;
+                font-weight: bold;
+                letter-spacing: 2px;
+            ">
                 HATO LA CASITA · GESTIÓN GANADERA
             </div>
-
-            <div class="hato-title">
+            <h1 style="
+                color: white;
+                margin: 12px 0;
+                font-size: 34px;
+            ">
                 Control Lechero
-            </div>
-
-            <p class="hato-description">
+            </h1>
+            <p style="
+                color: #F0F5F0;
+                font-size: 16px;
+                margin-bottom: 0;
+            ">
                 Toda la información de tu hato en un solo lugar.
                 Controla la producción, administra tus animales
                 y consulta el desempeño diario de tu finca.
             </p>
         </div>
         """,
-        unsafe_allow_html=True
+        unsafe_allow_html=True,
     )
 
     # ----------------------------------------------
@@ -217,7 +242,7 @@ def mostrar_inicio(finca):
         st.markdown(
             f"""
             <div class="hato-kpi">
-                <div class="hato-kpi-icon">♟</div>
+                <div class="hato-kpi-icon">🐄</div>
                 <div class="hato-kpi-label">Vacas registradas</div>
                 <div class="hato-kpi-value">{total_vacas}</div>
                 <div class="hato-kpi-unit">animales</div>
@@ -230,7 +255,7 @@ def mostrar_inicio(finca):
         st.markdown(
             f"""
             <div class="hato-kpi">
-                <div class="hato-kpi-icon">▤</div>
+                <div class="hato-kpi-icon">🥛</div>
                 <div class="hato-kpi-label">Producción de hoy</div>
                 <div class="hato-kpi-value">{produccion_hoy}</div>
                 <div class="hato-kpi-unit">litros de leche</div>
@@ -243,7 +268,7 @@ def mostrar_inicio(finca):
         st.markdown(
             """
             <div class="hato-kpi">
-                <div class="hato-kpi-icon">♧</div>
+                <div class="hato-kpi-icon">🌱</div>
                 <div class="hato-kpi-label">Potreros</div>
                 <div class="hato-kpi-value">12</div>
                 <div class="hato-kpi-unit">potreros configurados</div>
