@@ -212,9 +212,7 @@ st.markdown("""
         transition: all 0.2s ease;
         box-shadow: none;
     }
-    [data-testid="stSidebar"] .stButton button p,
-    [data-testid="stSidebar"] .stButton button span {
-        font-size: 1rem !important;
+   
 
     /* Efecto Hover para los botones del menú */
     [data-testid="stSidebar"] .stButton button:hover {
