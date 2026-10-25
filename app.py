@@ -248,7 +248,7 @@ st.markdown("""
         border-top: 1px solid rgba(255, 255, 255, 0.12);
     }
     .footer-title {
-        font-size: 10rem;
+        font-size: 2rem;
         font-weight: 700;
         color: #ffffff;
         margin-top: 4px;
