@@ -251,7 +251,7 @@ st.markdown("""
         font-size: 2rem;
         font-weight: 700;
         color: #ffffff;
-        margin-top: 10px;
+        margin-top: 60px;
     }
     .footer-sub {
         font-size: 0.75rem;
