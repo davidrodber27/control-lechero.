@@ -326,13 +326,14 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 
+
 # ============================================================
 # MENÚ LATERAL
 # ============================================================
 with st.sidebar:
 
-    # Marca
-     ruta_logo = (
+    # Marca: logo y encabezado
+    ruta_logo = (
         Path(__file__).resolve().parent
         / "assets"
         / "logo_vaca.png"
@@ -358,18 +359,23 @@ with st.sidebar:
             unsafe_allow_html=True,
         )
     else:
-        st.markdown("""
+        st.markdown(
+            """
             <div class="sidebar-brand">
                 <div class="brand-name">Control Lechero</div>
                 <div class="brand-subtitle">Hato La Casita</div>
             </div>
-        """, unsafe_allow_html=True)
+            """,
+            unsafe_allow_html=True,
+        )
 
     st.divider()
 
     # Navegación principal
-    st.markdown('<div class="menu-label">General</div>',
-                unsafe_allow_html=True)
+    st.markdown(
+        '<div class="menu-label">General</div>',
+        unsafe_allow_html=True,
+    )
 
     opciones_principales = [
         ("Inicio", "Inicio", ":material/home:"),
@@ -393,16 +399,28 @@ with st.sidebar:
             st.session_state.pagina = pagina
             st.rerun()
 
-    st.markdown('<div class="menu-label">Producción</div>',
-                unsafe_allow_html=True)
+    # Menú de producción
+    st.markdown(
+        '<div class="menu-label">Producción</div>',
+        unsafe_allow_html=True,
+    )
 
     opciones_produccion = [
-        ("Registrar producción", "Registrar producción",
-         ":material/water_drop:"),
-        ("Editar producción", "Editar producción",
-         ":material/edit:"),
-        ("Reporte diario", "Reporte diario",
-         ":material/analytics:"),
+        (
+            "Registrar producción",
+            "Registrar producción",
+            ":material/water_drop:",
+        ),
+        (
+            "Editar producción",
+            "Editar producción",
+            ":material/edit:",
+        ),
+        (
+            "Reporte diario",
+            "Reporte diario",
+            ":material/analytics:",
+        ),
     ]
 
     for texto, pagina, icono in opciones_produccion:
@@ -422,13 +440,15 @@ with st.sidebar:
 
     st.divider()
 
-    # Usuario
+    # Información del usuario
     usuario = st.session_state.get("usuario")
+
     usuario_email = (
         getattr(usuario, "email", None)
         if usuario is not None
         else None
     )
+
     usuario_email = usuario_email or "Usuario no identificado"
     correo_seguro = html.escape(str(usuario_email))
 
@@ -442,6 +462,7 @@ with st.sidebar:
         unsafe_allow_html=True,
     )
 
+    # Cerrar sesión
     if st.button(
         "Cerrar sesión",
         key="menu_cerrar_sesion",
@@ -460,12 +481,16 @@ with st.sidebar:
         st.rerun()
 
     # Pie de página
-    st.markdown("""
+    st.markdown(
+        """
         <div class="sidebar-footer">
             <div class="footer-title">Hato La Casita</div>
             <div class="footer-sub">Tradición que produce futuro</div>
         </div>
-    """, unsafe_allow_html=True)
+        """,
+        unsafe_allow_html=True,
+    )
+
 
 
 # --------------------------------------------------
