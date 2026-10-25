@@ -333,11 +333,14 @@ st.markdown("""
 with st.sidebar:
 
     # Marca: logo y encabezado
+    
     ruta_logo = (
         Path(__file__).resolve().parent.parent
         / "assets"
         / "logo_vaca.png"
     )
+    st.sidebar.write("Ruta del logo:", str(ruta_logo))
+    st.sidebar.write("¿Existe el archivo?:", ruta_logo.is_file())
 
     if ruta_logo.is_file():
         logo_base64 = base64.b64encode(
