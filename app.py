@@ -1,7 +1,8 @@
 import html
 import streamlit as st
+import base64
 from supabase import create_client
-
+from pathlib import Path
 from modelos.control_lechero import ControlLechero
 from servicios.persistencia import cargar_vacas
 
@@ -198,19 +199,38 @@ st.markdown("""
     }
 
     /* Encabezado de la finca */
+    
+    .sidebar-brand {
+        text-align: center;
+        padding: 8px 4px 16px;
+    }
+    
+    .sidebar-logo {
+        display: block;
+        width: 100px;
+        height: 100px;
+        object-fit: contain;
+        margin: 0 auto 12px;
+    }
+    
     .brand-name {
         color: #FFFFFF;
-        font-size: 1.25rem;
-        font-weight: 750;
-        letter-spacing: -0.4px;
+        font-size: 1.55rem;
+        font-weight: 800;
+        letter-spacing: -0.5px;
+        line-height: 1.2;
         margin: 0;
+        text-align: center;
     }
-
+    
     .brand-subtitle {
         color: #B5CBBF;
-        font-size: 0.82rem;
-        margin-top: 5px;
+        font-size: 0.95rem;
+        font-weight: 500;
+        margin-top: 8px;
+        text-align: center;
     }
+
 
     .menu-label {
         color: #91B09F;
@@ -312,12 +332,38 @@ st.markdown("""
 with st.sidebar:
 
     # Marca
-    st.markdown("""
-        <div style="padding: 4px 4px 12px;">
-            <div class="brand-name">Control Lechero</div>
-            <div class="brand-subtitle">Hato La Casita</div>
-        </div>
-    """, unsafe_allow_html=True)
+     ruta_logo = (
+        Path(__file__).resolve().parent
+        / "assets"
+        / "logo_vaca.png"
+    )
+
+    if ruta_logo.is_file():
+        logo_base64 = base64.b64encode(
+            ruta_logo.read_bytes()
+        ).decode("utf-8")
+
+        st.markdown(
+            f"""
+            <div class="sidebar-brand">
+                <img
+                    class="sidebar-logo"
+                    src="data:image/png;base64,{logo_base64}"
+                    alt="Logo de Hato La Casita"
+                />
+                <div class="brand-name">Control Lechero</div>
+                <div class="brand-subtitle">Hato La Casita</div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+    else:
+        st.markdown("""
+            <div class="sidebar-brand">
+                <div class="brand-name">Control Lechero</div>
+                <div class="brand-subtitle">Hato La Casita</div>
+            </div>
+        """, unsafe_allow_html=True)
 
     st.divider()
 
