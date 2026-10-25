@@ -56,9 +56,9 @@ def mostrar_inicio(finca):
                         background-image:
                             linear-gradient(
                                 90deg,
-                                rgba(12, 43, 29, 0.82),
                                 rgba(12, 43, 29, 0.42),
-                                rgba(12, 43, 29, 0.08)
+                                rgba(12, 43, 29, 0.16),
+                                rgba(12, 43, 29, 0.00)
                             ),
                             url("data:{tipo_imagen};base64,{foto_codificada}");
                         background-size: cover;
