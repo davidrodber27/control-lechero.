@@ -178,39 +178,27 @@ if "finca" not in st.session_state:
         st.stop()
 
 
-import streamlit as st
+i
 
+# ==============================================================================
+# 1. CONFIGURACIÓN INICIAL DEL ESTADO
+# ==============================================================================
 if "pagina" not in st.session_state:
     st.session_state.pagina = "Inicio"
 
-# ==========================================
-# 🎨 ESTILOS CSS PERSONALIZADOS (STREAMLIT)
-# ==========================================
+# ==============================================================================
+# 2. ESTILOS CSS PERSONALIZADOS (Aumento de letra, colores y diseño modular)
+# ==============================================================================
 st.markdown("""
 <style>
-    /* 1. Fondo de la barra lateral (Sidebar) */
+    /* Fondo general de la barra lateral (Sidebar) */
     [data-testid="stSidebar"] {
         background-color: #11382B;
         color: #ffffff;
+        padding-top: 1rem;
     }
 
-    /* Ocultar elementos predeterminados molestos si es necesario */
-    [data-testid="stSidebar"] hr {
-        border-color: rgba(255, 255, 255, 0.15);
-    }
-
-    /* 2. Tipografías de título y subtítulo en el sidebar */
-    [data-testid="stSidebar"] h1 {
-        color: #ffffff;
-        font-size: 1.25rem !important;
-        font-weight: 700;
-        padding-bottom: 0px;
-    }
-    [data-testid="stSidebar"] p, [data-testid="stSidebar"] span {
-        color: #d1e2db;
-    }
-
-    /* 3. Estilo general para los botones del menú lateral */
+    /* Aumento de tamaño de letra general en el menú */
     [data-testid="stSidebar"] .stButton button {
         width: 100%;
         background-color: transparent;
@@ -218,139 +206,159 @@ st.markdown("""
         border: none;
         border-radius: 8px;
         text-align: left;
-        padding: 10px 14px;
-        font-size: 0.88rem;
+        padding: 12px 14px; /* Mayor espacio y presencia */
+        font-size: 0.98rem;  /* Letra aumentada */
         font-weight: 500;
         transition: all 0.2s ease;
         box-shadow: none;
     }
 
-    /* Efecto Hover en los botones */
+    /* Efecto Hover para los botones del menú */
     [data-testid="stSidebar"] .stButton button:hover {
         background-color: rgba(255, 255, 255, 0.08);
         color: #ffffff;
         border: none;
     }
 
-    /* 4. Estilo para el Botón ACTIVO (Página actual) */
-    /* Usaremos una clase dinámica o el selector para resaltar la página activa */
-    [data-testid="stSidebar"] .stButton button[data-baseweb="button"] {
-        /* Puedes personalizar si quieres un estilo base */
+    /* Estilo especial para el botón activo (Inicio u otros seleccionados) */
+    /* Puedes aplicar una clase o identificar el botón activo */
+    [data-testid="stSidebar"] .stButton button[kind="secondary"] {
+        /* Estilos base */
     }
 
-    /* 5. Estilo de los Expander en el sidebar */
-    [data-testid="stSidebar"] [data-testid="stExpander"] {
-        background-color: transparent;
-        border: none;
-        color: #d1e2db;
+    /* Líneas divisorias sutiles */
+    [data-testid="stSidebar"] hr {
+        border-color: rgba(255, 255, 255, 0.15);
+        margin: 14px 0;
     }
-    
-    [data-testid="stSidebar"] details summary {
-        color: #d1e2db !important;
-        font-weight: 500;
-        border-radius: 8px;
-        padding: 8px 10px;
-    }
-    [data-testid="stSidebar"] details summary:hover {
-        background-color: rgba(255, 255, 255, 0.08);
+
+    /* Estilo para la sección de sesión en BLANCO */
+    .sidebar-session-text {
         color: #ffffff !important;
+        font-size: 0.9rem;
+        font-weight: 500;
+        padding: 4px 0;
     }
 
-    /* 6. Bloque de pie de página (Footer corporativo) */
+    /* Estilo del Footer inferior */
     .sidebar-footer {
-        margin-top: 40px;
+        margin-top: 30px;
         text-align: center;
-        padding-bottom: 10px;
+        padding-top: 15px;
         border-top: 1px solid rgba(255, 255, 255, 0.12);
-        padding-top: 20px;
     }
-    .sidebar-footer .footer-title {
-        font-size: 0.85rem;
+    .footer-title {
+        font-size: 0.9rem;
         font-weight: 700;
         color: #ffffff;
         margin-top: 4px;
     }
-    .sidebar-footer .footer-sub {
-        font-size: 0.7rem;
+    .footer-sub {
+        font-size: 0.75rem;
         color: #8dae9f;
     }
 </style>
 """, unsafe_allow_html=True)
 
-# ==========================================
-# 🐄 ESTRUCTURA DE LA BARRA LATERAL
-# ==========================================
 
+# ==============================================================================
+# 3. CONSTRUCCIÓN DE LA BARRA LATERAL (MENÚ MODULAR)
+# ==============================================================================
 with st.sidebar:
-    # 1. Cabecera / Logo principal
-    st.markdown("### 🐄 Control Lechero")
-    st.caption("Hato La Casita")
+
+    # --------------------------------------------------------------------------
+    # BLOQUE A: CABECERA / LOGO SUPERIOR
+    # (Editable de forma única)
+    # --------------------------------------------------------------------------
+    with st.container():
+        st.markdown("<h2 style='text-align: center; color: white; font-size: 1.3rem; margin-bottom: 0;'>🐄 Control Lechero</h2>", unsafe_allow_html=True)
+        st.markdown("<p style='text-align: center; color: #a3c2b5; font-size: 0.8rem; margin-top: 2px;'>Hato La Casita</p>", unsafe_allow_html=True)
+    
     st.divider()
 
-    # 2. Menú principal (Ítems directos y expansores ordenados)
-    
-    # Inicio
-    if st.button("🏠 Inicio", use_container_width=True, key="btn_inicio"):
-        st.session_state.pagina = "Inicio"
-        st.rerun()
-
-    # Menú de vacas (Reemplazando o ajustando el expander para que luzca plano como en el diseño)
-    # Nota: Si prefieres lista directa sin expander tal como muestra la primera imagen, puedes listarlos así:
-    st.markdown("<p style='font-size: 0.75rem; color: #8dae9f; margin: 12px 0 4px 10px; text-transform: uppercase; letter-spacing: 0.5px;'>Gestión de Vacas</p>", unsafe_allow_html=True)
-    
-    if st.button("➕ Registrar vaca", use_container_width=True, key="menu_registrar_vaca"):
-        st.session_state.pagina = "Registrar vaca"
-        st.rerun()
-
-    if st.button("📋 Vacas registradas", use_container_width=True, key="menu_vacas_registradas"):
-        st.session_state.pagina = "Vacas registradas"
-        st.rerun()
-
-    if st.button("⚙️ Administrar vacas", use_container_width=True, key="menu_administrar_vacas"):
-        st.session_state.pagina = "Administrar vacas"
-        st.rerun()
-
-    st.divider()
-
-    # Menú de producción
-    st.markdown("<p style='font-size: 0.75rem; color: #8dae9f; margin: 12px 0 4px 10px; text-transform: uppercase; letter-spacing: 0.5px;'>Producción</p>", unsafe_allow_html=True)
-    
-    if st.button("🥛 Registrar producción", use_container_width=True, key="menu_registrar_produccion"):
-        st.session_state.pagina = "Registrar producción"
-        st.rerun()
-
-    if st.button("✏️ Editar producción", use_container_width=True, key="menu_editar_produccion"):
-        st.session_state.pagina = "Editar producción"
-        st.rerun()
-
-    st.divider()
-
-    # Menú de informes
-    st.markdown("<p style='font-size: 0.75rem; color: #8dae9f; margin: 12px 0 4px 10px; text-transform: uppercase; letter-spacing: 0.5px;'>Informes</p>", unsafe_allow_html=True)
-    
-    if st.button("📊 Reporte diario", use_container_width=True, key="menu_reporte_diario"):
-        st.session_state.pagina = "Reporte diario"
-        st.rerun()
-
-    st.divider()
-
-    # 3. Sección de Sesión y Usuario (movida al final del menú de navegación, como en la referencia)
-    st.markdown(f"👤 <span style='font-size: 0.8rem;'>Sesión: {st.session_state.usuario.email if hasattr(st.session_state, 'usuario') and st.session_state.usuario else 'Invitado'}</span>", unsafe_allow_html=True)
-    
-    if st.button("🚪 Cerrar sesión", use_container_width=True, key="btn_cerrar_sesion"):
-        try:
-            supabase.auth.sign_out()
-        except Exception:
-            pass
-        finally:
-            st.session_state.usuario = None
-            st.session_state.pop("finca", None)
+    # --------------------------------------------------------------------------
+    # BLOQUE B: NAVEGACIÓN PRINCIPAL (INICIO Y VACAS)
+    # (Editable de forma única)
+    # --------------------------------------------------------------------------
+    with st.container():
+        # Botón Inicio (Puedes resaltar este si st.session_state.pagina == "Inicio")
+        if st.button("🏠  Inicio", use_container_width=True, key="menu_inicio"):
             st.session_state.pagina = "Inicio"
             st.rerun()
 
-    # 4. Footer / Branding inferior de la barra lateral ("Tradición que produce futuro")
+        if st.button("🐮  Registrar vaca", use_container_width=True, key="menu_registrar_vaca"):
+            st.session_state.pagina = "Registrar vaca"
+            st.rerun()
+
+        if st.button("📋  Vacas registradas", use_container_width=True, key="menu_vacas_registradas"):
+            st.session_state.pagina = "Vacas registradas"
+            st.rerun()
+
+        if st.button("⚙️  Administrar vacas", use_container_width=True, key="menu_administrar_vacas"):
+            st.session_state.pagina = "Administrar vacas"
+            st.rerun()
+
+    st.divider()
+
+    # --------------------------------------------------------------------------
+    # BLOQUE C: MÓDULO DE PRODUCCIÓN
+    # (Editable de forma única)
+    # --------------------------------------------------------------------------
+    with st.container():
+        if st.button("🥛  Registrar producción", use_container_width=True, key="menu_registrar_produccion"):
+            st.session_state.pagina = "Registrar producción"
+            st.rerun()
+
+        if st.button("✏️  Editar producción", use_container_width=True, key="menu_editar_produccion"):
+            st.session_state.pagina = "Editar producción"
+            st.rerun()
+
+    st.divider()
+
+    # --------------------------------------------------------------------------
+    # BLOQUE D: MÓDULO DE INFORMES Y REPORTES
+    # (Editable de forma única)
+    # --------------------------------------------------------------------------
+    with st.container():
+        if st.button("📊  Reporte diario", use_container_width=True, key="menu_reporte_diario"):
+            st.session_state.pagina = "Reporte diario"
+            st.rerun()
+
+    st.divider()
+
+    # --------------------------------------------------------------------------
+    # BLOQUE E: SESIÓN Y USUARIO (TEXTO EN BLANCO)
+    # (Editable de forma única)
+    # --------------------------------------------------------------------------
+    with st.container():
+        usuario_email = st.session_state.usuario.email if hasattr(st.session_state, 'usuario') and st.session_state.usuario else "usuario@finca.com"
+        
+        # Texto de sesión en blanco puro
+        st.markdown(f"""
+            <div style="display: flex; align-items: center; gap: 10px; padding: 6px 14px;">
+                <span style="font-size: 1.1rem;">👤</span>
+                <span class="sidebar-session-text">Sesión: {usuario_email}</span>
+            </div>
+        """, unsafe_allow_html=True)
+
+        if st.button("🚪  Cerrar sesión", use_container_width=True, key="menu_cerrar_sesion"):
+            try:
+                supabase.auth.sign_out()
+            except Exception:
+                pass
+            finally:
+                st.session_state.usuario = None
+                st.session_state.pop("finca", None)
+                st.session_state.pagina = "Inicio"
+                st.rerun()
+
+    # --------------------------------------------------------------------------
+    # BLOQUE F: PIE DE PÁGINA / FOOTER CORPORATIVO
+    # (Editable de forma única)
+    # --------------------------------------------------------------------------
     st.markdown("""
         <div class="sidebar-footer">
+            <div style="font-size: 1.2rem; margin-bottom: 2px;">⛰️</div>
             <div class="footer-title">Hato La Casita</div>
             <div class="footer-sub">Tradición que produce futuro</div>
         </div>
