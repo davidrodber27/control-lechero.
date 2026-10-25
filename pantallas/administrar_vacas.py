@@ -206,3 +206,4 @@ def mostrar_administrar_vacas(finca, supabase):
                         "No fue posible eliminar la vaca."
                     )
                     st.code(str(error))
+
