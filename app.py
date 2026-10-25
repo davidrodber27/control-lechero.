@@ -1,6 +1,6 @@
 import streamlit as st
 from datetime import date
-
+from pantallas.inicio import mostrar_inicio
 from modelos.control_lechero import ControlLechero
 from modelos.vaca import Vaca
 from servicios.persistencia import (
@@ -229,40 +229,7 @@ if "finca" not in st.session_state:
 # --------------------------------------------------
 
 if st.session_state.pagina == "Inicio":
-
-    st.title("🐄 Control Lechero")
-    st.subheader("Hato La Casita")
-
-    st.write(
-        "Sistema de gestión del hato "
-        "y control de producción de leche."
-    )
-
-    st.divider()
-
-    st.header("Resumen de la finca")
-
-    total_vacas = (
-        st.session_state.finca.cantidad_vacas()
-    )
-
-    produccion_hoy = (
-        st.session_state.finca.produccion_total(date.today())
-    )
-
-    col1, col2, col3 = st.columns(3)
-
-    with col1:
-        st.metric("Vacas registradas", total_vacas)
-
-    with col2:
-        st.metric(
-            "Producción de hoy",
-            f"{produccion_hoy} L"
-        )
-
-    with col3:
-        st.metric("Potreros", 12)
+    mostrar_inicio(st.session_state.finca)
 
 
 # --------------------------------------------------
