@@ -207,14 +207,14 @@ st.markdown("""
         border-radius: 8px;
         text-align: left;
         padding: 12px 14px; /* Mayor espacio y presencia */
-        font-size: 1.2rem;  /* Letra aumentada */
+        font-size: 1rem;  /* Letra aumentada */
         font-weight: 500;
         transition: all 0.2s ease;
         box-shadow: none;
     }
     [data-testid="stSidebar"] .stButton button p,
     [data-testid="stSidebar"] .stButton button span {
-        font-size: 1.2rem !important;
+        font-size: 1rem !important;
 
     /* Efecto Hover para los botones del menú */
     [data-testid="stSidebar"] .stButton button:hover {
