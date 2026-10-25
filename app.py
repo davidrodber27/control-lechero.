@@ -201,19 +201,24 @@ st.markdown("""
     /* Encabezado de la finca */
     
     .sidebar-brand {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
         text-align: center;
-        padding: 8px 4px 16px;
+        padding: 0 4px 12px;
+        margin-top: -12px;
     }
-    
+
     .sidebar-logo {
         display: block;
         width: 100px;
         height: 100px;
         object-fit: contain;
-        margin: 0 auto 12px;
+        margin: 0 auto 8px;
         filter: brightness(0) invert(1);
     }
-    
+
     .brand-name {
         color: #FFFFFF;
         font-size: 1.55rem;
@@ -223,15 +228,14 @@ st.markdown("""
         margin: 0;
         text-align: center;
     }
-    
+
     .brand-subtitle {
         color: #B5CBBF;
         font-size: 0.95rem;
         font-weight: 500;
-        margin-top: 8px;
+        margin-top: 5px;
         text-align: center;
     }
-
 
     .menu-label {
         color: #91B09F;
