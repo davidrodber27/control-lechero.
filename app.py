@@ -178,7 +178,7 @@ if "finca" not in st.session_state:
         st.stop()
 
 
-i
+
 
 # ==============================================================================
 # 1. CONFIGURACIÓN INICIAL DEL ESTADO
