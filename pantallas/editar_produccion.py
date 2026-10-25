@@ -108,7 +108,7 @@ def mostrar_editar_produccion(finca, supabase):
                         "litros_tarde": int(nuevos_litros_tarde),
                         "potrero": int(nuevo_potrero)
                     })
-                    ..eq(
+                    .eq(
                         "identificacion_vaca",
                         identificacion_edicion.strip().upper()
 )
