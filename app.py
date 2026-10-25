@@ -207,7 +207,7 @@ st.markdown("""
         border-radius: 8px;
         text-align: left;
         padding: 12px 14px; /* Mayor espacio y presencia */
-        font-size: 10rem;  /* Letra aumentada */
+        font-size: 1.2rem;  /* Letra aumentada */
         font-weight: 500;
         transition: all 0.2s ease;
         box-shadow: none;
