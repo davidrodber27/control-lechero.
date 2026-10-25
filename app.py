@@ -178,110 +178,183 @@ if "finca" not in st.session_state:
         st.stop()
 
 
-# --------------------------------------------------
-# 6. MENÚ LATERAL Y NAVEGACIÓN
-# --------------------------------------------------
+import streamlit as st
 
 if "pagina" not in st.session_state:
     st.session_state.pagina = "Inicio"
 
+# ==========================================
+# 🎨 ESTILOS CSS PERSONALIZADOS (STREAMLIT)
+# ==========================================
+st.markdown("""
+<style>
+    /* 1. Fondo de la barra lateral (Sidebar) */
+    [data-testid="stSidebar"] {
+        background-color: #11382B;
+        color: #ffffff;
+    }
 
-st.sidebar.title("🐄 Control Lechero")
-st.sidebar.caption("Hato La Casita")
-st.sidebar.divider()
+    /* Ocultar elementos predeterminados molestos si es necesario */
+    [data-testid="stSidebar"] hr {
+        border-color: rgba(255, 255, 255, 0.15);
+    }
 
-st.sidebar.write(
-    f"Sesión: {st.session_state.usuario.email}"
-)
+    /* 2. Tipografías de título y subtítulo en el sidebar */
+    [data-testid="stSidebar"] h1 {
+        color: #ffffff;
+        font-size: 1.25rem !important;
+        font-weight: 700;
+        padding-bottom: 0px;
+    }
+    [data-testid="stSidebar"] p, [data-testid="stSidebar"] span {
+        color: #d1e2db;
+    }
 
+    /* 3. Estilo general para los botones del menú lateral */
+    [data-testid="stSidebar"] .stButton button {
+        width: 100%;
+        background-color: transparent;
+        color: #d1e2db;
+        border: none;
+        border-radius: 8px;
+        text-align: left;
+        padding: 10px 14px;
+        font-size: 0.88rem;
+        font-weight: 500;
+        transition: all 0.2s ease;
+        box-shadow: none;
+    }
 
-# Cerrar sesión.
-if st.sidebar.button(
-    "Cerrar sesión",
-    use_container_width=True
-):
-    try:
-        supabase.auth.sign_out()
-    finally:
-        st.session_state.usuario = None
-        st.session_state.pop("finca", None)
+    /* Efecto Hover en los botones */
+    [data-testid="stSidebar"] .stButton button:hover {
+        background-color: rgba(255, 255, 255, 0.08);
+        color: #ffffff;
+        border: none;
+    }
+
+    /* 4. Estilo para el Botón ACTIVO (Página actual) */
+    /* Usaremos una clase dinámica o el selector para resaltar la página activa */
+    [data-testid="stSidebar"] .stButton button[data-baseweb="button"] {
+        /* Puedes personalizar si quieres un estilo base */
+    }
+
+    /* 5. Estilo de los Expander en el sidebar */
+    [data-testid="stSidebar"] [data-testid="stExpander"] {
+        background-color: transparent;
+        border: none;
+        color: #d1e2db;
+    }
+    
+    [data-testid="stSidebar"] details summary {
+        color: #d1e2db !important;
+        font-weight: 500;
+        border-radius: 8px;
+        padding: 8px 10px;
+    }
+    [data-testid="stSidebar"] details summary:hover {
+        background-color: rgba(255, 255, 255, 0.08);
+        color: #ffffff !important;
+    }
+
+    /* 6. Bloque de pie de página (Footer corporativo) */
+    .sidebar-footer {
+        margin-top: 40px;
+        text-align: center;
+        padding-bottom: 10px;
+        border-top: 1px solid rgba(255, 255, 255, 0.12);
+        padding-top: 20px;
+    }
+    .sidebar-footer .footer-title {
+        font-size: 0.85rem;
+        font-weight: 700;
+        color: #ffffff;
+        margin-top: 4px;
+    }
+    .sidebar-footer .footer-sub {
+        font-size: 0.7rem;
+        color: #8dae9f;
+    }
+</style>
+""", unsafe_allow_html=True)
+
+# ==========================================
+# 🐄 ESTRUCTURA DE LA BARRA LATERAL
+# ==========================================
+
+with st.sidebar:
+    # 1. Cabecera / Logo principal
+    st.markdown("### 🐄 Control Lechero")
+    st.caption("Hato La Casita")
+    st.divider()
+
+    # 2. Menú principal (Ítems directos y expansores ordenados)
+    
+    # Inicio
+    if st.button("🏠 Inicio", use_container_width=True, key="btn_inicio"):
         st.session_state.pagina = "Inicio"
         st.rerun()
 
-
-st.sidebar.divider()
-st.sidebar.subheader("Menú principal")
-
-
-# Pantalla de inicio.
-if st.sidebar.button(
-    "🏠 Inicio",
-    use_container_width=True
-):
-    st.session_state.pagina = "Inicio"
-
-
-# Menú de vacas.
-with st.sidebar.expander(
-    "🐄 Vacas",
-    expanded=True
-):
-
-    if st.button(
-        "Registrar vaca",
-        key="menu_registrar_vaca",
-        use_container_width=True
-    ):
+    # Menú de vacas (Reemplazando o ajustando el expander para que luzca plano como en el diseño)
+    # Nota: Si prefieres lista directa sin expander tal como muestra la primera imagen, puedes listarlos así:
+    st.markdown("<p style='font-size: 0.75rem; color: #8dae9f; margin: 12px 0 4px 10px; text-transform: uppercase; letter-spacing: 0.5px;'>Gestión de Vacas</p>", unsafe_allow_html=True)
+    
+    if st.button("➕ Registrar vaca", use_container_width=True, key="menu_registrar_vaca"):
         st.session_state.pagina = "Registrar vaca"
+        st.rerun()
 
-    if st.button(
-        "Vacas registradas",
-        key="menu_vacas_registradas",
-        use_container_width=True
-    ):
+    if st.button("📋 Vacas registradas", use_container_width=True, key="menu_vacas_registradas"):
         st.session_state.pagina = "Vacas registradas"
+        st.rerun()
 
-    if st.button(
-        "Administrar vacas",
-        key="menu_administrar_vacas",
-        use_container_width=True
-    ):
+    if st.button("⚙️ Administrar vacas", use_container_width=True, key="menu_administrar_vacas"):
         st.session_state.pagina = "Administrar vacas"
+        st.rerun()
 
+    st.divider()
 
-# Menú de producción.
-with st.sidebar.expander(
-    "🥛 Producción de leche"
-):
-
-    if st.button(
-        "Registrar producción",
-        key="menu_registrar_produccion",
-        use_container_width=True
-    ):
+    # Menú de producción
+    st.markdown("<p style='font-size: 0.75rem; color: #8dae9f; margin: 12px 0 4px 10px; text-transform: uppercase; letter-spacing: 0.5px;'>Producción</p>", unsafe_allow_html=True)
+    
+    if st.button("🥛 Registrar producción", use_container_width=True, key="menu_registrar_produccion"):
         st.session_state.pagina = "Registrar producción"
+        st.rerun()
 
-    if st.button(
-        "Editar producción",
-        key="menu_editar_produccion",
-        use_container_width=True
-    ):
+    if st.button("✏️ Editar producción", use_container_width=True, key="menu_editar_produccion"):
         st.session_state.pagina = "Editar producción"
+        st.rerun()
 
+    st.divider()
 
-# Menú de informes.
-with st.sidebar.expander(
-    "📊 Informes"
-):
-
-    if st.button(
-        "Reporte diario",
-        key="menu_reporte_diario",
-        use_container_width=True
-    ):
+    # Menú de informes
+    st.markdown("<p style='font-size: 0.75rem; color: #8dae9f; margin: 12px 0 4px 10px; text-transform: uppercase; letter-spacing: 0.5px;'>Informes</p>", unsafe_allow_html=True)
+    
+    if st.button("📊 Reporte diario", use_container_width=True, key="menu_reporte_diario"):
         st.session_state.pagina = "Reporte diario"
+        st.rerun()
 
+    st.divider()
 
+    # 3. Sección de Sesión y Usuario (movida al final del menú de navegación, como en la referencia)
+    st.markdown(f"👤 <span style='font-size: 0.8rem;'>Sesión: {st.session_state.usuario.email if hasattr(st.session_state, 'usuario') and st.session_state.usuario else 'Invitado'}</span>", unsafe_allow_html=True)
+    
+    if st.button("🚪 Cerrar sesión", use_container_width=True, key="btn_cerrar_sesion"):
+        try:
+            supabase.auth.sign_out()
+        except Exception:
+            pass
+        finally:
+            st.session_state.usuario = None
+            st.session_state.pop("finca", None)
+            st.session_state.pagina = "Inicio"
+            st.rerun()
+
+    # 4. Footer / Branding inferior de la barra lateral ("Tradición que produce futuro")
+    st.markdown("""
+        <div class="sidebar-footer">
+            <div class="footer-title">Hato La Casita</div>
+            <div class="footer-sub">Tradición que produce futuro</div>
+        </div>
+    """, unsafe_allow_html=True)
 # --------------------------------------------------
 # 7. MOSTRAR LA PANTALLA SELECCIONADA
 # --------------------------------------------------
