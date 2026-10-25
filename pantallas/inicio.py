@@ -168,55 +168,99 @@ def mostrar_inicio(finca):
         unsafe_allow_html=True
     )
 
-    # ----------------------------------------------
-    # 3. CABECERA CON FOTOGRAFÍA DE FONDO
+       # ----------------------------------------------
+    # 3. CABECERA CON FOTOGRAFÍA Y TEXTO SUPERPUESTO
     # ----------------------------------------------
 
-        # 3. CABECERA CON FOTOGRAFÍA
-    st.image(
-        "https://images.unsplash.com/photo-1500595046743-cd271d694d30"
-        "?auto=format&fit=crop&w=1800&q=85",
-        use_container_width=True,
+    import base64
+    from pathlib import Path
+
+    ruta_foto = (
+        Path(__file__).resolve().parent.parent
+        / "assets"
+        / "hato_banner.jpg"
     )
 
-    st.markdown(
-        """
-        <div style="
-            background-color: #244A36;
-            padding: 28px;
-            border-radius: 14px;
-            margin-top: -8px;
-            margin-bottom: 24px;
-            color: white;
-        ">
-            <div style="
-                color: #D5E6D6;
-                font-size: 12px;
-                font-weight: bold;
-                letter-spacing: 2px;
-            ">
-                HATO LA CASITA · GESTIÓN GANADERA
+    if ruta_foto.exists():
+        foto_codificada = base64.b64encode(
+            ruta_foto.read_bytes()
+        ).decode("utf-8")
+
+        st.markdown(
+            f"""
+            <style>
+                .hato-hero {{
+                    height: 280px;
+                    border-radius: 14px;
+                    overflow: hidden;
+                    padding: 32px;
+                    margin-bottom: 24px;
+                    display: flex;
+                    align-items: center;
+                    background-image:
+                        linear-gradient(
+                            90deg,
+                            rgba(12, 43, 29, 0.82),
+                            rgba(12, 43, 29, 0.35),
+                            rgba(12, 43, 29, 0.05)
+                        ),
+                        url("data:image/jpeg;base64,{foto_codificada}");
+                    background-size: cover;
+                    background-position: center;
+                    box-sizing: border-box;
+                }}
+
+                .hato-hero-content {{
+                    max-width: 580px;
+                }}
+
+                .hato-hero-eyebrow {{
+                    color: #E0EBDD;
+                    font-size: 12px;
+                    font-weight: 700;
+                    letter-spacing: 2px;
+                }}
+
+                .hato-hero-title {{
+                    color: white !important;
+                    font-size: 38px;
+                    font-weight: 800;
+                    margin: 12px 0;
+                }}
+
+                .hato-hero-description {{
+                    color: white !important;
+                    font-size: 15px;
+                    line-height: 1.55;
+                    margin: 0;
+                }}
+            </style>
+
+            <div class="hato-hero">
+                <div class="hato-hero-content">
+                    <div class="hato-hero-eyebrow">
+                        HATO LA CASITA · GESTIÓN GANADERA
+                    </div>
+
+                    <h1 class="hato-hero-title">
+                        Hato La Casita
+                    </h1>
+
+                    <p class="hato-hero-description">
+                        Bienvenido al centro de control de tu finca.
+                        Consulta la producción y administra tu hato
+                        desde un solo lugar.
+                    </p>
+                </div>
             </div>
-            <h1 style="
-                color: white;
-                margin: 12px 0;
-                font-size: 34px;
-            ">
-                Control Lechero
-            </h1>
-            <p style="
-                color: #F0F5F0;
-                font-size: 16px;
-                margin-bottom: 0;
-            ">
-                Toda la información de tu hato en un solo lugar.
-                Controla la producción, administra tus animales
-                y consulta el desempeño diario de tu finca.
-            </p>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
+            """,
+            unsafe_allow_html=True,
+        )
+    else:
+        st.error(
+            "No se encontró assets/hato_banner.jpg. "
+            "Verifica que la fotografía esté subida a GitHub."
+        )
 
     # ----------------------------------------------
     # 4. INDICADORES CENTRADOS
