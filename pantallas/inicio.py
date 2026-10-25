@@ -172,7 +172,7 @@ def mostrar_inicio(finca):
                         }}
 
                         .hato-hero-title {{
-                            font-size: 29px !important;
+                            font-size: 40px !important;
                         }}
 
                         .hato-hero-description {{
