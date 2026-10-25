@@ -62,7 +62,7 @@ def mostrar_inicio(finca):
                             ),
                             url("data:{tipo_imagen};base64,{foto_codificada}");
                         background-size: cover;
-                        background-position: center;
+                        background-position: center 58%;
                         box-shadow: 0 8px 24px rgba(22, 52, 35, 0.14);
                     }}
 
