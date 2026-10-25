@@ -1,6 +1,7 @@
-
 import streamlit as st
-from datetime import date
+import base64
+import mimetypes
+from pathlib import Path
 
 
 def mostrar_inicio(finca):
