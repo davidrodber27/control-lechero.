@@ -170,6 +170,7 @@ def mostrar_inicio(finca):
         unsafe_allow_html=True
     )
 
+   
     # ----------------------------------------------
     # 3. CABECERA CON FOTOGRAFÍA DE FONDO
     # ----------------------------------------------
@@ -212,14 +213,14 @@ def mostrar_inicio(finca):
                             url("data:{tipo_imagen};base64,{foto_codificada}");
                         background-size: cover;
                         background-position: center;
-                    }}
+                    }
 
                     .hato-hero-content {{
                         max-width: 580px;
                     }}
 
                     .hato-hero-eyebrow {{
-                        color: #E0EBDD;
+                        color: #E0EBDD !important;
                         font-size: 12px;
                         font-weight: 700;
                         letter-spacing: 2px;
@@ -227,16 +228,20 @@ def mostrar_inicio(finca):
 
                     .hato-hero-title {{
                         color: white !important;
-                        font-size: 38px;
-                        font-weight: 800;
-                        margin: 12px 0;
+                        font-size: 38px !important;
+                        font-weight: 800 !important;
+                        margin: 12px 0 !important;
+                        padding: 0 !important;
+                        background: transparent !important;
+                        border: none !important;
                     }}
 
                     .hato-hero-description {{
                         color: white !important;
-                        font-size: 15px;
+                        font-size: 15px !important;
                         line-height: 1.55;
-                        margin: 0;
+                        margin: 0 !important;
+                        background: transparent !important;
                     }}
                 </style>
 
@@ -260,6 +265,7 @@ def mostrar_inicio(finca):
                 """,
                 unsafe_allow_html=True,
             )
+
     else:
         st.error(
             "No se encontró la fotografía. Revisa la ruta "
