@@ -45,8 +45,8 @@ def mostrar_inicio(finca):
                 f"""
                 <style>
                     .hato-hero {{
-                        min-height: 280px;
-                        padding: 32px;
+                        min-height: 360px;
+                        padding: 42px;
                         margin-bottom: 28px;
                         border-radius: 18px;
                         overflow: hidden;
