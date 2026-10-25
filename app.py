@@ -235,7 +235,7 @@ st.markdown("""
     /* Estilo para la sección de sesión en BLANCO */
     .sidebar-session-text {
         color: #ffffff !important;
-        font-size: 10rem;
+        font-size: 1rem;
         font-weight: 500;
         padding: 4px 0;
     }
