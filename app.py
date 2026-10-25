@@ -184,193 +184,225 @@ if "finca" not in st.session_state:
 if "pagina" not in st.session_state:
     st.session_state.pagina = "Inicio"
 
-
 # ============================================================
-# 6.1. ESTILOS DEL MENÚ LATERAL
+# ESTILO PROFESIONAL DEL MENÚ LATERAL
 # ============================================================
 st.markdown("""
 <style>
-    /* Fondo de la barra lateral */
     [data-testid="stSidebar"] {
-        background-color: #11382B;
+        background: #102F25;
     }
 
     [data-testid="stSidebar"] > div:first-child {
-        padding-top: 1rem;
+        padding-top: 1.2rem;
     }
 
-    /* Botones del menú */
-    [data-testid="stSidebar"] .stButton > button {
-        width: 100%;
-        min-height: 44px;
-        background-color: transparent;
-        color: #E3EEE8;
-        border: 1px solid transparent;
-        border-radius: 8px;
-        text-align: left;
-        padding: 10px 14px;
-        font-size: 1rem;
-        font-weight: 500;
-        box-shadow: none;
-        transition: background-color 0.2s ease;
-    }
-
-    /* Efecto al pasar el cursor */
-    [data-testid="stSidebar"] .stButton > button:hover {
-        background-color: rgba(255, 255, 255, 0.10);
+    /* Encabezado de la finca */
+    .brand-name {
         color: #FFFFFF;
-        border-color: rgba(255, 255, 255, 0.12);
-    }
-
-    /* Separadores */
-    [data-testid="stSidebar"] hr {
-        border-color: rgba(255, 255, 255, 0.16);
-        margin: 14px 0;
-    }
-
-    /* Información de sesión */
-    .sidebar-session-text {
-        color: #FFFFFF !important;
-        font-size: 0.85rem;
-        font-weight: 500;
-        overflow-wrap: anywhere;
-    }
-
-    /* Pie de página */
-    .sidebar-footer {
-        margin-top: 24px;
-        padding: 18px 8px 8px;
-        text-align: center;
-        border-top: 1px solid rgba(255, 255, 255, 0.16);
-    }
-
-    .footer-title {
         font-size: 1.25rem;
-        font-weight: 700;
-        color: #FFFFFF;
-        margin-top: 6px;
+        font-weight: 750;
+        letter-spacing: -0.4px;
+        margin: 0;
     }
 
-    .footer-sub {
-        font-size: 0.75rem;
-        color: #A3C2B5;
+    .brand-subtitle {
+        color: #B5CBBF;
+        font-size: 0.82rem;
         margin-top: 5px;
     }
 
-    /* Ajustes para pantallas pequeñas */
-    @media (max-width: 700px) {
-        [data-testid="stSidebar"] .stButton > button {
-            font-size: 0.95rem;
-            padding: 9px 10px;
-        }
+    .menu-label {
+        color: #91B09F;
+        font-size: 0.70rem;
+        font-weight: 700;
+        letter-spacing: 1.3px;
+        text-transform: uppercase;
+        margin: 12px 0 7px 4px;
+    }
+
+    /* Botones uniformes */
+    [data-testid="stSidebar"] .stButton > button {
+        width: 100%;
+        min-height: 45px;
+        justify-content: flex-start;
+        border-radius: 9px;
+        padding: 9px 12px;
+        font-size: 0.92rem;
+        font-weight: 500;
+        text-align: left;
+        transition: all 0.18s ease;
+        box-shadow: none;
+    }
+
+    /* Opciones no seleccionadas */
+    [data-testid="stSidebar"] .stButton > button[kind="secondary"] {
+        background: transparent;
+        color: #D6E4DC;
+        border: 1px solid transparent;
+    }
+
+    [data-testid="stSidebar"] .stButton > button[kind="secondary"]:hover {
+        background: #214637;
+        color: #FFFFFF;
+        border-color: #315744;
+    }
+
+    /* Pantalla activa */
+    [data-testid="stSidebar"] .stButton > button[kind="primary"] {
+        background: #DCEADF;
+        color: #173D2D;
+        border: 1px solid #DCEADF;
+        font-weight: 700;
+    }
+
+    [data-testid="stSidebar"] .stButton > button[kind="primary"]:hover {
+        background: #ECF4ED;
+        color: #173D2D;
+    }
+
+    [data-testid="stSidebar"] .stButton button p {
+        font-size: 0.92rem;
+    }
+
+    [data-testid="stSidebar"] hr {
+        border: none;
+        border-top: 1px solid rgba(255,255,255,0.13);
+        margin: 15px 0;
+    }
+
+    .sidebar-user {
+        color: #FFFFFF;
+        font-size: 0.83rem;
+        line-height: 1.5;
+        overflow-wrap: anywhere;
+    }
+
+    .sidebar-user-label {
+        color: #9DBBAA;
+        font-size: 0.72rem;
+        margin-bottom: 3px;
+    }
+
+    .sidebar-footer {
+        text-align: center;
+        padding: 17px 5px 5px;
+        margin-top: 18px;
+        border-top: 1px solid rgba(255,255,255,0.13);
+    }
+
+    .footer-title {
+        color: #E8F0EA;
+        font-size: 0.9rem;
+        font-weight: 700;
+    }
+
+    .footer-sub {
+        color: #91B09F;
+        font-size: 0.72rem;
+        margin-top: 4px;
     }
 </style>
 """, unsafe_allow_html=True)
 
 
 # ============================================================
-# 6.2. CONSTRUCCIÓN DEL MENÚ LATERAL
+# MENÚ LATERAL
 # ============================================================
 with st.sidebar:
 
-    # --------------------------------------------------------
-    # A. ENCABEZADO
-    # --------------------------------------------------------
+    # Marca
     st.markdown("""
-        <div style="text-align:center; padding: 8px 0 12px;">
-            <div style="font-size:1.5rem; font-weight:700; color:#FFFFFF;">
-                🐄 Control Lechero
-            </div>
-            <div style="font-size:0.85rem; color:#A3C2B5; margin-top:5px;">
-                Hato La Casita
-            </div>
+        <div style="padding: 4px 4px 12px;">
+            <div class="brand-name">Control Lechero</div>
+            <div class="brand-subtitle">Hato La Casita</div>
         </div>
     """, unsafe_allow_html=True)
 
     st.divider()
 
-    # --------------------------------------------------------
-    # B. NAVEGACIÓN PRINCIPAL
-    # --------------------------------------------------------
-    if st.button("🏠  Inicio", key="menu_inicio",
-                 use_container_width=True):
-        st.session_state.pagina = "Inicio"
-        st.rerun()
+    # Navegación principal
+    st.markdown('<div class="menu-label">General</div>',
+                unsafe_allow_html=True)
 
-    if st.button("🐮  Registrar vaca", key="menu_registrar_vaca",
-                 use_container_width=True):
-        st.session_state.pagina = "Registrar vaca"
-        st.rerun()
+    opciones_principales = [
+        ("Inicio", "Inicio", ":material/home:"),
+        ("Registrar vaca", "Registrar vaca", ":material/pets:"),
+        ("Vacas registradas", "Vacas registradas", ":material/list_alt:"),
+        ("Administrar vacas", "Administrar vacas", ":material/settings:"),
+    ]
 
-    if st.button("📋  Vacas registradas", key="menu_vacas_registradas",
-                 use_container_width=True):
-        st.session_state.pagina = "Vacas registradas"
-        st.rerun()
+    for texto, pagina, icono in opciones_principales:
+        if st.button(
+            texto,
+            key=f"menu_{pagina.lower().replace(' ', '_')}",
+            icon=icono,
+            use_container_width=True,
+            type=(
+                "primary"
+                if st.session_state.pagina == pagina
+                else "secondary"
+            ),
+        ):
+            st.session_state.pagina = pagina
+            st.rerun()
 
-    if st.button("⚙️  Administrar vacas", key="menu_administrar_vacas",
-                 use_container_width=True):
-        st.session_state.pagina = "Administrar vacas"
-        st.rerun()
+    st.markdown('<div class="menu-label">Producción</div>',
+                unsafe_allow_html=True)
+
+    opciones_produccion = [
+        ("Registrar producción", "Registrar producción",
+         ":material/water_drop:"),
+        ("Editar producción", "Editar producción",
+         ":material/edit:"),
+        ("Reporte diario", "Reporte diario",
+         ":material/analytics:"),
+    ]
+
+    for texto, pagina, icono in opciones_produccion:
+        if st.button(
+            texto,
+            key=f"menu_{pagina.lower().replace(' ', '_')}",
+            icon=icono,
+            use_container_width=True,
+            type=(
+                "primary"
+                if st.session_state.pagina == pagina
+                else "secondary"
+            ),
+        ):
+            st.session_state.pagina = pagina
+            st.rerun()
 
     st.divider()
 
-    # --------------------------------------------------------
-    # C. PRODUCCIÓN
-    # --------------------------------------------------------
-    if st.button("🥛  Registrar producción",
-                 key="menu_registrar_produccion",
-                 use_container_width=True):
-        st.session_state.pagina = "Registrar producción"
-        st.rerun()
-
-    if st.button("✏️  Editar producción",
-                 key="menu_editar_produccion",
-                 use_container_width=True):
-        st.session_state.pagina = "Editar producción"
-        st.rerun()
-
-    st.divider()
-
-    # --------------------------------------------------------
-    # D. INFORMES
-    # --------------------------------------------------------
-    if st.button("📊  Reporte diario", key="menu_reporte_diario",
-                 use_container_width=True):
-        st.session_state.pagina = "Reporte diario"
-        st.rerun()
-
-    st.divider()
-
-    # --------------------------------------------------------
-    # E. USUARIO Y CIERRE DE SESIÓN
-    # --------------------------------------------------------
+    # Usuario
     usuario = st.session_state.get("usuario")
     usuario_email = (
         getattr(usuario, "email", None)
         if usuario is not None
         else None
     )
-
-    if not usuario_email:
-        usuario_email = "Usuario no identificado"
-
+    usuario_email = usuario_email or "Usuario no identificado"
     correo_seguro = html.escape(str(usuario_email))
 
     st.markdown(
         f"""
-        <div style="display:flex; align-items:flex-start; gap:10px;
-                    padding:8px 4px;">
-            <span style="font-size:1.1rem;">👤</span>
-            <span class="sidebar-session-text">
-                Sesión:<br>{correo_seguro}
-            </span>
+        <div style="padding: 7px 4px 12px;">
+            <div class="sidebar-user-label">SESIÓN ACTUAL</div>
+            <div class="sidebar-user">{correo_seguro}</div>
         </div>
         """,
         unsafe_allow_html=True,
     )
 
-    if st.button("🚪  Cerrar sesión", key="menu_cerrar_sesion",
-                 use_container_width=True):
+    if st.button(
+        "Cerrar sesión",
+        key="menu_cerrar_sesion",
+        icon=":material/logout:",
+        use_container_width=True,
+        type="secondary",
+    ):
         try:
             supabase.auth.sign_out()
         except Exception:
@@ -381,18 +413,14 @@ with st.sidebar:
         st.session_state.pagina = "Inicio"
         st.rerun()
 
-    # --------------------------------------------------------
-    # F. PIE DE PÁGINA
-    # --------------------------------------------------------
+    # Pie de página
     st.markdown("""
         <div class="sidebar-footer">
-            <div style="font-size:1.5rem;">⛰️</div>
             <div class="footer-title">Hato La Casita</div>
-            <div class="footer-sub">
-                Tradición que produce futuro
-            </div>
+            <div class="footer-sub">Tradición que produce futuro</div>
         </div>
     """, unsafe_allow_html=True)
+
 
 # --------------------------------------------------
 # 7. MOSTRAR LA PANTALLA SELECCIONADA
