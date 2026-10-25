@@ -93,7 +93,7 @@ def mostrar_inicio(finca):
                         color: #FFFFFF !important;
                         font-size: 15px !important;
                         line-height: 1.6 !important;
-                        max-width: 580px;
+                        max-width: 380px;
                         margin: 0 !important;
                     }}
 
