@@ -207,7 +207,7 @@ st.markdown("""
         justify-content: center;
         text-align: center;
         padding: 0 4px 12px;
-        margin-top: -12px;
+        margin-top: -18px;
     }
 
     .sidebar-logo {
