@@ -1,6 +1,7 @@
 import streamlit as st
 from datetime import date
 from pantallas.inicio import mostrar_inicio
+from pantallas.registrar_vaca import mostrar_registrar_vaca
 from modelos.control_lechero import ControlLechero
 from modelos.vaca import Vaca
 from servicios.persistencia import (
