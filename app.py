@@ -339,8 +339,23 @@ with st.sidebar:
         / "assets"
         / "logo_vaca.png"
     )
-    st.sidebar.write("Ruta del logo:", str(ruta_logo))
-    st.sidebar.write("¿Existe el archivo?:", ruta_logo.is_file())
+    carpeta_proyecto = Path(__file__).resolve().parent
+    carpeta_assets = carpeta_proyecto / "assets"
+
+    st.sidebar.write("Carpeta del proyecto:", str(carpeta_proyecto))
+    st.sidebar.write("Contenido de la carpeta:", [
+        elemento.name
+        for elemento in carpeta_proyecto.iterdir()
+    ])
+
+    if carpeta_assets.exists():
+        st.sidebar.write("Contenido de assets:", [
+            elemento.name
+            for elemento in carpeta_assets.iterdir()
+        ])
+    else:
+        st.sidebar.error("No existe la carpeta assets.")
+
 
     if ruta_logo.is_file():
         logo_base64 = base64.b64encode(
