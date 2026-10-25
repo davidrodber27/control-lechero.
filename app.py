@@ -211,6 +211,7 @@ st.markdown("""
         height: 100px;
         object-fit: contain;
         margin: 0 auto 12px;
+        filter: brightness(0) invert(1);
     }
     
     .brand-name {
