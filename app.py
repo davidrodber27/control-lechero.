@@ -334,7 +334,7 @@ with st.sidebar:
 
     # Marca: logo y encabezado
     ruta_logo = (
-        Path(__file__).resolve().parent
+        Path(__file__).resolve().parent.parent
         / "assets"
         / "logo_vaca.png"
     )
