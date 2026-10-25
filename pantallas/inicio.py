@@ -168,12 +168,9 @@ def mostrar_inicio(finca):
         unsafe_allow_html=True
     )
 
-       # ----------------------------------------------
-    # 3. CABECERA CON FOTOGRAFÍA Y TEXTO SUPERPUESTO
     # ----------------------------------------------
-
-    import base64
-    from pathlib import Path
+    # 3. CABECERA CON FOTOGRAFÍA DE FONDO
+    # ----------------------------------------------
 
     ruta_foto = (
         Path(__file__).resolve().parent.parent
@@ -181,85 +178,90 @@ def mostrar_inicio(finca):
         / "hato_banner.jpg"
     )
 
-    if ruta_foto.exists():
-        foto_codificada = base64.b64encode(
-            ruta_foto.read_bytes()
-        ).decode("utf-8")
+    if ruta_foto.is_file():
+        tipo_imagen, _ = mimetypes.guess_type(str(ruta_foto))
 
-        st.markdown(
-            f"""
-            <style>
-                .hato-hero {{
-                    height: 280px;
-                    border-radius: 14px;
-                    overflow: hidden;
-                    padding: 32px;
-                    margin-bottom: 24px;
-                    display: flex;
-                    align-items: center;
-                    background-image:
-                        linear-gradient(
-                            90deg,
-                            rgba(12, 43, 29, 0.82),
-                            rgba(12, 43, 29, 0.35),
-                            rgba(12, 43, 29, 0.05)
-                        ),
-                        url("data:image/jpeg;base64,{foto_codificada}");
-                    background-size: cover;
-                    background-position: center;
-                    box-sizing: border-box;
-                }}
+        if tipo_imagen not in ("image/jpeg", "image/png", "image/webp"):
+            st.error("La fotografía tiene un formato no compatible.")
+        else:
+            foto_codificada = base64.b64encode(
+                ruta_foto.read_bytes()
+            ).decode("utf-8")
 
-                .hato-hero-content {{
-                    max-width: 580px;
-                }}
+            st.markdown(
+                f"""
+                <style>
+                    .hato-hero {{
+                        min-height: 280px;
+                        border-radius: 14px;
+                        overflow: hidden;
+                        padding: 32px;
+                        margin-bottom: 24px;
+                        display: flex;
+                        align-items: center;
+                        box-sizing: border-box;
+                        background-image:
+                            linear-gradient(
+                                90deg,
+                                rgba(12, 43, 29, 0.82),
+                                rgba(12, 43, 29, 0.38),
+                                rgba(12, 43, 29, 0.08)
+                            ),
+                            url("data:{tipo_imagen};base64,{foto_codificada}");
+                        background-size: cover;
+                        background-position: center;
+                    }}
 
-                .hato-hero-eyebrow {{
-                    color: #E0EBDD;
-                    font-size: 12px;
-                    font-weight: 700;
-                    letter-spacing: 2px;
-                }}
+                    .hato-hero-content {{
+                        max-width: 580px;
+                    }}
 
-                .hato-hero-title {{
-                    color: white !important;
-                    font-size: 38px;
-                    font-weight: 800;
-                    margin: 12px 0;
-                }}
+                    .hato-hero-eyebrow {{
+                        color: #E0EBDD;
+                        font-size: 12px;
+                        font-weight: 700;
+                        letter-spacing: 2px;
+                    }}
 
-                .hato-hero-description {{
-                    color: white !important;
-                    font-size: 15px;
-                    line-height: 1.55;
-                    margin: 0;
-                }}
-            </style>
+                    .hato-hero-title {{
+                        color: white !important;
+                        font-size: 38px;
+                        font-weight: 800;
+                        margin: 12px 0;
+                    }}
 
-            <div class="hato-hero">
-                <div class="hato-hero-content">
-                    <div class="hato-hero-eyebrow">
-                        HATO LA CASITA · GESTIÓN GANADERA
+                    .hato-hero-description {{
+                        color: white !important;
+                        font-size: 15px;
+                        line-height: 1.55;
+                        margin: 0;
+                    }}
+                </style>
+
+                <div class="hato-hero">
+                    <div class="hato-hero-content">
+                        <div class="hato-hero-eyebrow">
+                            HATO LA CASITA · GESTIÓN GANADERA
+                        </div>
+
+                        <h1 class="hato-hero-title">
+                            Hato La Casita
+                        </h1>
+
+                        <p class="hato-hero-description">
+                            Bienvenido al centro de control de tu finca.
+                            Consulta la producción y administra tu hato
+                            desde un solo lugar.
+                        </p>
                     </div>
-
-                    <h1 class="hato-hero-title">
-                        Hato La Casita
-                    </h1>
-
-                    <p class="hato-hero-description">
-                        Bienvenido al centro de control de tu finca.
-                        Consulta la producción y administra tu hato
-                        desde un solo lugar.
-                    </p>
                 </div>
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
+                """,
+                unsafe_allow_html=True,
+            )
     else:
         st.error(
-            "No se encontró assets/hato_banner.jpg. "
-            "Verifica que la fotografía esté subida a GitHub."
+            "No se encontró la fotografía. Revisa la ruta "
+            "assets/hato_banner.jpg en GitHub."
         )
 
     # ----------------------------------------------
