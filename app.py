@@ -335,9 +335,10 @@ with st.sidebar:
     # Marca: logo y encabezado
     
     ruta_logo = (
-        Path(__file__).resolve().parent.parent
+        Path(__file__).resolve().parent
         / "assets"
         / "logo_vaca.png"
+    )
 
     if ruta_logo.is_file():
         logo_base64 = base64.b64encode(
