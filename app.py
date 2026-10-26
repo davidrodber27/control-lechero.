@@ -356,13 +356,16 @@ st.markdown("""
         margin-top: 4px;
     }
     
+    
     .footer-mountain-logo {
         display: block;
         width: 48px;
         height: 48px;
         object-fit: contain;
         margin: 0 auto 8px;
+        filter: brightness(0) invert(1);
     }
+
     
     .footer-creator {
         color: #B5CBBF;
