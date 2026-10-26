@@ -409,14 +409,13 @@ def mostrar_inicio(finca):
                     }}
                 </style>
             
+                
                 <div class="hato-hero">
                     <div class="hato-hero-content">
                         <div class="hato-hero-eyebrow">
                             HATO LA CASITA · GESTIÓN GANADERA
                         </div>
-            
                         <h1 class="hato-hero-title">Hato La Casita</h1>
-            
                         <p class="hato-hero-description">
                             Bienvenido al centro de control de tu finca.
                             Consulta la producción y administra tu hato
@@ -424,6 +423,7 @@ def mostrar_inicio(finca):
                         </p>
                     </div>
                 </div>
+
                 """,
                 unsafe_allow_html=True,
             )
