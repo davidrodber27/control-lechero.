@@ -355,6 +355,24 @@ st.markdown("""
         font-size: 0.72rem;
         margin-top: 4px;
     }
+    
+    .footer-mountain-logo {
+        display: block;
+        width: 48px;
+        height: 48px;
+        object-fit: contain;
+        margin: 0 auto 8px;
+    }
+    
+    .footer-creator {
+        color: #B5CBBF;
+        font-size: 0.72rem;
+        font-weight: 500;
+        text-align: center;
+        margin-top: 10px;
+        letter-spacing: 0.3px;
+    }
+
 </style>
 """, unsafe_allow_html=True)
 
@@ -564,16 +582,55 @@ with st.sidebar:
         st.session_state.pagina = "Inicio"
         st.rerun()
 
+    
     # Pie de página
-    st.markdown(
-        """
-        <div class="sidebar-footer">
-            <div class="footer-title">Hato La Casita</div>
-            <div class="footer-sub">Tradición que produce futuro</div>
-        </div>
-        """,
-        unsafe_allow_html=True,
+    ruta_logo_montana = (
+        Path(__file__).resolve().parent
+        / "assets"
+        / "logo_montana.png"
     )
+
+    if ruta_logo_montana.is_file():
+        with open(ruta_logo_montana, "rb") as archivo:
+            logo_montana_base64 = base64.b64encode(
+                archivo.read()
+            ).decode("utf-8")
+
+        st.markdown(
+            f"""
+            <div class="sidebar-footer">
+                <img
+                    src="data:image/png;base64,{logo_montana_base64}"
+                    alt="Logo de montaña"
+                    class="footer-mountain-logo"
+                />
+                <div class="footer-title">Hato La Casita</div>
+                <div class="footer-sub">
+                    Tradición que produce futuro
+                </div>
+                <div class="footer-creator">
+                    Creado por DavidRodber
+                </div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+    else:
+        st.markdown(
+            """
+            <div class="sidebar-footer">
+                <div class="footer-title">Hato La Casita</div>
+                <div class="footer-sub">
+                    Tradición que produce futuro
+                </div>
+                <div class="footer-creator">
+                    Creado por DavidRodber
+                </div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
 
 
 
