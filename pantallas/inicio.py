@@ -228,18 +228,55 @@ def mostrar_inicio(finca):
 
     col1, col2, col3 = st.columns(3, gap="medium")
 
-    with col1:
-        st.markdown(
-            f"""
-            <div class="hato-kpi">
-                <div class="hato-kpi-icon">🐄</div>
-                <div class="hato-kpi-label">Vacas registradas</div>
-                <div class="hato-kpi-value">{total_vacas}</div>
-                <div class="hato-kpi-unit">animales</div>
+    
+with col1:
+    ruta_logo_vaca = (
+        Path(__file__).resolve().parent
+        / "assets"
+        / "logo_vaca.png"
+    )
+
+    if ruta_logo_vaca.is_file():
+        with open(ruta_logo_vaca, "rb") as archivo:
+            logo_vaca_base64 = base64.b64encode(
+                archivo.read()
+            ).decode("utf-8")
+
+        logo_html = f"""
+            <img
+                src="data:image/png;base64,{logo_vaca_base64}"
+                alt="Vacas registradas"
+                class="hato-kpi-cow-logo"
+            />
+        """
+    else:
+        logo_html = '<span class="hato-kpi-fallback">🐄</span>'
+
+    st.markdown(
+        f"""
+        <div class="hato-kpi hato-kpi-vacas">
+            <div class="hato-kpi-icon-circle">
+                {logo_html}
             </div>
-            """,
-            unsafe_allow_html=True
-        )
+
+            <div class="hato-kpi-label">
+                Vacas registradas
+            </div>
+
+            <div class="hato-kpi-value">
+                {total_vacas}
+            </div>
+
+            <div class="hato-kpi-divider"></div>
+
+            <div class="hato-kpi-unit">
+                ANIMALES
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
 
     with col2:
         st.markdown(
