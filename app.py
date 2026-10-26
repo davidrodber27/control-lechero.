@@ -475,6 +475,7 @@ with st.sidebar:
     st.divider()
 
     
+    
     # Información del usuario
     usuario = st.session_state.get("usuario")
 
@@ -490,37 +491,31 @@ with st.sidebar:
     st.markdown(
         f"""
         <div class="sidebar-user-card">
-
             <div class="sidebar-user-icon">
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="36"
-                    height="36"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="#B5CBBF"
-                    stroke-width="1.7"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    aria-label="Usuario"
-                    role="img"
-                >
+                <svg xmlns="http://www.w3.org/2000/svg"
+                     width="36" height="36"
+                     viewBox="0 0 24 24"
+                     fill="none"
+                     stroke="#B5CBBF"
+                     stroke-width="1.7"
+                     stroke-linecap="round"
+                     stroke-linejoin="round"
+                     role="img"
+                     aria-label="Usuario">
                     <circle cx="12" cy="12" r="10"/>
                     <circle cx="12" cy="8" r="3.2"/>
                     <path d="M5.8 19a6.5 6.5 0 0 1 12.4 0"/>
                 </svg>
             </div>
 
-            <div class="sidebar-user-label">
-                SESIÓN ACTUAL
-            </div>
-
+            <div class="sidebar-user-label">SESIÓN ACTUAL</div>
             <div class="sidebar-user">{correo_seguro}</div>
-
         </div>
         """,
         unsafe_allow_html=True,
     )
+
+   
 
    
 
