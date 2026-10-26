@@ -349,41 +349,31 @@ def mostrar_inicio(finca):
                 ).decode("utf-8")
     
             logo_html = (
-                '<img '
-                f'src="data:image/png;base64,{logo_vaca_base64}" '
+                f'<img src="data:image/png;base64,{logo_vaca_base64}" '
                 'alt="Logo de vaca" '
                 'class="hato-kpi-cow-logo" />'
             )
         else:
-            logo_html = (
-                '<span class="hato-kpi-fallback">🐄</span>'
-            )
+            logo_html = '<span class="hato-kpi-fallback">🐄</span>'
+    
+        tarjeta_vacas_html = f"""
+        <div class="hato-kpi hato-kpi-vacas">
+            <div class="hato-kpi-icon-circle">
+                {logo_html}
+            </div>
+            <div class="hato-kpi-label">Vacas registradas</div>
+            <div class="hato-kpi-value">{total_vacas}</div>
+            <div class="hato-kpi-divider"></div>
+            <div class="hato-kpi-unit">ANIMALES</div>
+        </div>
+        """
     
         st.markdown(
-            f"""
-            <div class="hato-kpi hato-kpi-vacas">
-                <div class="hato-kpi-icon-circle">
-                    {logo_html}
-                </div>
-    
-                <div class="hato-kpi-label">
-                    Vacas registradas
-                </div>
-    
-                <div class="hato-kpi-value">
-                    {total_vacas}
-                </div>
-    
-                <div class="hato-kpi-divider"></div>
-    
-                <div class="hato-kpi-unit">
-                    ANIMALES
-                </div>
-            </div>
-            """,
+            tarjeta_vacas_html,
             unsafe_allow_html=True,
         )
 
+    
     
 
     with col2:
