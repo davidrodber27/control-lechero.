@@ -315,12 +315,12 @@ def mostrar_inicio(finca):
     col1, col2, col3 = st.columns(3, gap="medium")
 
     
-with col1:
-    ruta_logo_vaca = (
-        Path(__file__).resolve().parent
-        / "assets"
-        / "logo_vaca.png"
-    )
+    with col1:
+        ruta_logo_vaca = (
+            Path(__file__).resolve().parent
+            / "assets"
+            / "logo_vaca.png"
+        )
 
     if ruta_logo_vaca.is_file():
         with open(ruta_logo_vaca, "rb") as archivo:
