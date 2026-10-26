@@ -447,6 +447,7 @@ with st.sidebar:
     st.divider()
 
     # Información del usuario
+    
     usuario = st.session_state.get("usuario")
 
     usuario_email = (
@@ -460,13 +461,19 @@ with st.sidebar:
 
     st.markdown(
         f"""
-        <div style="padding: 7px 4px 12px;">
+        <div class="sidebar-user-card">
+            <div class="sidebar-user-icon">
+                <span class="material-symbols-rounded">
+                    account_circle
+                </span>
+            </div>
             <div class="sidebar-user-label">SESIÓN ACTUAL</div>
             <div class="sidebar-user">{correo_seguro}</div>
         </div>
         """,
         unsafe_allow_html=True,
     )
+
 
     # Cerrar sesión
     if st.button(
