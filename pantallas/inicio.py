@@ -119,6 +119,92 @@ def mostrar_inicio(finca):
                         text-align: center;
                         box-shadow: 0 4px 14px rgba(28, 58, 39, 0.045);
                     }}
+                    
+                    /* Tarjeta de vacas registradas */
+                    .hato-kpi-vacas {
+                        background: linear-gradient(
+                            145deg,
+                            #F7FCF8 0%,
+                            #EDF7F0 100%
+                        );
+                        border: 1px solid #D9EADF;
+                        border-radius: 20px;
+                        padding: 26px 20px 22px;
+                        text-align: center;
+                        box-shadow: 0 5px 18px rgba(36, 90, 58, 0.07);
+                    }
+                    
+                    /* Círculo verde degradado */
+                    .hato-kpi-vacas .hato-kpi-icon-circle {
+                        width: 76px;
+                        height: 76px;
+                        margin: 0 auto 20px;
+                        border-radius: 50%;
+                        background: linear-gradient(
+                            145deg,
+                            #78B88B 0%,
+                            #287849 55%,
+                            #174D32 100%
+                        );
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        box-shadow:
+                            0 6px 14px rgba(34, 105, 65, 0.22),
+                            inset 0 1px 2px rgba(255, 255, 255, 0.3);
+                    }
+                    
+                    /* Logo de vaca dentro del círculo */
+                    .hato-kpi-vacas .hato-kpi-cow-logo {
+                        width: 43px;
+                        height: 43px;
+                        object-fit: contain;
+                        filter: brightness(0) invert(1);
+                    }
+                    
+                    /* Icono alternativo si falta el archivo */
+                    .hato-kpi-vacas .hato-kpi-fallback {
+                        font-size: 36px;
+                        line-height: 1;
+                    }
+                    
+                    /* Título */
+                    .hato-kpi-vacas .hato-kpi-label {
+                        color: #28583C;
+                        font-size: 1.18rem;
+                        font-weight: 700;
+                        line-height: 1.4;
+                        margin-bottom: 10px;
+                    }
+                    
+                    /* Número de animales */
+                    .hato-kpi-vacas .hato-kpi-value {
+                        color: #174D32;
+                        font-size: 2.8rem;
+                        font-weight: 800;
+                        line-height: 1.15;
+                        margin: 4px 0 12px;
+                        letter-spacing: -1px;
+                    }
+                    
+                    /* Línea divisoria */
+                    .hato-kpi-vacas .hato-kpi-divider {
+                        width: 54px;
+                        height: 2px;
+                        border-radius: 2px;
+                        background: #A6CDB1;
+                        margin: 0 auto 10px;
+                    }
+                    
+                    /* Texto inferior */
+                    .hato-kpi-vacas .hato-kpi-unit {
+                        color: #63836D;
+                        font-size: 0.72rem;
+                        font-weight: 700;
+                        letter-spacing: 2px;
+                        line-height: 1.4;
+                    }
+
 
                     .hato-kpi-icon {{
                         font-size: 27px;
