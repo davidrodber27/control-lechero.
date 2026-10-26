@@ -475,8 +475,8 @@ with st.sidebar:
     st.divider()
 
     
-    
-    # Información del usuario
+    # INFORMACIÓN DEL USUARIO
+  
     usuario = st.session_state.get("usuario")
 
     usuario_email = (
@@ -485,39 +485,66 @@ with st.sidebar:
         else None
     )
 
-    usuario_email = usuario_email or "Usuario no identificado"
+    usuario_email = (
+        usuario_email or "Usuario no identificado"
+    )
+
     correo_seguro = html.escape(str(usuario_email))
 
     st.markdown(
         f"""
         <div class="sidebar-user-card">
             <div class="sidebar-user-icon">
-                <svg xmlns="http://www.w3.org/2000/svg"
-                     width="36" height="36"
-                     viewBox="0 0 24 24"
-                     fill="none"
-                     stroke="#B5CBBF"
-                     stroke-width="1.7"
-                     stroke-linecap="round"
-                     stroke-linejoin="round"
-                     role="img"
-                     aria-label="Usuario">
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="36"
+                    height="36"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="#B5CBBF"
+                    stroke-width="1.7"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    role="img"
+                    aria-label="Usuario"
+                >
                     <circle cx="12" cy="12" r="10"/>
                     <circle cx="12" cy="8" r="3.2"/>
                     <path d="M5.8 19a6.5 6.5 0 0 1 12.4 0"/>
                 </svg>
             </div>
-
-            <div class="sidebar-user-label">SESIÓN ACTUAL</div>
-            <div class="sidebar-user">{correo_seguro}</div>
         </div>
         """,
         unsafe_allow_html=True,
     )
 
-   
+    st.markdown(
+        """
+        <p style="
+            color: #B5CBBF;
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 1.2px;
+            text-align: center;
+            margin: 0 0 5px 0;
+        ">SESIÓN ACTUAL</p>
+        """,
+        unsafe_allow_html=True,
+    )
 
-   
+    st.markdown(
+        f"""
+        <p style="
+            color: #FFFFFF;
+            font-size: 0.82rem;
+            font-weight: 500;
+            text-align: center;
+            overflow-wrap: anywhere;
+            margin: 0 0 16px 0;
+        ">{correo_seguro}</p>
+        """,
+        unsafe_allow_html=True,
+    )
 
     # Cerrar sesión
     if st.button(
