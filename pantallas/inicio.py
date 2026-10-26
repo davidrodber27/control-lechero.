@@ -215,6 +215,111 @@ def mostrar_inicio(finca):
                         font-size: 27px;
                         margin-bottom: 12px;
                     }}
+
+                    
+                    /* Tarjeta azul: Producción de hoy */
+                    .hato-kpi-produccion {
+                        background: linear-gradient(
+                            145deg,
+                            #F7FBFF 0%,
+                            #EAF3FC 100%
+                        );
+                        border: 1px solid #D5E5F5;
+                        border-radius: 20px;
+                        padding: 26px 20px 22px;
+                        min-height: 300px;
+                        text-align: center;
+                        box-shadow: 0 5px 18px rgba(35, 86, 145, 0.07);
+                        box-sizing: border-box;
+                    }
+                    
+                    /* Círculo azul degradado */
+                    .hato-kpi-produccion .hato-kpi-produccion-icon-circle {
+                        width: 76px;
+                        height: 76px;
+                        margin: 0 auto 20px;
+                        border-radius: 50%;
+                        background: linear-gradient(
+                            145deg,
+                            #78B4E8 0%,
+                            #2878BE 55%,
+                            #164A7A 100%
+                        );
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        box-shadow:
+                            0 6px 14px rgba(36, 104, 169, 0.22),
+                            inset 0 1px 2px rgba(255, 255, 255, 0.3);
+                    }
+                    
+                    /* Logo blanco dentro del círculo */
+                    .hato-kpi-produccion .hato-kpi-jarra-logo {
+                        width: 43px;
+                        height: 43px;
+                        object-fit: contain;
+                        filter: brightness(0) invert(1);
+                    }
+                    
+                    /* Icono alternativo si falta el archivo */
+                    .hato-kpi-produccion .hato-kpi-jarra-fallback {
+                        font-size: 36px;
+                        line-height: 1;
+                    }
+                    
+                    /* Título */
+                    .hato-kpi-produccion .hato-kpi-produccion-label {
+                        color: #245581;
+                        font-size: 1.18rem;
+                        font-weight: 700;
+                        line-height: 1.4;
+                        margin-bottom: 10px;
+                    }
+                    
+                    /* Litros producidos */
+                    .hato-kpi-produccion .hato-kpi-produccion-value {
+                        color: #164A7A;
+                        font-size: 2.8rem;
+                        font-weight: 800;
+                        line-height: 1.15;
+                        margin: 4px 0 12px;
+                        letter-spacing: -1px;
+                    }
+                    
+                    /* Línea divisoria */
+                    .hato-kpi-produccion .hato-kpi-produccion-divider {
+                        width: 54px;
+                        height: 2px;
+                        border-radius: 2px;
+                        background: #A7CBEA;
+                        margin: 0 auto 10px;
+                    }
+                    
+                    /* Unidad */
+                    .hato-kpi-produccion .hato-kpi-produccion-unit {
+                        color: #6485A5;
+                        font-size: 0.72rem;
+                        font-weight: 700;
+                        letter-spacing: 2px;
+                        line-height: 1.4;
+                    }
+                    
+                    /* Adaptación para móviles */
+                    @media (max-width: 700px) {
+                        .hato-kpi-produccion {
+                            padding: 22px 12px;
+                            min-height: 280px;
+                        }
+                    
+                        .hato-kpi-produccion .hato-kpi-produccion-label {
+                            font-size: 1rem;
+                        }
+                    
+                        .hato-kpi-produccion .hato-kpi-produccion-value {
+                            font-size: 2.4rem;
+                        }
+                    }
+
             
                     .hato-kpi-label {{
                         color: #647368;
@@ -373,21 +478,56 @@ def mostrar_inicio(finca):
             unsafe_allow_html=True,
         )
 
-    
-    
 
+    
     with col2:
-        st.markdown(
-            f"""
-            <div class="hato-kpi">
-                <div class="hato-kpi-icon">🥛</div>
-                <div class="hato-kpi-label">Producción de hoy</div>
-                <div class="hato-kpi-value">{produccion_hoy}</div>
-                <div class="hato-kpi-unit">litros de leche</div>
-            </div>
-            """,
-            unsafe_allow_html=True
+        ruta_logo_jarra = (
+            Path(__file__).resolve().parent.parent
+            / "assets"
+            / "logo_jarra.png"
         )
+    
+        if ruta_logo_jarra.is_file():
+            with open(ruta_logo_jarra, "rb") as archivo:
+                logo_jarra_base64 = base64.b64encode(
+                    archivo.read()
+                ).decode("utf-8")
+    
+            logo_html = (
+                f'<img src="data:image/png;base64,{logo_jarra_base64}" '
+                'alt="Logo de jarra de leche" '
+                'class="hato-kpi-jarra-logo" />'
+            )
+        else:
+            logo_html = '<span class="hato-kpi-jarra-fallback">🥛</span>'
+    
+        tarjeta_produccion_html = f"""
+        <div class="hato-kpi hato-kpi-produccion">
+            <div class="hato-kpi-produccion-icon-circle">
+                {logo_html}
+            </div>
+    
+            <div class="hato-kpi-produccion-label">
+                Producción de hoy
+            </div>
+    
+            <div class="hato-kpi-produccion-value">
+                {produccion_hoy}
+            </div>
+    
+            <div class="hato-kpi-produccion-divider"></div>
+    
+            <div class="hato-kpi-produccion-unit">
+                LITROS DE LECHE
+            </div>
+        </div>
+        """
+    
+        st.markdown(
+            tarjeta_produccion_html,
+            unsafe_allow_html=True,
+        )
+
 
     with col3:
         st.markdown(
