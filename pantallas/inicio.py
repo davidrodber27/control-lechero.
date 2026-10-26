@@ -42,9 +42,14 @@ def mostrar_inicio(finca):
             ).decode("utf-8")
 
             
+            
             st.markdown(
                 f"""
                 <style>
+                    /* ==================================================
+                       1. ENCABEZADO PRINCIPAL — HATO LA CASITA
+                    ================================================== */
+            
                     .hato-hero {{
                         min-height: 360px;
                         padding: 42px;
@@ -98,6 +103,10 @@ def mostrar_inicio(finca):
                         margin: 0 !important;
                     }}
             
+                    /* ==================================================
+                       2. TÍTULOS DE SECCIÓN
+                    ================================================== */
+            
                     .hato-section-title {{
                         color: #244A36;
                         font-size: 22px;
@@ -111,7 +120,10 @@ def mostrar_inicio(finca):
                         margin: 0 0 18px 0;
                     }}
             
-                    /* Estilo general de las tarjetas */
+                    /* ==================================================
+                       3. ESTILOS GENERALES DE LAS TARJETAS KPI
+                    ================================================== */
+            
                     .hato-kpi {{
                         background: #FFFFFF;
                         border: 1px solid #E0E8E0;
@@ -123,203 +135,10 @@ def mostrar_inicio(finca):
                         box-sizing: border-box;
                     }}
             
-                    /* Tarjeta personalizada: Vacas registradas */
-                    .hato-kpi-vacas {{
-                        background: linear-gradient(
-                            145deg,
-                            #F7FCF8 0%,
-                            #EDF7F0 100%
-                        );
-                        border: 1px solid #D9EADF;
-                        border-radius: 20px;
-                        padding: 26px 20px 22px;
-                        min-height: 300px;
-                        text-align: center;
-                        box-shadow: 0 5px 18px rgba(36, 90, 58, 0.07);
-                        box-sizing: border-box;
-                    }}
-            
-                    /* Círculo verde degradado */
-                    .hato-kpi-vacas .hato-kpi-icon-circle {{
-                        width: 76px;
-                        height: 76px;
-                        margin: 0 auto 20px;
-                        border-radius: 50%;
-                        background: linear-gradient(
-                            145deg,
-                            #78B88B 0%,
-                            #287849 55%,
-                            #174D32 100%
-                        );
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        box-shadow:
-                            0 6px 14px rgba(34, 105, 65, 0.22),
-                            inset 0 1px 2px rgba(255, 255, 255, 0.3);
-                    }}
-            
-                    /* Logo dentro del círculo */
-                    .hato-kpi-vacas .hato-kpi-cow-logo {{
-                        width: 43px;
-                        height: 43px;
-                        object-fit: contain;
-                        filter: brightness(0) invert(1);
-                    }}
-            
-                    /* Icono alternativo si no se encuentra el logo */
-                    .hato-kpi-vacas .hato-kpi-fallback {{
-                        font-size: 36px;
-                        line-height: 1;
-                    }}
-            
-                    /* Título de la tarjeta de vacas */
-                    .hato-kpi-vacas .hato-kpi-label {{
-                        color: #28583C;
-                        font-size: 1.18rem;
-                        font-weight: 700;
-                        line-height: 1.4;
-                        margin-bottom: 10px;
-                    }}
-            
-                    /* Cantidad de vacas */
-                    .hato-kpi-vacas .hato-kpi-value {{
-                        color: #174D32;
-                        font-size: 2.8rem;
-                        font-weight: 800;
-                        line-height: 1.15;
-                        margin: 4px 0 12px;
-                        letter-spacing: -1px;
-                    }}
-            
-                    /* Línea divisoria */
-                    .hato-kpi-vacas .hato-kpi-divider {{
-                        width: 54px;
-                        height: 2px;
-                        border-radius: 2px;
-                        background: #A6CDB1;
-                        margin: 0 auto 10px;
-                    }}
-            
-                    /* Texto inferior */
-                    .hato-kpi-vacas .hato-kpi-unit {{
-                        color: #63836D;
-                        font-size: 0.72rem;
-                        font-weight: 700;
-                        letter-spacing: 2px;
-                        line-height: 1.4;
-                    }}
-            
-                    /* Estilos generales de las otras tarjetas */
                     .hato-kpi-icon {{
                         font-size: 27px;
                         margin-bottom: 12px;
                     }}
-
-                    
-                    /* Tarjeta azul: Producción de hoy */
-                    .hato-kpi-produccion {
-                        background: linear-gradient(
-                            145deg,
-                            #F7FBFF 0%,
-                            #EAF3FC 100%
-                        );
-                        border: 1px solid #D5E5F5;
-                        border-radius: 20px;
-                        padding: 26px 20px 22px;
-                        min-height: 300px;
-                        text-align: center;
-                        box-shadow: 0 5px 18px rgba(35, 86, 145, 0.07);
-                        box-sizing: border-box;
-                    }
-                    
-                    /* Círculo azul degradado */
-                    .hato-kpi-produccion .hato-kpi-produccion-icon-circle {
-                        width: 76px;
-                        height: 76px;
-                        margin: 0 auto 20px;
-                        border-radius: 50%;
-                        background: linear-gradient(
-                            145deg,
-                            #78B4E8 0%,
-                            #2878BE 55%,
-                            #164A7A 100%
-                        );
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        box-shadow:
-                            0 6px 14px rgba(36, 104, 169, 0.22),
-                            inset 0 1px 2px rgba(255, 255, 255, 0.3);
-                    }
-                    
-                    /* Logo blanco dentro del círculo */
-                    .hato-kpi-produccion .hato-kpi-jarra-logo {
-                        width: 43px;
-                        height: 43px;
-                        object-fit: contain;
-                        filter: brightness(0) invert(1);
-                    }
-                    
-                    /* Icono alternativo si falta el archivo */
-                    .hato-kpi-produccion .hato-kpi-jarra-fallback {
-                        font-size: 36px;
-                        line-height: 1;
-                    }
-                    
-                    /* Título */
-                    .hato-kpi-produccion .hato-kpi-produccion-label {
-                        color: #245581;
-                        font-size: 1.18rem;
-                        font-weight: 700;
-                        line-height: 1.4;
-                        margin-bottom: 10px;
-                    }
-                    
-                    /* Litros producidos */
-                    .hato-kpi-produccion .hato-kpi-produccion-value {
-                        color: #164A7A;
-                        font-size: 2.8rem;
-                        font-weight: 800;
-                        line-height: 1.15;
-                        margin: 4px 0 12px;
-                        letter-spacing: -1px;
-                    }
-                    
-                    /* Línea divisoria */
-                    .hato-kpi-produccion .hato-kpi-produccion-divider {
-                        width: 54px;
-                        height: 2px;
-                        border-radius: 2px;
-                        background: #A7CBEA;
-                        margin: 0 auto 10px;
-                    }
-                    
-                    /* Unidad */
-                    .hato-kpi-produccion .hato-kpi-produccion-unit {
-                        color: #6485A5;
-                        font-size: 0.72rem;
-                        font-weight: 700;
-                        letter-spacing: 2px;
-                        line-height: 1.4;
-                    }
-                    
-                    /* Adaptación para móviles */
-                    @media (max-width: 700px) {
-                        .hato-kpi-produccion {
-                            padding: 22px 12px;
-                            min-height: 280px;
-                        }
-                    
-                        .hato-kpi-produccion .hato-kpi-produccion-label {
-                            font-size: 1rem;
-                        }
-                    
-                        .hato-kpi-produccion .hato-kpi-produccion-value {
-                            font-size: 2.4rem;
-                        }
-                    }
-
             
                     .hato-kpi-label {{
                         color: #647368;
@@ -341,6 +160,178 @@ def mostrar_inicio(finca):
                         font-weight: 500;
                     }}
             
+                    /* ==================================================
+                       4. COLUMNA 1 — VACAS REGISTRADAS
+                       Tema verde
+                    ================================================== */
+            
+                    .hato-kpi-vacas {{
+                        background: linear-gradient(
+                            145deg,
+                            #F7FCF8 0%,
+                            #EDF7F0 100%
+                        );
+                        border: 1px solid #D9EADF;
+                        border-radius: 20px;
+                        padding: 26px 20px 22px;
+                        min-height: 300px;
+                        text-align: center;
+                        box-shadow: 0 5px 18px rgba(36, 90, 58, 0.07);
+                        box-sizing: border-box;
+                    }}
+            
+                    .hato-kpi-vacas .hato-kpi-icon-circle {{
+                        width: 76px;
+                        height: 76px;
+                        margin: 0 auto 20px;
+                        border-radius: 50%;
+                        background: linear-gradient(
+                            145deg,
+                            #78B88B 0%,
+                            #287849 55%,
+                            #174D32 100%
+                        );
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        box-shadow:
+                            0 6px 14px rgba(34, 105, 65, 0.22),
+                            inset 0 1px 2px rgba(255, 255, 255, 0.3);
+                    }}
+            
+                    .hato-kpi-vacas .hato-kpi-cow-logo {{
+                        width: 43px;
+                        height: 43px;
+                        object-fit: contain;
+                        filter: brightness(0) invert(1);
+                    }}
+            
+                    .hato-kpi-vacas .hato-kpi-fallback {{
+                        font-size: 36px;
+                        line-height: 1;
+                    }}
+            
+                    .hato-kpi-vacas .hato-kpi-label {{
+                        color: #28583C;
+                        font-size: 1.18rem;
+                        font-weight: 700;
+                        line-height: 1.4;
+                        margin-bottom: 10px;
+                    }}
+            
+                    .hato-kpi-vacas .hato-kpi-value {{
+                        color: #174D32;
+                        font-size: 2.8rem;
+                        font-weight: 800;
+                        line-height: 1.15;
+                        margin: 4px 0 12px;
+                        letter-spacing: -1px;
+                    }}
+            
+                    .hato-kpi-vacas .hato-kpi-divider {{
+                        width: 54px;
+                        height: 2px;
+                        border-radius: 2px;
+                        background: #A6CDB1;
+                        margin: 0 auto 10px;
+                    }}
+            
+                    .hato-kpi-vacas .hato-kpi-unit {{
+                        color: #63836D;
+                        font-size: 0.72rem;
+                        font-weight: 700;
+                        letter-spacing: 2px;
+                        line-height: 1.4;
+                    }}
+            
+                    /* ==================================================
+                       5. COLUMNA 2 — PRODUCCIÓN DE HOY
+                       Tema azul
+                    ================================================== */
+            
+                    .hato-kpi-produccion {{
+                        background: linear-gradient(
+                            145deg,
+                            #F7FBFF 0%,
+                            #EAF3FC 100%
+                        );
+                        border: 1px solid #D5E5F5;
+                        border-radius: 20px;
+                        padding: 26px 20px 22px;
+                        min-height: 300px;
+                        text-align: center;
+                        box-shadow: 0 5px 18px rgba(35, 86, 145, 0.07);
+                        box-sizing: border-box;
+                    }}
+            
+                    .hato-kpi-produccion .hato-kpi-produccion-icon-circle {{
+                        width: 76px;
+                        height: 76px;
+                        margin: 0 auto 20px;
+                        border-radius: 50%;
+                        background: linear-gradient(
+                            145deg,
+                            #78B4E8 0%,
+                            #2878BE 55%,
+                            #164A7A 100%
+                        );
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        box-shadow:
+                            0 6px 14px rgba(36, 104, 169, 0.22),
+                            inset 0 1px 2px rgba(255, 255, 255, 0.3);
+                    }}
+            
+                    .hato-kpi-produccion .hato-kpi-jarra-logo {{
+                        width: 43px;
+                        height: 43px;
+                        object-fit: contain;
+                        filter: brightness(0) invert(1);
+                    }}
+            
+                    .hato-kpi-produccion .hato-kpi-jarra-fallback {{
+                        font-size: 36px;
+                        line-height: 1;
+                    }}
+            
+                    .hato-kpi-produccion .hato-kpi-produccion-label {{
+                        color: #245581;
+                        font-size: 1.18rem;
+                        font-weight: 700;
+                        line-height: 1.4;
+                        margin-bottom: 10px;
+                    }}
+            
+                    .hato-kpi-produccion .hato-kpi-produccion-value {{
+                        color: #164A7A;
+                        font-size: 2.8rem;
+                        font-weight: 800;
+                        line-height: 1.15;
+                        margin: 4px 0 12px;
+                        letter-spacing: -1px;
+                    }}
+            
+                    .hato-kpi-produccion .hato-kpi-produccion-divider {{
+                        width: 54px;
+                        height: 2px;
+                        border-radius: 2px;
+                        background: #A7CBEA;
+                        margin: 0 auto 10px;
+                    }}
+            
+                    .hato-kpi-produccion .hato-kpi-produccion-unit {{
+                        color: #6485A5;
+                        font-size: 0.72rem;
+                        font-weight: 700;
+                        letter-spacing: 2px;
+                        line-height: 1.4;
+                    }}
+            
+                    /* ==================================================
+                       6. TARJETAS DE ACCIONES
+                    ================================================== */
+            
                     .hato-action-title {{
                         color: #244A36;
                         font-size: 17px;
@@ -361,7 +352,10 @@ def mostrar_inicio(finca):
                         font-weight: 600;
                     }}
             
-                    /* Adaptación para móviles */
+                    /* ==================================================
+                       7. DISEÑO RESPONSIVE — MÓVILES
+                    ================================================== */
+            
                     @media (max-width: 700px) {{
                         .hato-hero {{
                             padding: 24px 20px;
@@ -385,6 +379,7 @@ def mostrar_inicio(finca):
                             font-size: 25px;
                         }}
             
+                        /* Columna 1: vacas */
                         .hato-kpi-vacas {{
                             padding: 22px 12px;
                             min-height: 280px;
@@ -397,6 +392,20 @@ def mostrar_inicio(finca):
                         .hato-kpi-vacas .hato-kpi-label {{
                             font-size: 1rem;
                         }}
+            
+                        /* Columna 2: producción */
+                        .hato-kpi-produccion {{
+                            padding: 22px 12px;
+                            min-height: 280px;
+                        }}
+            
+                        .hato-kpi-produccion .hato-kpi-produccion-value {{
+                            font-size: 2.4rem;
+                        }}
+            
+                        .hato-kpi-produccion .hato-kpi-produccion-label {{
+                            font-size: 1rem;
+                        }}
                     }}
                 </style>
             
@@ -405,7 +414,9 @@ def mostrar_inicio(finca):
                         <div class="hato-hero-eyebrow">
                             HATO LA CASITA · GESTIÓN GANADERA
                         </div>
+            
                         <h1 class="hato-hero-title">Hato La Casita</h1>
+            
                         <p class="hato-hero-description">
                             Bienvenido al centro de control de tu finca.
                             Consulta la producción y administra tu hato
