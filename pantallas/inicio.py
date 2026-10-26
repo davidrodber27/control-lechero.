@@ -490,7 +490,7 @@ def mostrar_inicio(finca):
         )
 
 
-    
+   
     with col2:
         ruta_logo_jarra = (
             Path(__file__).resolve().parent.parent
@@ -517,20 +517,10 @@ def mostrar_inicio(finca):
             <div class="hato-kpi-produccion-icon-circle">
                 {logo_html}
             </div>
-    
-            <div class="hato-kpi-produccion-label">
-                Producción de hoy
-            </div>
-    
-            <div class="hato-kpi-produccion-value">
-                {produccion_hoy}
-            </div>
-    
+            <div class="hato-kpi-produccion-label">Producción de hoy</div>
+            <div class="hato-kpi-produccion-value">{produccion_hoy}</div>
             <div class="hato-kpi-produccion-divider"></div>
-    
-            <div class="hato-kpi-produccion-unit">
-                LITROS DE LECHE
-            </div>
+            <div class="hato-kpi-produccion-unit">LITROS DE LECHE</div>
         </div>
         """
     
@@ -538,6 +528,7 @@ def mostrar_inicio(finca):
             tarjeta_produccion_html,
             unsafe_allow_html=True,
         )
+    
 
 
     with col3:
