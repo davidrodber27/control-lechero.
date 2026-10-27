@@ -299,10 +299,10 @@ def cargar_estilos(foto_cabecera, paisaje):
                 object-fit: contain;
             }}
 
-            .hato-action-logo-cow {{
+            .hato-action-logo-cow img {{
                 width: 100%;
                 height: 100%;
-                object-fit: cover;
+                object-fit: contain;
                 border-radius: 50%;
             }}
 
