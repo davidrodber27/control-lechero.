@@ -317,25 +317,28 @@ def cargar_estilos(foto_cabecera, paisaje):
             }}
 
             /* Foto de vaca */
-            .hato-action-logo-cow {{
+            
+            /* Contenedor de la foto */
+            .hato-action-icon-circle:has(img.hato-action-logo-cow) {{
+                width: 76px;
+                height: 76px;
+                border-radius: 50%;
+                overflow: hidden;
+                background: transparent;
+                box-shadow: none;
+            }}
+            
+            /* La foto completa, centrada y sin recorte */
+            img.hato-action-logo-cow {{
                 width: 76px;
                 height: 76px;
                 object-fit: contain;
                 object-position: center;
-                border-radius: 50%;
+                border-radius: 0;
                 display: block;
                 background: transparent;
             }}
-            
-            .hato-action-logo-cow img {{
-                width: 100%;
-                height: 100%;
-                object-fit: contain;
-                object-position: center;
-                border-radius: 50%;
-                display: block;
-                background: transparent;
-            }}
+
 
             /* Barras: sin círculo ni fondo */
             .hato-action-icon-circle:has(.hato-action-logo-bars) {{
