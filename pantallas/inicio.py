@@ -625,46 +625,52 @@ def mostrar_inicio(finca):
             tarjeta_produccion_html,
             unsafe_allow_html=True,
         )
+
     
-
-
-        with col3:
+    with col3:
         ruta_logo_cesped = (
             Path(__file__).resolve().parent.parent
             / "assets"
             / "logo_cesped.png"
         )
-    
+
         if ruta_logo_cesped.is_file():
             with open(ruta_logo_cesped, "rb") as archivo:
                 logo_cesped_base64 = base64.b64encode(
                     archivo.read()
                 ).decode("utf-8")
-    
+
             logo_html = (
                 f'<img src="data:image/png;base64,{logo_cesped_base64}" '
                 'alt="Logo de césped" '
-                'class="hato-kpi-vaca-logo" />'
+                'class="hato-kpi-cesped-logo" />'
             )
         else:
-            logo_html = '<span>🌱</span>'
-    
+            logo_html = (
+                '<span class="hato-kpi-fallback">🌱</span>'
+            )
+
         tarjeta_cesped_html = f"""
-        <div class="hato-kpi hato-kpi-vacas">
-            <div class="hato-kpi-vacas-icon-circle">
+        <div class="hato-kpi hato-kpi-cesped">
+            <div class="hato-kpi-icon-circle">
                 {logo_html}
             </div>
-            <div class="hato-kpi-vacas-label">Estado de praderas</div>
-            <div class="hato-kpi-vacas-value">12</div>
-            <div class="hato-kpi-vacas-divider"></div>
-            <div class="hato-kpi-vacas-unit">POTREROS</div>
+            <div class="hato-kpi-label">Estado de praderas</div>
+            <div class="hato-kpi-value">12</div>
+            <div class="hato-kpi-divider"></div>
+            <div class="hato-kpi-unit">POTREROS</div>
         </div>
         """
-    
+
         st.markdown(
             tarjeta_cesped_html,
             unsafe_allow_html=True,
         )
+
+    
+
+
+      
 
     # ----------------------------------------------
     # 5. ACCESOS RÁPIDOS
