@@ -60,7 +60,7 @@ def mostrar_inicio(finca):
 
        
             
-            st.markdown(
+        st.markdown(
                 f"""
                 <style>
                     /* ==================================================
