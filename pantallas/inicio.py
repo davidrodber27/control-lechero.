@@ -300,13 +300,13 @@ def cargar_estilos(foto_cabecera, paisaje):
             }}
 
             .hato-action-logo-cow {{
-                width: 70px;
-                height: 70px;
+                width: 76px;
+                height: 76px;
                 border-radius: 50%;
                 overflow: hidden;
                 background: transparent;
             }}
-
+            
             .hato-action-logo-cow img {{
                 width: 100%;
                 height: 100%;
@@ -315,13 +315,25 @@ def cargar_estilos(foto_cabecera, paisaje):
                 border-radius: 50%;
                 display: block;
             }}
-
+            
             .hato-action-logo-bars {{
-                filter: brightness(0) saturate(100%)
-                    invert(30%) sepia(25%) saturate(1100%)
-                    hue-rotate(90deg);
+                width: 76px;
+                height: 76px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background: transparent;
+                border: none;
+                box-shadow: none;
             }}
-
+            
+            .hato-action-logo-bars img {{
+                width: 52px;
+                height: 52px;
+                object-fit: contain;
+                background: transparent;
+                border-radius: 0;
+            }}
             .hato-action-title {{
                 color: #244A36;
                 font-size: 1.08rem;
