@@ -280,33 +280,50 @@ def cargar_estilos(foto_cabecera, paisaje):
                 min-height: 210px;
             }}
 
+            
             .hato-action-icon-circle {{
                 width: 76px;
                 height: 76px;
                 margin: 0 auto 20px;
                 border-radius: 50%;
-                background: linear-gradient(145deg, #78B88B, #287849 55%, #174D32);
+                background: transparent;
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                overflow: hidden;
-                box-shadow: 0 6px 14px rgba(34, 105, 65, 0.22);
+                overflow: visible;
+                box-shadow: none;
             }}
 
             .hato-action-logo {{
-                width: 43px;
-                height: 43px;
+                width: 52px;
+                height: 52px;
                 object-fit: contain;
+                display: block;
+                background: transparent;
+                border: none;
+                box-shadow: none;
+            }}
+
+            /* Vaca: imagen circular, sin círculo verde exterior */
+            .hato-action-icon-circle:has(.hato-action-logo-cow) {{
+                width: 76px;
+                height: 76px;
+                overflow: hidden;
+                border-radius: 50%;
+                background: transparent;
+                box-shadow: none;
             }}
 
             .hato-action-logo-cow {{
                 width: 76px;
                 height: 76px;
+                object-fit: cover;
+                object-position: center;
                 border-radius: 50%;
-                overflow: hidden;
+                display: block;
                 background: transparent;
             }}
-            
+
             .hato-action-logo-cow img {{
                 width: 100%;
                 height: 100%;
@@ -315,25 +332,29 @@ def cargar_estilos(foto_cabecera, paisaje):
                 border-radius: 50%;
                 display: block;
             }}
-            
+
+            /* Barras: sin círculo ni fondo */
+            .hato-action-icon-circle:has(.hato-action-logo-bars) {{
+                background: transparent;
+                box-shadow: none;
+                border: none;
+                overflow: visible;
+            }}
+
             .hato-action-logo-bars {{
-                width: 76px;
-                height: 76px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
+                width: 58px;
+                height: 58px;
+                object-fit: contain;
                 background: transparent;
                 border: none;
                 box-shadow: none;
+
+                /* Convierte el icono blanco en verde */
+                filter: brightness(0) saturate(100%)
+                        invert(35%) sepia(70%) saturate(600%)
+                        hue-rotate(90deg) brightness(90%);
             }}
-            
-            .hato-action-logo-bars img {{
-                width: 52px;
-                height: 52px;
-                object-fit: contain;
-                background: transparent;
-                border-radius: 0;
-            }}
+
             .hato-action-title {{
                 color: #244A36;
                 font-size: 1.08rem;
