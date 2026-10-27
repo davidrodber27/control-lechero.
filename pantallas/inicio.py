@@ -608,7 +608,7 @@ def mostrar_inicio(finca):
     mostrar_acceso(
         col2,
         "inicio-card-vaca",
-        "logo_cara_vaca.jpeg",
+        "cara_vaca.jpeg",
         "hato-action-logo-cow",
         "Cara de vaca",
         "🐄",
