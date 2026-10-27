@@ -322,7 +322,7 @@ def cargar_estilos(foto_cabecera, paisaje):
                 height: 76px;
                 object-fit: cover;
                 object-position: center;
-                border-radius: 50%;
+                border-radius: 80%;
                 display: block;
                 background: transparent;
             }}
