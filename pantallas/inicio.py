@@ -331,6 +331,7 @@ def mostrar_inicio(finca):
                     /* ==================================================
                        6. COLUMNA  — POTREROS
                     ================================================== */
+                         
                     .hato-kpi-cesped {{
                         background: linear-gradient(
                             145deg,
@@ -486,6 +487,20 @@ def mostrar_inicio(finca):
                         }}
             
                         .hato-kpi-produccion .hato-kpi-produccion-label {{
+                            font-size: 1rem;
+                        }}
+
+                        /* Columna 3: potreros */
+                        .hato-kpi-cesped {{
+                            padding: 22px 12px;
+                            min-height: 280px;
+                        }}
+
+                        .hato-kpi-cesped .hato-kpi-value {{
+                            font-size: 2.4rem;
+                        }}
+
+                        .hato-kpi-cesped .hato-kpi-label {{
                             font-size: 1rem;
                         }}
                     }}
