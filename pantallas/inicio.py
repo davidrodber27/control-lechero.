@@ -280,23 +280,25 @@ def cargar_estilos(foto_cabecera, paisaje):
                 min-height: 210px;
             }}
 
-            
             .hato-action-icon-circle {{
                 width: 76px;
                 height: 76px;
                 margin: 0 auto 20px;
-                border-radius: 50%;
-                background: transparent;
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                overflow: visible;
+                background: transparent;
+                border: none;
                 box-shadow: none;
+                border-radius: 0;
+                overflow: visible;
             }}
 
+
+             /* Logo de producción */
             .hato-action-logo {{
-                width: 52px;
-                height: 52px;
+                width: 58px;
+                height: 58px;
                 object-fit: contain;
                 display: block;
                 background: transparent;
@@ -314,6 +316,7 @@ def cargar_estilos(foto_cabecera, paisaje):
                 box-shadow: none;
             }}
 
+            /* Foto de vaca */
             .hato-action-logo-cow {{
                 width: 76px;
                 height: 76px;
@@ -341,15 +344,15 @@ def cargar_estilos(foto_cabecera, paisaje):
                 overflow: visible;
             }}
 
+            /* Barras verdes, sin círculo */
             .hato-action-logo-bars {{
                 width: 58px;
                 height: 58px;
                 object-fit: contain;
+                display: block;
                 background: transparent;
                 border: none;
                 box-shadow: none;
-
-                /* Convierte el icono blanco en verde */
                 filter: brightness(0) saturate(100%)
                         invert(35%) sepia(70%) saturate(600%)
                         hue-rotate(90deg) brightness(90%);
