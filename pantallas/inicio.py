@@ -431,14 +431,17 @@ def mostrar_inicio(finca):
                     /* ==================================================
                        7. TARJETAS DE ACCIONES
                     ================================================== */
-            
-                    .hato-action-card {{
-                        background:linear-gradient(
-                            145deg,
-                            rgba(247, 252, 248, 0.94),
-                            rgba(234, 244, 237, 0.91)
-                        ),
-                        url("data:image/jpeg;base64,{paisaje_base64}");
+
+                    .st-key-inicio-card-produccion,
+                    .st-key-inicio-card-vaca,
+                    .st-key-inicio-card-reporte {{
+                        background:
+                            linear-gradient(
+                                145deg,
+                                rgba(247, 252, 248, 0.88),
+                                rgba(234, 244, 237, 0.84)
+                            ),
+                            url("data:image/jpeg;base64,{paisaje_base64}");
                         background-size: cover;
                         background-position: center;
                         border: 1px solid #D9EADF;
@@ -446,11 +449,12 @@ def mostrar_inicio(finca):
                         padding: 26px 20px 22px;
                         min-height: 300px;
                         box-sizing: border-box;
+                        box-shadow: 0 5px 18px rgba(36, 90, 58, 0.09);
+                    }}
+
+                    .hato-action-content {{
                         text-align: center;
-                        box-shadow: 0 5px 18px rgba(36, 90, 58, 0.07);
-                        display: flex;
-                        flex-direction: column;
-                        align-items: center;
+                        min-height: 210px;
                     }}
 
                     .hato-action-icon-circle {{
@@ -468,10 +472,7 @@ def mostrar_inicio(finca):
                         align-items: center;
                         justify-content: center;
                         overflow: hidden;
-                        box-shadow:
-                            0 6px 14px rgba(34, 105, 65, 0.22),
-                            inset 0 1px 2px rgba(255, 255, 255, 0.3);
-                        flex-shrink: 0;
+                        box-shadow: 0 6px 14px rgba(34, 105, 65, 0.22);
                     }}
 
                     .hato-action-logo {{
@@ -499,24 +500,19 @@ def mostrar_inicio(finca):
                         font-weight: 750;
                         line-height: 1.4;
                         margin-bottom: 10px;
-                        text-align: center;
                     }}
 
                     .hato-action-description {{
-                        color: #69786D;
+                        color: #52685A;
                         font-size: 0.88rem;
                         line-height: 1.55;
                         min-height: 44px;
                         margin-bottom: 18px;
-                        text-align: center;
                     }}
 
-                    .hato-action-card div.stButton {{
-                        width: 100%;
-                        margin-top: auto;
-                    }}
-
-                    .hato-action-card div.stButton > button {{
+                    .st-key-inicio-card-produccion div.stButton > button,
+                    .st-key-inicio-card-vaca div.stButton > button,
+                    .st-key-inicio-card-reporte div.stButton > button {{
                         width: 100%;
                         border-radius: 10px;
                         min-height: 42px;
@@ -526,11 +522,14 @@ def mostrar_inicio(finca):
                         color: #24583A;
                     }}
 
-                    .hato-action-card div.stButton > button:hover {{
+                    .st-key-inicio-card-produccion div.stButton > button:hover,
+                    .st-key-inicio-card-vaca div.stButton > button:hover,
+                    .st-key-inicio-card-reporte div.stButton > button:hover {{
                         background: #E4F2E8;
                         border-color: #8EB99A;
                         color: #174D32;
                     }}
+
             
                     /* ==================================================
                        7. DISEÑO RESPONSIVE — MÓVILES
@@ -790,6 +789,7 @@ def mostrar_inicio(finca):
     )
 
     
+    
     col1, col2, col3 = st.columns(3, gap="medium")
 
     ruta_assets = (
@@ -817,116 +817,111 @@ def mostrar_inicio(finca):
             f'class="hato-action-logo {clase_logo}" />'
         )
 
-    # --------------------------------------------------
     # TARJETA 1: REGISTRAR PRODUCCIÓN
-    # --------------------------------------------------
-
+    
     with col1:
-        logo = cargar_logo(
-            "logo_cantina_leche.png",
-            "",
-            "Cantina de leche",
-        )
+        with st.container(key="inicio-card-produccion"):
+            logo = cargar_logo(
+                "logo_cantina_leche.png",
+                "",
+                "Cantina de leche",
+            )
 
-        st.markdown(
-            f"""
-            <div class="hato-action-card">
-                <div class="hato-action-icon-circle">
-                    {logo}
+            st.markdown(
+                f"""
+                <div class="hato-action-content">
+                    <div class="hato-action-icon-circle">
+                        {logo}
+                    </div>
+                    <div class="hato-action-title">
+                        Registrar producción
+                    </div>
+                    <div class="hato-action-description">
+                        Registra la producción de leche de tus vacas.
+                    </div>
                 </div>
-                <div class="hato-action-title">
-                    Registrar producción
-                </div>
-                <div class="hato-action-description">
-                    Registra la producción de leche de tus vacas.
-                </div>
-            """,
-            unsafe_allow_html=True,
-        )
+                """,
+                unsafe_allow_html=True,
+            )
 
-        if st.button(
-            "Registrar producción",
-            key="inicio_ir_registrar_produccion",
-            use_container_width=True,
-        ):
-            st.session_state.pagina = "Registrar producción"
-            st.rerun()
+            if st.button(
+                "Registrar producción",
+                key="inicio_ir_registrar_produccion",
+                use_container_width=True,
+            ):
+                st.session_state.pagina = "Registrar producción"
+                st.rerun()
 
-        st.markdown("</div>", unsafe_allow_html=True)
-
-    # --------------------------------------------------
     # TARJETA 2: REGISTRAR VACA
-    # --------------------------------------------------
-
+    
     with col2:
-        logo = cargar_logo(
-            "logo_cara_vaca.jpeg",
-            "hato-action-logo-cow",
-            "Cara de vaca",
-        )
+        with st.container(key="inicio-card-vaca"):
+            logo = cargar_logo(
+                "logo_cara_vaca.jpeg",
+                "hato-action-logo-cow",
+                "Cara de vaca",
+            )
 
-        st.markdown(
-            f"""
-            <div class="hato-action-card">
-                <div class="hato-action-icon-circle">
-                    {logo}
+            st.markdown(
+                f"""
+                <div class="hato-action-content">
+                    <div class="hato-action-icon-circle">
+                        {logo}
+                    </div>
+                    <div class="hato-action-title">
+                        Registrar vaca
+                    </div>
+                    <div class="hato-action-description">
+                        Añade animales al inventario de la finca.
+                    </div>
                 </div>
-                <div class="hato-action-title">
-                    Registrar vaca
-                </div>
-                <div class="hato-action-description">
-                    Añade animales al inventario de la finca.
-                </div>
-            """,
-            unsafe_allow_html=True,
-        )
+                """,
+                unsafe_allow_html=True,
+            )
 
-        if st.button(
-            "Registrar vaca",
-            key="inicio_ir_registrar_vaca",
-            use_container_width=True,
-        ):
-            st.session_state.pagina = "Registrar vaca"
-            st.rerun()
+            if st.button(
+                "Registrar vaca",
+                key="inicio_ir_registrar_vaca",
+                use_container_width=True,
+            ):
+                st.session_state.pagina = "Registrar vaca"
+                st.rerun()
 
-        st.markdown("</div>", unsafe_allow_html=True)
-
-    # --------------------------------------------------
     # TARJETA 3: REPORTE DIARIO
-    # --------------------------------------------------
-
+    
     with col3:
-        logo = cargar_logo(
-            "logo_barras.png",
-            "hato-action-logo-bars",
-            "Gráfico de barras",
-        )
+        with st.container(key="inicio-card-reporte"):
+            logo = cargar_logo(
+                "logo_barras.png",
+                "hato-action-logo-bars",
+                "Gráfico de barras",
+            )
 
-        st.markdown(
-            f"""
-            <div class="hato-action-card">
-                <div class="hato-action-icon-circle">
-                    {logo}
+            st.markdown(
+                f"""
+                <div class="hato-action-content">
+                    <div class="hato-action-icon-circle">
+                        {logo}
+                    </div>
+                    <div class="hato-action-title">
+                        Reporte diario
+                    </div>
+                    <div class="hato-action-description">
+                        Consulta los resultados por vaca y potrero.
+                    </div>
                 </div>
-                <div class="hato-action-title">
-                    Reporte diario
-                </div>
-                <div class="hato-action-description">
-                    Consulta los resultados por vaca y potrero.
-                </div>
-            """,
-            unsafe_allow_html=True,
-        )
+                """,
+                unsafe_allow_html=True,
+            )
 
-        if st.button(
-            "Ver reporte diario",
-            key="inicio_ir_reporte_diario",
-            use_container_width=True,
-        ):
-            st.session_state.pagina = "Reporte diario"
-            st.rerun()
+            if st.button(
+                "Ver reporte diario",
+                key="inicio_ir_reporte_diario",
+                use_container_width=True,
+            ):
+                st.session_state.pagina = "Reporte diario"
+                st.rerun()
 
-        st.markdown("</div>", unsafe_allow_html=True)
 
 
     # ----------------------------------------------
