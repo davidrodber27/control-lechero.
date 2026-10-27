@@ -1,936 +1,639 @@
-import streamlit as st
-from datetime import date
+
 import base64
 import mimetypes
+from datetime import date
 from pathlib import Path
 
+import streamlit as st
 
-def mostrar_inicio(finca):
-    """Muestra el panel ejecutivo de Hato La Casita."""
 
-    # ----------------------------------------------
-    # 1. DATOS REALES DE LA FINCA
-    # ----------------------------------------------
+# ============================================================
+# 1. RUTAS Y UTILIDADES
+# ============================================================
 
-    total_vacas = finca.cantidad_vacas()
-    produccion_hoy = finca.produccion_total(date.today())
+RUTA_PROYECTO = Path(__file__).resolve().parent.parent
+RUTA_ASSETS = RUTA_PROYECTO / "assets"
 
-    
-    # ----------------------------------------------
-    # 2. ESTILOS VISUALES Y CABECERA
-    # ----------------------------------------------
 
-    ruta_foto = (
-        Path(__file__).resolve().parent.parent
-        / "assets"
-        / "hato_banner.jpg"
+def imagen_base64(nombre_archivo):
+    """Devuelve el tipo MIME y la imagen codificada, si existe."""
+    ruta = RUTA_ASSETS / nombre_archivo
+
+    if not ruta.is_file():
+        return None, None
+
+    tipo_imagen, _ = mimetypes.guess_type(str(ruta))
+
+    if not tipo_imagen or not tipo_imagen.startswith("image/"):
+        return None, None
+
+    contenido = base64.b64encode(ruta.read_bytes()).decode("utf-8")
+    return tipo_imagen, contenido
+
+
+def crear_logo_html(
+    nombre_archivo,
+    clase_css,
+    texto_alternativo,
+    emoji_fallback="🌱",
+):
+    """Construye el HTML de un logo o muestra un emoji alternativo."""
+    tipo_imagen, contenido = imagen_base64(nombre_archivo)
+
+    if not contenido:
+        return f'<span class="hato-logo-fallback">{emoji_fallback}</span>'
+
+    return (
+        f'<img src="data:{tipo_imagen};base64,{contenido}" '
+        f'alt="{texto_alternativo}" '
+        f'class="{clase_css}" />'
     )
 
-    if not ruta_foto.is_file():
-        st.error(
-            "No se encontró la fotografía. Revisa que exista "
-            "el archivo assets/hato_banner.jpg en GitHub."
+
+# ============================================================
+# 2. ESTILOS
+# ============================================================
+
+def cargar_estilos(foto_cabecera, paisaje):
+    """Carga los estilos visuales del panel principal."""
+
+    if foto_cabecera:
+        tipo_foto, contenido_foto = foto_cabecera
+        fondo_cabecera = (
+            f'url("data:{tipo_foto};base64,{contenido_foto}")'
         )
     else:
-        tipo_imagen, _ = mimetypes.guess_type(str(ruta_foto))
+        fondo_cabecera = (
+            "linear-gradient(120deg, #244A36, #557B5E)"
+        )
 
-        if tipo_imagen not in ("image/jpeg", "image/png", "image/webp"):
-            st.error("La fotografía debe ser JPG, PNG o WEBP.")
-        else:
-            foto_codificada = base64.b64encode(
-                ruta_foto.read_bytes()
-            ).decode("utf-8")
+    if paisaje:
+        tipo_paisaje, contenido_paisaje = paisaje
+        fondo_tarjetas = (
+            f'url("data:{tipo_paisaje};base64,{contenido_paisaje}")'
+        )
+    else:
+        fondo_tarjetas = (
+            "linear-gradient(145deg, #F7FCF8, #EAF4ED)"
+        )
 
-    
-    ruta_paisaje = (
-        Path(__file__).resolve().parent.parent
-        / "assets"
-        / "paisaje_fondo.jpeg"
+    st.markdown(
+        f"""
+        <style>
+            /* ---------- Cabecera ---------- */
+
+            .hato-hero {{
+                min-height: 360px;
+                padding: 42px;
+                margin-bottom: 28px;
+                border-radius: 18px;
+                overflow: hidden;
+                box-sizing: border-box;
+                display: flex;
+                align-items: center;
+                background-image:
+                    linear-gradient(
+                        90deg,
+                        rgba(12, 43, 29, 0.70),
+                        rgba(12, 43, 29, 0.30),
+                        rgba(12, 43, 29, 0.05)
+                    ),
+                    {fondo_cabecera};
+                background-size: cover;
+                background-position: center 58%;
+                box-shadow: 0 8px 24px rgba(22, 52, 35, 0.14);
+            }}
+
+            .hato-hero-content {{
+                max-width: 580px;
+            }}
+
+            .hato-hero-eyebrow {{
+                color: #E0EBDD !important;
+                font-size: 12px;
+                font-weight: 700;
+                letter-spacing: 2px;
+                margin-bottom: 10px;
+            }}
+
+            .hato-hero-title {{
+                color: #FFFFFF !important;
+                font-size: 38px !important;
+                font-weight: 800 !important;
+                line-height: 1.15 !important;
+                margin: 0 0 12px 0 !important;
+                padding: 0 !important;
+                background: transparent !important;
+                border: none !important;
+            }}
+
+            .hato-hero-description {{
+                color: #FFFFFF !important;
+                font-size: 15px !important;
+                line-height: 1.6 !important;
+                max-width: 380px;
+                margin: 0 !important;
+            }}
+
+            /* ---------- Títulos ---------- */
+
+            .hato-section-title {{
+                color: #244A36;
+                font-size: 22px;
+                font-weight: 750;
+                margin: 8px 0 4px 0;
+            }}
+
+            .hato-section-subtitle {{
+                color: #69786D;
+                font-size: 14px;
+                margin: 0 0 18px 0;
+            }}
+
+            /* ---------- Indicadores ---------- */
+
+            .hato-kpi {{
+                border-radius: 20px;
+                padding: 26px 16px 22px;
+                min-height: 300px;
+                text-align: center;
+                box-sizing: border-box;
+                box-shadow: 0 5px 18px rgba(36, 90, 58, 0.07);
+            }}
+
+            .hato-kpi-vacas,
+            .hato-kpi-cesped {{
+                background: linear-gradient(145deg, #F7FCF8, #EDF7F0);
+                border: 1px solid #D9EADF;
+            }}
+
+            .hato-kpi-produccion {{
+                background: linear-gradient(145deg, #F7FBFF, #EAF3FC);
+                border: 1px solid #D5E5F5;
+            }}
+
+            .hato-kpi-icon-circle {{
+                width: 76px;
+                height: 76px;
+                margin: 0 auto 20px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                box-shadow: 0 6px 14px rgba(34, 105, 65, 0.18);
+            }}
+
+            .hato-kpi-vacas .hato-kpi-icon-circle,
+            .hato-kpi-cesped .hato-kpi-icon-circle {{
+                background: linear-gradient(145deg, #78B88B, #287849 55%, #174D32);
+            }}
+
+            .hato-kpi-produccion .hato-kpi-icon-circle {{
+                background: linear-gradient(145deg, #78B4E8, #2878BE 55%, #164A7A);
+            }}
+
+            .hato-kpi-logo {{
+                width: 43px;
+                height: 43px;
+                object-fit: contain;
+                filter: brightness(0) invert(1);
+            }}
+
+            .hato-logo-fallback {{
+                font-size: 36px;
+                line-height: 1;
+            }}
+
+            .hato-kpi-label {{
+                color: #28583C;
+                font-size: 1.05rem;
+                font-weight: 700;
+                line-height: 1.4;
+                margin-bottom: 10px;
+            }}
+
+            .hato-kpi-produccion .hato-kpi-label {{
+                color: #245581;
+            }}
+
+            .hato-kpi-value {{
+                color: #174D32;
+                font-size: 2.6rem;
+                font-weight: 800;
+                line-height: 1.15;
+                margin: 4px 0 12px;
+                overflow-wrap: anywhere;
+            }}
+
+            .hato-kpi-produccion .hato-kpi-value {{
+                color: #164A7A;
+            }}
+
+            .hato-kpi-divider {{
+                width: 54px;
+                height: 2px;
+                border-radius: 2px;
+                background: #A6CDB1;
+                margin: 0 auto 10px;
+            }}
+
+            .hato-kpi-produccion .hato-kpi-divider {{
+                background: #A7CBEA;
+            }}
+
+            .hato-kpi-unit {{
+                color: #63836D;
+                font-size: 0.72rem;
+                font-weight: 700;
+                letter-spacing: 2px;
+                line-height: 1.4;
+            }}
+
+            .hato-kpi-produccion .hato-kpi-unit {{
+                color: #6485A5;
+            }}
+
+            /* ---------- Tarjetas de accesos rápidos ---------- */
+
+            .st-key-inicio-card-produccion,
+            .st-key-inicio-card-vaca,
+            .st-key-inicio-card-reporte {{
+                background-image:
+                    linear-gradient(
+                        145deg,
+                        rgba(247, 252, 248, 0.91),
+                        rgba(234, 244, 237, 0.89)
+                    ),
+                    {fondo_tarjetas};
+                background-size: cover;
+                background-position: center;
+                border: 1px solid #D9EADF;
+                border-radius: 20px;
+                padding: 24px 20px 20px;
+                min-height: 300px;
+                box-sizing: border-box;
+                box-shadow: 0 5px 18px rgba(36, 90, 58, 0.09);
+            }}
+
+            .hato-action-content {{
+                text-align: center;
+                min-height: 210px;
+            }}
+
+            .hato-action-icon-circle {{
+                width: 76px;
+                height: 76px;
+                margin: 0 auto 20px;
+                border-radius: 50%;
+                background: linear-gradient(145deg, #78B88B, #287849 55%, #174D32);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                overflow: hidden;
+                box-shadow: 0 6px 14px rgba(34, 105, 65, 0.22);
+            }}
+
+            .hato-action-logo {{
+                width: 43px;
+                height: 43px;
+                object-fit: contain;
+            }}
+
+            .hato-action-logo-cow {{
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                border-radius: 50%;
+            }}
+
+            .hato-action-logo-bars {{
+                filter: brightness(0) saturate(100%)
+                    invert(30%) sepia(25%) saturate(1100%)
+                    hue-rotate(90deg);
+            }}
+
+            .hato-action-title {{
+                color: #244A36;
+                font-size: 1.08rem;
+                font-weight: 750;
+                line-height: 1.4;
+                margin-bottom: 10px;
+            }}
+
+            .hato-action-description {{
+                color: #52685A;
+                font-size: 0.88rem;
+                line-height: 1.55;
+                min-height: 44px;
+                margin-bottom: 12px;
+            }}
+
+            .st-key-inicio-card-produccion div.stButton > button,
+            .st-key-inicio-card-vaca div.stButton > button,
+            .st-key-inicio-card-reporte div.stButton > button {{
+                width: 100%;
+                min-height: 42px;
+                border-radius: 10px;
+                font-weight: 650;
+                border: 1px solid #C8DDCE;
+                background: #FFFFFF;
+                color: #24583A;
+            }}
+
+            .st-key-inicio-card-produccion div.stButton > button:hover,
+            .st-key-inicio-card-vaca div.stButton > button:hover,
+            .st-key-inicio-card-reporte div.stButton > button:hover {{
+                background: #E4F2E8;
+                border-color: #8EB99A;
+                color: #174D32;
+            }}
+
+            /* ---------- Adaptación a móviles ---------- */
+
+            @media (max-width: 700px) {{
+                .hato-hero {{
+                    min-height: 230px;
+                    padding: 24px 20px;
+                }}
+
+                .hato-hero-title {{
+                    font-size: 30px !important;
+                }}
+
+                .hato-hero-description {{
+                    font-size: 14px !important;
+                }}
+
+                .hato-kpi {{
+                    min-height: 260px;
+                    padding: 22px 10px;
+                }}
+
+                .hato-kpi-value {{
+                    font-size: 2rem;
+                }}
+
+                .st-key-inicio-card-produccion,
+                .st-key-inicio-card-vaca,
+                .st-key-inicio-card-reporte {{
+                    padding: 20px 12px;
+                    min-height: 290px;
+                }}
+            }}
+        </style>
+
+        <div class="hato-hero">
+            <div class="hato-hero-content">
+                <div class="hato-hero-eyebrow">
+                    HATO LA CASITA · GESTIÓN GANADERA
+                </div>
+                <h1 class="hato-hero-title">Hato La Casita</h1>
+                <p class="hato-hero-description">
+                    Bienvenido al centro de control de tu finca.
+                    Consulta la producción y administra tu hato
+                    desde un solo lugar.
+                </p>
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True,
     )
 
-    if ruta_paisaje.is_file():
-        paisaje_base64 = base64.b64encode(
-            ruta_paisaje.read_bytes()
-        ).decode("utf-8")
-    else:
-        paisaje_base64 = ""
-        st.warning(
-            "No se encontró assets/paisaje_fondo.jpeg."
-        )
 
-       
-            
-        st.markdown(
+# ============================================================
+# 3. TARJETAS DE INDICADORES
+# ============================================================
+
+def mostrar_indicador(
+    columna,
+    clase_tarjeta,
+    nombre_logo,
+    clase_logo,
+    texto_alternativo,
+    titulo,
+    valor,
+    unidad,
+    emoji,
+):
+    """Muestra una tarjeta de indicador con su logo."""
+
+    logo = crear_logo_html(
+        nombre_logo,
+        f"hato-kpi-logo {clase_logo}",
+        texto_alternativo,
+        emoji,
+    )
+
+    tarjeta_html = f"""
+    <div class="hato-kpi {clase_tarjeta}">
+        <div class="hato-kpi-icon-circle">
+            {logo}
+        </div>
+        <div class="hato-kpi-label">{titulo}</div>
+        <div class="hato-kpi-value">{valor}</div>
+        <div class="hato-kpi-divider"></div>
+        <div class="hato-kpi-unit">{unidad}</div>
+    </div>
+    """
+
+    with columna:
+        st.markdown(tarjeta_html, unsafe_allow_html=True)
+
+
+# ============================================================
+# 4. ACCESOS RÁPIDOS
+# ============================================================
+
+def mostrar_acceso(
+    columna,
+    clave_contenedor,
+    nombre_logo,
+    clase_logo,
+    texto_alternativo,
+    emoji,
+    titulo,
+    descripcion,
+    texto_boton,
+    clave_boton,
+    destino,
+):
+    """Muestra una tarjeta de acceso y gestiona su navegación."""
+
+    with columna:
+        with st.container(key=clave_contenedor):
+            logo = crear_logo_html(
+                nombre_logo,
+                f"hato-action-logo {clase_logo}",
+                texto_alternativo,
+                emoji,
+            )
+
+            st.markdown(
                 f"""
-                <style>
-                    /* ==================================================
-                       1. ENCABEZADO PRINCIPAL — HATO LA CASITA
-                    ================================================== */
-            
-                    .hato-hero {{
-                        min-height: 360px;
-                        padding: 42px;
-                        margin-bottom: 28px;
-                        border-radius: 18px;
-                        overflow: hidden;
-                        box-sizing: border-box;
-                        display: flex;
-                        align-items: center;
-                        background-image:
-                            linear-gradient(
-                                90deg,
-                                rgba(12, 43, 29, 0.42),
-                                rgba(12, 43, 29, 0.16),
-                                rgba(12, 43, 29, 0.00)
-                            ),
-                            url("data:{tipo_imagen};base64,{foto_codificada}");
-                        background-size: cover;
-                        background-position: center 58%;
-                        box-shadow: 0 8px 24px rgba(22, 52, 35, 0.14);
-                    }}
-            
-                    .hato-hero-content {{
-                        max-width: 580px;
-                    }}
-            
-                    .hato-hero-eyebrow {{
-                        color: #E0EBDD !important;
-                        font-size: 12px;
-                        font-weight: 700;
-                        letter-spacing: 2px;
-                        margin-bottom: 10px;
-                    }}
-            
-                    .hato-hero-title {{
-                        color: #FFFFFF !important;
-                        font-size: 38px !important;
-                        font-weight: 800 !important;
-                        line-height: 1.15 !important;
-                        margin: 0 0 12px 0 !important;
-                        padding: 0 !important;
-                        background: transparent !important;
-                        border: none !important;
-                    }}
-            
-                    .hato-hero-description {{
-                        color: #FFFFFF !important;
-                        font-size: 15px !important;
-                        line-height: 1.6 !important;
-                        max-width: 380px;
-                        margin: 0 !important;
-                    }}
-            
-                    /* ==================================================
-                       2. TÍTULOS DE SECCIÓN
-                    ================================================== */
-            
-                    .hato-section-title {{
-                        color: #244A36;
-                        font-size: 22px;
-                        font-weight: 750;
-                        margin: 8px 0 4px 0;
-                    }}
-            
-                    .hato-section-subtitle {{
-                        color: #69786D;
-                        font-size: 14px;
-                        margin: 0 0 18px 0;
-                    }}
-            
-                    /* ==================================================
-                       3. ESTILOS GENERALES DE LAS TARJETAS KPI
-                    ================================================== */
-            
-                    .hato-kpi {{
-                        background: #FFFFFF;
-                        border: 1px solid #E0E8E0;
-                        border-radius: 16px;
-                        padding: 22px 12px;
-                        min-height: 168px;
-                        text-align: center;
-                        box-shadow: 0 4px 14px rgba(28, 58, 39, 0.045);
-                        box-sizing: border-box;
-                    }}
-            
-                    .hato-kpi-icon {{
-                        font-size: 27px;
-                        margin-bottom: 12px;
-                    }}
-            
-                    .hato-kpi-label {{
-                        color: #647368;
-                        font-size: 13px;
-                        font-weight: 600;
-                        margin-bottom: 8px;
-                    }}
-            
-                    .hato-kpi-value {{
-                        color: #244A36;
-                        font-size: 32px;
-                        font-weight: 750;
-                        line-height: 1.2;
-                    }}
-            
-                    .hato-kpi-unit {{
-                        color: #647368;
-                        font-size: 14px;
-                        font-weight: 500;
-                    }}
-            
-                    /* ==================================================
-                       4. COLUMNA 1 — VACAS REGISTRADAS
-                       Tema verde
-                    ================================================== */
-            
-                    .hato-kpi-vacas {{
-                        background: linear-gradient(
-                            145deg,
-                            #F7FCF8 0%,
-                            #EDF7F0 100%
-                        );
-                        border: 1px solid #D9EADF;
-                        border-radius: 20px;
-                        padding: 26px 20px 22px;
-                        min-height: 300px;
-                        text-align: center;
-                        box-shadow: 0 5px 18px rgba(36, 90, 58, 0.07);
-                        box-sizing: border-box;
-                    }}
-            
-                    .hato-kpi-vacas .hato-kpi-icon-circle {{
-                        width: 76px;
-                        height: 76px;
-                        margin: 0 auto 20px;
-                        border-radius: 50%;
-                        background: linear-gradient(
-                            145deg,
-                            #78B88B 0%,
-                            #287849 55%,
-                            #174D32 100%
-                        );
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        box-shadow:
-                            0 6px 14px rgba(34, 105, 65, 0.22),
-                            inset 0 1px 2px rgba(255, 255, 255, 0.3);
-                    }}
-            
-                    .hato-kpi-vacas .hato-kpi-cow-logo {{
-                        width: 43px;
-                        height: 43px;
-                        object-fit: contain;
-                        filter: brightness(0) invert(1);
-                    }}
-            
-                    .hato-kpi-vacas .hato-kpi-fallback {{
-                        font-size: 36px;
-                        line-height: 1;
-                    }}
-            
-                    .hato-kpi-vacas .hato-kpi-label {{
-                        color: #28583C;
-                        font-size: 1.18rem;
-                        font-weight: 700;
-                        line-height: 1.4;
-                        margin-bottom: 10px;
-                    }}
-            
-                    .hato-kpi-vacas .hato-kpi-value {{
-                        color: #174D32;
-                        font-size: 2.8rem;
-                        font-weight: 800;
-                        line-height: 1.15;
-                        margin: 4px 0 12px;
-                        letter-spacing: -1px;
-                    }}
-            
-                    .hato-kpi-vacas .hato-kpi-divider {{
-                        width: 54px;
-                        height: 2px;
-                        border-radius: 2px;
-                        background: #A6CDB1;
-                        margin: 0 auto 10px;
-                    }}
-            
-                    .hato-kpi-vacas .hato-kpi-unit {{
-                        color: #63836D;
-                        font-size: 0.72rem;
-                        font-weight: 700;
-                        letter-spacing: 2px;
-                        line-height: 1.4;
-                    }}
-            
-                    /* ==================================================
-                       5. COLUMNA 2 — PRODUCCIÓN DE HOY
-                       Tema azul
-                    ================================================== */
-            
-                    .hato-kpi-produccion {{
-                        background: linear-gradient(
-                            145deg,
-                            #F7FBFF 0%,
-                            #EAF3FC 100%
-                        );
-                        border: 1px solid #D5E5F5;
-                        border-radius: 20px;
-                        padding: 26px 20px 22px;
-                        min-height: 300px;
-                        text-align: center;
-                        box-shadow: 0 5px 18px rgba(35, 86, 145, 0.07);
-                        box-sizing: border-box;
-                    }}
-            
-                    .hato-kpi-produccion .hato-kpi-produccion-icon-circle {{
-                        width: 76px;
-                        height: 76px;
-                        margin: 0 auto 20px;
-                        border-radius: 50%;
-                        background: linear-gradient(
-                            145deg,
-                            #78B4E8 0%,
-                            #2878BE 55%,
-                            #164A7A 100%
-                        );
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        box-shadow:
-                            0 6px 14px rgba(36, 104, 169, 0.22),
-                            inset 0 1px 2px rgba(255, 255, 255, 0.3);
-                    }}
-            
-                    .hato-kpi-produccion .hato-kpi-jarra-logo {{
-                        width: 43px;
-                        height: 43px;
-                        object-fit: contain;
-                        filter: brightness(0) invert(1);
-                    }}
-            
-                    .hato-kpi-produccion .hato-kpi-jarra-fallback {{
-                        font-size: 36px;
-                        line-height: 1;
-                    }}
-            
-                    .hato-kpi-produccion .hato-kpi-produccion-label {{
-                        color: #245581;
-                        font-size: 1.18rem;
-                        font-weight: 700;
-                        line-height: 1.4;
-                        margin-bottom: 10px;
-                    }}
-            
-                    .hato-kpi-produccion .hato-kpi-produccion-value {{
-                        color: #164A7A;
-                        font-size: 2.8rem;
-                        font-weight: 800;
-                        line-height: 1.15;
-                        margin: 4px 0 12px;
-                        letter-spacing: -1px;
-                    }}
-            
-                    .hato-kpi-produccion .hato-kpi-produccion-divider {{
-                        width: 54px;
-                        height: 2px;
-                        border-radius: 2px;
-                        background: #A7CBEA;
-                        margin: 0 auto 10px;
-                    }}
-            
-                    .hato-kpi-produccion .hato-kpi-produccion-unit {{
-                        color: #6485A5;
-                        font-size: 0.72rem;
-                        font-weight: 700;
-                        letter-spacing: 2px;
-                        line-height: 1.4;
-                    }}
-
-                    /* ==================================================
-                       6. COLUMNA  — POTREROS
-                    ================================================== */
-                         
-                    .hato-kpi-cesped {{
-                        background: linear-gradient(
-                            145deg,
-                            #F7FCF8 0%,
-                            #EDF7F0 100%
-                        );
-                        border: 1px solid #D9EADF;
-                        border-radius: 20px;
-                        padding: 26px 20px 22px;
-                        min-height: 300px;
-                        text-align: center;
-                        box-shadow: 0 5px 18px rgba(36, 90, 58, 0.07);
-                        box-sizing: border-box;
-                    }}
-
-                    .hato-kpi-cesped .hato-kpi-icon-circle {{
-                        width: 76px;
-                        height: 76px;
-                        margin: 0 auto 20px;
-                        border-radius: 50%;
-                        background: linear-gradient(
-                            145deg,
-                            #78B88B 0%,
-                            #287849 55%,
-                            #174D32 100%
-                        );
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        box-shadow:
-                            0 6px 14px rgba(34, 105, 65, 0.22),
-                            inset 0 1px 2px rgba(255, 255, 255, 0.3);
-                    }}
-
-                    .hato-kpi-cesped .hato-kpi-cesped-logo {{
-                        width: 43px;
-                        height: 43px;
-                        object-fit: contain;
-                        filter: brightness(0) invert(1);
-                    }}
-
-                    .hato-kpi-cesped .hato-kpi-fallback {{
-                        font-size: 36px;
-                        line-height: 1;
-                    }}
-
-                    .hato-kpi-cesped .hato-kpi-label {{
-                        color: #28583C;
-                        font-size: 1.18rem;
-                        font-weight: 700;
-                        line-height: 1.4;
-                        margin-bottom: 10px;
-                    }}
-
-                    .hato-kpi-cesped .hato-kpi-value {{
-                        color: #174D32;
-                        font-size: 2.8rem;
-                        font-weight: 800;
-                        line-height: 1.15;
-                        margin: 4px 0 12px;
-                        letter-spacing: -1px;
-                    }}
-
-                    .hato-kpi-cesped .hato-kpi-divider {{
-                        width: 54px;
-                        height: 2px;
-                        border-radius: 2px;
-                        background: #A6CDB1;
-                        margin: 0 auto 10px;
-                    }}
-
-                    .hato-kpi-cesped .hato-kpi-unit {{
-                        color: #63836D;
-                        font-size: 0.72rem;
-                        font-weight: 700;
-                        letter-spacing: 2px;
-                        line-height: 1.4;
-                    }}
-            
-                    /* ==================================================
-                       7. TARJETAS DE ACCIONES
-                    ================================================== */
-
-                    .st-key-inicio-card-produccion,
-                    .st-key-inicio-card-vaca,
-                    .st-key-inicio-card-reporte {{
-                        background:
-                            linear-gradient(
-                                145deg,
-                                rgba(247, 252, 248, 0.88),
-                                rgba(234, 244, 237, 0.84)
-                            ),
-                            url("data:image/jpeg;base64,{paisaje_base64}");
-                        background-size: cover;
-                        background-position: center;
-                        border: 1px solid #D9EADF;
-                        border-radius: 20px;
-                        padding: 26px 20px 22px;
-                        min-height: 300px;
-                        box-sizing: border-box;
-                        box-shadow: 0 5px 18px rgba(36, 90, 58, 0.09);
-                    }}
-
-                    .hato-action-content {{
-                        text-align: center;
-                        min-height: 210px;
-                    }}
-
-                    .hato-action-icon-circle {{
-                        width: 76px;
-                        height: 76px;
-                        margin: 0 auto 20px;
-                        border-radius: 50%;
-                        background: linear-gradient(
-                            145deg,
-                            #78B88B 0%,
-                            #287849 55%,
-                            #174D32 100%
-                        );
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        overflow: hidden;
-                        box-shadow: 0 6px 14px rgba(34, 105, 65, 0.22);
-                    }}
-
-                    .hato-action-logo {{
-                        width: 43px;
-                        height: 43px;
-                        object-fit: contain;
-                    }}
-
-                    .hato-action-logo-cow {{
-                        width: 100%;
-                        height: 100%;
-                        object-fit: cover;
-                        border-radius: 50%;
-                    }}
-
-                    .hato-action-logo-bars {{
-                        filter: brightness(0) saturate(100%)
-                            invert(30%) sepia(25%) saturate(1100%)
-                            hue-rotate(90deg);
-                    }}
-
-                    .hato-action-title {{
-                        color: #244A36;
-                        font-size: 1.15rem;
-                        font-weight: 750;
-                        line-height: 1.4;
-                        margin-bottom: 10px;
-                    }}
-
-                    .hato-action-description {{
-                        color: #52685A;
-                        font-size: 0.88rem;
-                        line-height: 1.55;
-                        min-height: 44px;
-                        margin-bottom: 18px;
-                    }}
-
-                    .st-key-inicio-card-produccion div.stButton > button,
-                    .st-key-inicio-card-vaca div.stButton > button,
-                    .st-key-inicio-card-reporte div.stButton > button {{
-                        width: 100%;
-                        border-radius: 10px;
-                        min-height: 42px;
-                        font-weight: 650;
-                        border: 1px solid #C8DDCE;
-                        background: #FFFFFF;
-                        color: #24583A;
-                    }}
-
-                    .st-key-inicio-card-produccion div.stButton > button:hover,
-                    .st-key-inicio-card-vaca div.stButton > button:hover,
-                    .st-key-inicio-card-reporte div.stButton > button:hover {{
-                        background: #E4F2E8;
-                        border-color: #8EB99A;
-                        color: #174D32;
-                    }}
-
-            
-                    /* ==================================================
-                       7. DISEÑO RESPONSIVE — MÓVILES
-                    ================================================== */
-            
-                    @media (max-width: 700px) {{
-                        .hato-hero {{
-                            padding: 24px 20px;
-                            min-height: 210px;
-                        }}
-            
-                        .hato-hero-title {{
-                            font-size: 30px !important;
-                        }}
-            
-                        .hato-hero-description {{
-                            font-size: 14px !important;
-                        }}
-            
-                        .hato-kpi {{
-                            padding: 18px 6px;
-                            min-height: 150px;
-                        }}
-            
-                        .hato-kpi-value {{
-                            font-size: 25px;
-                        }}
-            
-                        /* Columna 1: vacas */
-                        .hato-kpi-vacas {{
-                            padding: 22px 12px;
-                            min-height: 280px;
-                        }}
-            
-                        .hato-kpi-vacas .hato-kpi-value {{
-                            font-size: 2.4rem;
-                        }}
-            
-                        .hato-kpi-vacas .hato-kpi-label {{
-                            font-size: 1rem;
-                        }}
-            
-                        /* Columna 2: producción */
-                        .hato-kpi-produccion {{
-                            padding: 22px 12px;
-                            min-height: 280px;
-                        }}
-            
-                        .hato-kpi-produccion .hato-kpi-produccion-value {{
-                            font-size: 2.4rem;
-                        }}
-            
-                        .hato-kpi-produccion .hato-kpi-produccion-label {{
-                            font-size: 1rem;
-                        }}
-
-                        /* Columna 3: potreros */
-                        .hato-kpi-cesped {{
-                            padding: 22px 12px;
-                            min-height: 280px;
-                        }}
-
-                        .hato-kpi-cesped .hato-kpi-value {{
-                            font-size: 2.4rem;
-                        }}
-
-                        .hato-kpi-cesped .hato-kpi-label {{
-                            font-size: 1rem;
-                        }}
-                    }}
-                </style>
-            
-                
-                <div class="hato-hero">
-                    <div class="hato-hero-content">
-                        <div class="hato-hero-eyebrow">
-                            HATO LA CASITA · GESTIÓN GANADERA
-                        </div>
-                        <h1 class="hato-hero-title">Hato La Casita</h1>
-                        <p class="hato-hero-description">
-                            Bienvenido al centro de control de tu finca.
-                            Consulta la producción y administra tu hato
-                            desde un solo lugar.
-                        </p>
+                <div class="hato-action-content">
+                    <div class="hato-action-icon-circle">
+                        {logo}
+                    </div>
+                    <div class="hato-action-title">{titulo}</div>
+                    <div class="hato-action-description">
+                        {descripcion}
                     </div>
                 </div>
-
                 """,
                 unsafe_allow_html=True,
             )
 
+            if st.button(
+                texto_boton,
+                key=clave_boton,
+                use_container_width=True,
+            ):
+                st.session_state.pagina = destino
+                st.rerun()
 
 
-    # ----------------------------------------------
-    # 4. INDICADORES CENTRADOS
-    # ----------------------------------------------
+# ============================================================
+# 5. PANTALLA PRINCIPAL
+# ============================================================
+
+def mostrar_inicio(finca):
+    """Muestra el panel ejecutivo de Hato La Casita."""
+
+    # Datos de la finca
+    total_vacas = finca.cantidad_vacas()
+    produccion_hoy = finca.produccion_total(date.today())
+
+    # Imágenes opcionales: se utiliza un fondo alternativo si faltan.
+    foto_cabecera = imagen_base64("hato_banner.jpg")
+    paisaje = imagen_base64("paisaje_fondo.jpeg")
+
+    if not foto_cabecera[1]:
+        st.warning(
+            "No se encontró una imagen válida para la cabecera. "
+            "Se mostrará un fondo verde."
+        )
+
+    if not paisaje[1]:
+        st.info(
+            "No se encontró assets/paisaje_fondo.jpeg. "
+            "Los accesos rápidos utilizarán un fondo alternativo."
+        )
+
+    cargar_estilos(foto_cabecera, paisaje)
+
+    # ---------- Resumen de la finca ----------
 
     st.markdown(
-        '<div class="hato-section-title">'
-        'Resumen de la finca'
-        '</div>',
-        unsafe_allow_html=True
+        '<div class="hato-section-title">Resumen de la finca</div>',
+        unsafe_allow_html=True,
     )
 
     st.markdown(
         '<div class="hato-section-subtitle">'
         'Indicadores principales de la operación.'
         '</div>',
-        unsafe_allow_html=True
+        unsafe_allow_html=True,
     )
 
     col1, col2, col3 = st.columns(3, gap="medium")
 
-    
-    with col1:
-        ruta_logo_vaca = (
-            Path(__file__).resolve().parent.parent
-            / "assets"
-            / "logo_vaca.png"
-        )
-    
-        if ruta_logo_vaca.is_file():
-            with open(ruta_logo_vaca, "rb") as archivo:
-                logo_vaca_base64 = base64.b64encode(
-                    archivo.read()
-                ).decode("utf-8")
-    
-            logo_html = (
-                f'<img src="data:image/png;base64,{logo_vaca_base64}" '
-                'alt="Logo de vaca" '
-                'class="hato-kpi-cow-logo" />'
-            )
-        else:
-            logo_html = '<span class="hato-kpi-fallback">🐄</span>'
-    
-        tarjeta_vacas_html = f"""
-        <div class="hato-kpi hato-kpi-vacas">
-            <div class="hato-kpi-icon-circle">
-                {logo_html}
-            </div>
-            <div class="hato-kpi-label">Vacas registradas</div>
-            <div class="hato-kpi-value">{total_vacas}</div>
-            <div class="hato-kpi-divider"></div>
-            <div class="hato-kpi-unit">ANIMALES</div>
-        </div>
-        """
-    
-        st.markdown(
-            tarjeta_vacas_html,
-            unsafe_allow_html=True,
-        )
+    mostrar_indicador(
+        col1,
+        "hato-kpi-vacas",
+        "logo_vaca.png",
+        "",
+        "Logo de vaca",
+        "Vacas registradas",
+        total_vacas,
+        "ANIMALES",
+        "🐄",
+    )
 
+    mostrar_indicador(
+        col2,
+        "hato-kpi-produccion",
+        "logo_jarra.png",
+        "",
+        "Logo de jarra de leche",
+        "Producción de hoy",
+        produccion_hoy,
+        "LITROS DE LECHE",
+        "🥛",
+    )
 
-   
-    with col2:
-        ruta_logo_jarra = (
-            Path(__file__).resolve().parent.parent
-            / "assets"
-            / "logo_jarra.png"
-        )
-    
-        if ruta_logo_jarra.is_file():
-            with open(ruta_logo_jarra, "rb") as archivo:
-                logo_jarra_base64 = base64.b64encode(
-                    archivo.read()
-                ).decode("utf-8")
-    
-            logo_html = (
-                f'<img src="data:image/png;base64,{logo_jarra_base64}" '
-                'alt="Logo de jarra de leche" '
-                'class="hato-kpi-jarra-logo" />'
-            )
-        else:
-            logo_html = '<span class="hato-kpi-jarra-fallback">🥛</span>'
-    
-        tarjeta_produccion_html = f"""
-        <div class="hato-kpi hato-kpi-produccion">
-            <div class="hato-kpi-produccion-icon-circle">
-                {logo_html}
-            </div>
-            <div class="hato-kpi-produccion-label">Producción de hoy</div>
-            <div class="hato-kpi-produccion-value">{produccion_hoy}</div>
-            <div class="hato-kpi-produccion-divider"></div>
-            <div class="hato-kpi-produccion-unit">LITROS DE LECHE</div>
-        </div>
-        """
-    
-        st.markdown(
-            tarjeta_produccion_html,
-            unsafe_allow_html=True,
-        )
+    mostrar_indicador(
+        col3,
+        "hato-kpi-cesped",
+        "logo_cesped.png",
+        "",
+        "Logo de césped",
+        "Estado de praderas",
+        12,
+        "POTREROS",
+        "🌱",
+    )
 
-    
-    with col3:
-        ruta_logo_cesped = (
-            Path(__file__).resolve().parent.parent
-            / "assets"
-            / "logo_cesped.png"
-        )
-
-        if ruta_logo_cesped.is_file():
-            with open(ruta_logo_cesped, "rb") as archivo:
-                logo_cesped_base64 = base64.b64encode(
-                    archivo.read()
-                ).decode("utf-8")
-
-            logo_html = (
-                f'<img src="data:image/png;base64,{logo_cesped_base64}" '
-                'alt="Logo de césped" '
-                'class="hato-kpi-cesped-logo" />'
-            )
-        else:
-            logo_html = (
-                '<span class="hato-kpi-fallback">🌱</span>'
-            )
-
-        tarjeta_cesped_html = f"""
-        <div class="hato-kpi hato-kpi-cesped">
-            <div class="hato-kpi-icon-circle">
-                {logo_html}
-            </div>
-            <div class="hato-kpi-label">Estado de praderas</div>
-            <div class="hato-kpi-value">12</div>
-            <div class="hato-kpi-divider"></div>
-            <div class="hato-kpi-unit">POTREROS</div>
-        </div>
-        """
-
-        st.markdown(
-            tarjeta_cesped_html,
-            unsafe_allow_html=True,
-        )
-
-    
-
-
-      
-
-    # ----------------------------------------------
-    # 5. ACCESOS RÁPIDOS
-    # ----------------------------------------------
+    # ---------- Accesos rápidos ----------
 
     st.divider()
 
     st.markdown(
-        '<div class="hato-section-title">'
-        'Accesos rápidos'
-        '</div>',
-        unsafe_allow_html=True
+        '<div class="hato-section-title">Accesos rápidos</div>',
+        unsafe_allow_html=True,
     )
 
     st.markdown(
         '<div class="hato-section-subtitle">'
         'Accede directamente a las operaciones más utilizadas.'
         '</div>',
-        unsafe_allow_html=True
+        unsafe_allow_html=True,
     )
 
-    
-    
     col1, col2, col3 = st.columns(3, gap="medium")
 
-    ruta_assets = (
-        Path(__file__).resolve().parent.parent / "assets"
+    mostrar_acceso(
+        col1,
+        "inicio-card-produccion",
+        "logo_cantina_leche.png",
+        "",
+        "Cantina de leche",
+        "🥛",
+        "Registrar producción",
+        "Registra la producción de leche de tus vacas.",
+        "Registrar producción",
+        "inicio_ir_registrar_produccion",
+        "Registrar producción",
     )
 
-    def cargar_logo(nombre_archivo, clase_logo, texto_alternativo):
-        ruta_logo = ruta_assets / nombre_archivo
+    mostrar_acceso(
+        col2,
+        "inicio-card-vaca",
+        "logo_cara_vaca.jpeg",
+        "hato-action-logo-cow",
+        "Cara de vaca",
+        "🐄",
+        "Registrar vaca",
+        "Añade animales al inventario de la finca.",
+        "Registrar vaca",
+        "inicio_ir_registrar_vaca",
+        "Registrar vaca",
+    )
 
-        if not ruta_logo.is_file():
-            return '<span style="font-size: 32px;">🌱</span>'
+    mostrar_acceso(
+        col3,
+        "inicio-card-reporte",
+        "logo_barras.png",
+        "hato-action-logo-bars",
+        "Gráfico de barras",
+        "📊",
+        "Reporte diario",
+        "Consulta los resultados por vaca y potrero.",
+        "Ver reporte diario",
+        "inicio_ir_reporte_diario",
+        "Reporte diario",
+    )
 
-        logo_base64 = base64.b64encode(
-            ruta_logo.read_bytes()
-        ).decode("utf-8")
-
-        tipo_logo, _ = mimetypes.guess_type(str(ruta_logo))
-
-        if not tipo_logo:
-            tipo_logo = "image/png"
-
-        return (
-            f'<img src="data:{tipo_logo};base64,{logo_base64}" '
-            f'alt="{texto_alternativo}" '
-            f'class="hato-action-logo {clase_logo}" />'
-        )
-
-    # TARJETA 1: REGISTRAR PRODUCCIÓN
-    
-    with col1:
-        with st.container(key="inicio-card-produccion"):
-            logo = cargar_logo(
-                "logo_cantina_leche.png",
-                "",
-                "Cantina de leche",
-            )
-
-            st.markdown(
-                f"""
-                <div class="hato-action-content">
-                    <div class="hato-action-icon-circle">
-                        {logo}
-                    </div>
-                    <div class="hato-action-title">
-                        Registrar producción
-                    </div>
-                    <div class="hato-action-description">
-                        Registra la producción de leche de tus vacas.
-                    </div>
-                </div>
-                """,
-                unsafe_allow_html=True,
-            )
-
-            if st.button(
-                "Registrar producción",
-                key="inicio_ir_registrar_produccion",
-                use_container_width=True,
-            ):
-                st.session_state.pagina = "Registrar producción"
-                st.rerun()
-
-    # TARJETA 2: REGISTRAR VACA
-    
-    with col2:
-        with st.container(key="inicio-card-vaca"):
-            logo = cargar_logo(
-                "logo_cara_vaca.jpeg",
-                "hato-action-logo-cow",
-                "Cara de vaca",
-            )
-
-            st.markdown(
-                f"""
-                <div class="hato-action-content">
-                    <div class="hato-action-icon-circle">
-                        {logo}
-                    </div>
-                    <div class="hato-action-title">
-                        Registrar vaca
-                    </div>
-                    <div class="hato-action-description">
-                        Añade animales al inventario de la finca.
-                    </div>
-                </div>
-                """,
-                unsafe_allow_html=True,
-            )
-
-            if st.button(
-                "Registrar vaca",
-                key="inicio_ir_registrar_vaca",
-                use_container_width=True,
-            ):
-                st.session_state.pagina = "Registrar vaca"
-                st.rerun()
-
-    # TARJETA 3: REPORTE DIARIO
-    
-    with col3:
-        with st.container(key="inicio-card-reporte"):
-            logo = cargar_logo(
-                "logo_barras.png",
-                "hato-action-logo-bars",
-                "Gráfico de barras",
-            )
-
-            st.markdown(
-                f"""
-                <div class="hato-action-content">
-                    <div class="hato-action-icon-circle">
-                        {logo}
-                    </div>
-                    <div class="hato-action-title">
-                        Reporte diario
-                    </div>
-                    <div class="hato-action-description">
-                        Consulta los resultados por vaca y potrero.
-                    </div>
-                </div>
-                """,
-                unsafe_allow_html=True,
-            )
-
-            if st.button(
-                "Ver reporte diario",
-                key="inicio_ir_reporte_diario",
-                use_container_width=True,
-            ):
-                st.session_state.pagina = "Reporte diario"
-                st.rerun()
-
-
-
-    # ----------------------------------------------
-    # 6. PIE DE PANTALLA
-    # ----------------------------------------------
+    # ---------- Pie de pantalla ----------
 
     st.divider()
-
-    st.caption(
-        "CONTROL LECHERO · HATO LA CASITA"
-    )
-
+    st.caption("CONTROL LECHERO · HATO LA CASITA")
