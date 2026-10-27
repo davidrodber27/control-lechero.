@@ -320,20 +320,21 @@ def cargar_estilos(foto_cabecera, paisaje):
             .hato-action-logo-cow {{
                 width: 76px;
                 height: 76px;
-                object-fit: cover;
-                object-position: center;
-                border-radius: 80%;
-                display: block;
-                background: transparent;
-            }}
-
-            .hato-action-logo-cow img {{
-                width: 100%;
-                height: 100%;
-                object-fit: cover;
+                object-fit: contain;
                 object-position: center;
                 border-radius: 50%;
                 display: block;
+                background: transparent;
+            }}
+            
+            .hato-action-logo-cow img {{
+                width: 100%;
+                height: 100%;
+                object-fit: contain;
+                object-position: center;
+                border-radius: 50%;
+                display: block;
+                background: transparent;
             }}
 
             /* Barras: sin círculo ni fondo */
