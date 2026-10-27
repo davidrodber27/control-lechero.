@@ -327,9 +327,91 @@ def mostrar_inicio(finca):
                         letter-spacing: 2px;
                         line-height: 1.4;
                     }}
+
+                    /* ==================================================
+                       6. COLUMNA  — POTREROS
+                    ================================================== */
+                    .hato-kpi-cesped {{
+                        background: linear-gradient(
+                            145deg,
+                            #F7FCF8 0%,
+                            #EDF7F0 100%
+                        );
+                        border: 1px solid #D9EADF;
+                        border-radius: 20px;
+                        padding: 26px 20px 22px;
+                        min-height: 300px;
+                        text-align: center;
+                        box-shadow: 0 5px 18px rgba(36, 90, 58, 0.07);
+                        box-sizing: border-box;
+                    }}
+
+                    .hato-kpi-cesped .hato-kpi-icon-circle {{
+                        width: 76px;
+                        height: 76px;
+                        margin: 0 auto 20px;
+                        border-radius: 50%;
+                        background: linear-gradient(
+                            145deg,
+                            #78B88B 0%,
+                            #287849 55%,
+                            #174D32 100%
+                        );
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        box-shadow:
+                            0 6px 14px rgba(34, 105, 65, 0.22),
+                            inset 0 1px 2px rgba(255, 255, 255, 0.3);
+                    }}
+
+                    .hato-kpi-cesped .hato-kpi-cesped-logo {{
+                        width: 43px;
+                        height: 43px;
+                        object-fit: contain;
+                        filter: brightness(0) invert(1);
+                    }}
+
+                    .hato-kpi-cesped .hato-kpi-fallback {{
+                        font-size: 36px;
+                        line-height: 1;
+                    }}
+
+                    .hato-kpi-cesped .hato-kpi-label {{
+                        color: #28583C;
+                        font-size: 1.18rem;
+                        font-weight: 700;
+                        line-height: 1.4;
+                        margin-bottom: 10px;
+                    }}
+
+                    .hato-kpi-cesped .hato-kpi-value {{
+                        color: #174D32;
+                        font-size: 2.8rem;
+                        font-weight: 800;
+                        line-height: 1.15;
+                        margin: 4px 0 12px;
+                        letter-spacing: -1px;
+                    }}
+
+                    .hato-kpi-cesped .hato-kpi-divider {{
+                        width: 54px;
+                        height: 2px;
+                        border-radius: 2px;
+                        background: #A6CDB1;
+                        margin: 0 auto 10px;
+                    }}
+
+                    .hato-kpi-cesped .hato-kpi-unit {{
+                        color: #63836D;
+                        font-size: 0.72rem;
+                        font-weight: 700;
+                        letter-spacing: 2px;
+                        line-height: 1.4;
+                    }}
             
                     /* ==================================================
-                       6. TARJETAS DE ACCIONES
+                       7. TARJETAS DE ACCIONES
                     ================================================== */
             
                     .hato-action-title {{
@@ -531,17 +613,42 @@ def mostrar_inicio(finca):
     
 
 
-    with col3:
-        st.markdown(
-            """
-            <div class="hato-kpi">
-                <div class="hato-kpi-icon">🌱</div>
-                <div class="hato-kpi-label">Potreros</div>
-                <div class="hato-kpi-value">12</div>
-                <div class="hato-kpi-unit">potreros configurados</div>
+        with col3:
+        ruta_logo_cesped = (
+            Path(__file__).resolve().parent.parent
+            / "assets"
+            / "logo_cesped.png"
+        )
+    
+        if ruta_logo_cesped.is_file():
+            with open(ruta_logo_cesped, "rb") as archivo:
+                logo_cesped_base64 = base64.b64encode(
+                    archivo.read()
+                ).decode("utf-8")
+    
+            logo_html = (
+                f'<img src="data:image/png;base64,{logo_cesped_base64}" '
+                'alt="Logo de césped" '
+                'class="hato-kpi-vaca-logo" />'
+            )
+        else:
+            logo_html = '<span>🌱</span>'
+    
+        tarjeta_cesped_html = f"""
+        <div class="hato-kpi hato-kpi-vacas">
+            <div class="hato-kpi-vacas-icon-circle">
+                {logo_html}
             </div>
-            """,
-            unsafe_allow_html=True
+            <div class="hato-kpi-vacas-label">Estado de praderas</div>
+            <div class="hato-kpi-vacas-value">12</div>
+            <div class="hato-kpi-vacas-divider"></div>
+            <div class="hato-kpi-vacas-unit">POTREROS</div>
+        </div>
+        """
+    
+        st.markdown(
+            tarjeta_cesped_html,
+            unsafe_allow_html=True,
         )
 
     # ----------------------------------------------
