@@ -135,9 +135,30 @@ if st.session_state.usuario is None:
                 "password": contrasena
             })
 
-            if respuesta.user is not None:
-                st.session_state.usuario = respuesta.user
-                st.rerun()
+            
+        if respuesta.user is not None:
+        
+            usuario = respuesta.user
+        
+            # Obtener el rol asignado desde Supabase Auth.
+            metadatos = usuario.app_metadata or {}
+            rol = metadatos.get("rol")
+        
+            # Solo aceptar los dos roles autorizados.
+            if rol not in ("admin", "empleado"):
+                supabase.auth.sign_out()
+        
+                st.error(
+                    "Tu cuenta no tiene un rol autorizado "
+                    "para ingresar a Control Lechero."
+                )
+                st.stop()
+        
+            st.session_state.usuario = usuario
+            st.session_state.rol = rol
+        
+            st.rerun()
+
 
             else:
                 st.error(
@@ -384,6 +405,9 @@ st.markdown("""
 # ============================================================
 # MENÚ LATERAL
 # ============================================================
+
+rol = st.session_state.get("rol")
+
 with st.sidebar:
 
     # Marca: logo y encabezado
@@ -431,15 +455,64 @@ with st.sidebar:
         '<div class="menu-label">General</div>',
         unsafe_allow_html=True,
     )
-
-    opciones_principales = [
-        ("Inicio", "Inicio", ":material/home:"),
-        ("Registrar vaca", "Registrar vaca", ":material/pets:"),
-        ("Vacas registradas", "Vacas registradas", ":material/list_alt:"),
-        ("Administrar vacas", "Administrar vacas", ":material/settings:"),
-    ]
-
-    for texto, pagina, icono in opciones_principales:
+    
+    # Obtener el rol del usuario autenticado.
+    rol = st.session_state.get("rol")
+    
+    # Menú general: únicamente administrador.
+    if rol == "admin":
+    
+        st.markdown(
+            '<div class="menu-label">General</div>',
+            unsafe_allow_html=True
+        )
+    
+        opciones_principales = [
+            ("Inicio", "Inicio", ":material/home:"),
+            ("Registrar vaca", "Registrar vaca", ":material/pets:"),
+            ("Vacas registradas", "Vacas registradas", ":material/list_alt:"),
+            ("Administrar vacas", "Administrar vacas", ":material/settings:"),
+        ]
+    
+        for texto, pagina, icono in opciones_principales:
+    
+            if st.button(
+                texto,
+                key=f"menu_{pagina.lower().replace(' ', '_')}",
+                icon=icono,
+                use_container_width=True,
+                type=(
+                    "primary"
+                    if st.session_state.pagina == pagina
+                    else "secondary"
+                ),
+            ):
+                st.session_state.pagina = pagina
+                st.rerun()
+    
+    
+    # Menú de producción.
+    st.markdown(
+        '<div class="menu-label">Producción</div>',
+        unsafe_allow_html=True
+    )
+    
+    if rol == "admin":
+    
+        opciones_produccion = [
+            ("Registrar producción", "Registrar producción", ":material/water_drop:"),
+            ("Editar producción", "Editar producción", ":material/edit:"),
+            ("Reporte diario", "Reporte diario", ":material/analytics:"),
+        ]
+    
+    else:
+    
+        opciones_produccion = [
+            ("Registrar producción", "Registrar producción", ":material/water_drop:"),
+        ]
+    
+    for texto, pagina, icono in opciones_produccion:
+    
         if st.button(
             texto,
             key=f"menu_{pagina.lower().replace(' ', '_')}",
@@ -454,6 +527,7 @@ with st.sidebar:
             st.session_state.pagina = pagina
             st.rerun()
 
+    
     # Menú de producción
     st.markdown(
         '<div class="menu-label">Producción</div>',
@@ -644,6 +718,19 @@ with st.sidebar:
 finca = st.session_state.finca
 pagina = st.session_state.pagina
 
+# Verificar los permisos antes de mostrar una pantalla.
+paginas_empleado = [
+    "Registrar producción"
+]
+
+if rol == "empleado" and pagina not in paginas_empleado:
+
+    st.session_state.pagina = "Registrar producción"
+    st.rerun()
+
+if rol not in ("admin", "empleado"):
+    st.error("No tienes autorización para acceder.")
+    st.stop()
 
 if pagina == "Inicio":
 
