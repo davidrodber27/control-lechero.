@@ -540,6 +540,16 @@ with st.sidebar:
         ),
     ]
 
+    st.write("Opciones de producción:", opciones_produccion)
+
+    st.write(
+        "Claves generadas:",
+        [
+            f"menu_{pagina.lower().replace(' ', '_')}"
+            for texto, pagina, icono in opciones_produccion
+        ]
+    )
+
     for texto, pagina, icono in opciones_produccion:
         if st.button(
             texto,
