@@ -32,6 +32,7 @@ def mostrar_registrar_vaca(finca, supabase):
                 "Jersey",
                 "Normando",
                 "Cruce",
+                "Ayrshire"
                 "Otra"
             ]
         )
