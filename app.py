@@ -541,20 +541,20 @@ with st.sidebar:
     ]
 
     for texto, pagina, icono in opciones_produccion:
-    if st.button(
-        texto,
-        key=f"menu_{pagina.lower().replace(' ', '_')}",
-        use_container_width=True,
-        type=(
-            "primary"
-            if st.session_state.pagina == pagina
-            else "secondary"
-        ),
-    ):
-        st.session_state.pagina = pagina
-        st.rerun()
-
-st.divider()
+        if st.button(
+            texto,
+            key=f"menu_{pagina.lower().replace(' ', '_')}",
+            use_container_width=True,
+            type=(
+                "primary"
+                if st.session_state.pagina == pagina
+                else "secondary"
+            ),
+        ):
+            st.session_state.pagina = pagina
+            st.rerun()
+    
+    st.divider()
 
     
     # INFORMACIÓN DEL USUARIO
