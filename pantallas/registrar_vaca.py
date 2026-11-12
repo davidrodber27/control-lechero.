@@ -25,17 +25,34 @@ def mostrar_registrar_vaca(finca, supabase):
             placeholder="Ejemplo: Roja"
         )
 
-        raza = st.selectbox(
+        
+        opciones_razas = [
+            "Holstein",
+            "Jersey",
+            "Normando",
+            "Ayrshire",
+            "Cruce",
+            "Otra"
+        ]
+
+        raza_seleccionada = st.selectbox(
             "Raza",
-            [
-                "Holstein",
-                "Jersey",
-                "Normando",
-                "Cruce",
-                "Ayrshire"
-                "Otra"
-            ]
+            opciones_razas + ["Escribir una raza o cruce"]
         )
+
+        if raza_seleccionada == "Escribir una raza o cruce":
+            raza = st.text_input(
+                "Escribe la raza o el cruce",
+                placeholder="Ejemplo: Holstein x Jersey"
+            ).strip()
+        elif raza_seleccionada == "Otra":
+            raza = st.text_input(
+                "Especifica la raza",
+                placeholder="Nombre de la raza"
+            ).strip()
+        else:
+            raza = raza_seleccionada
+
 
         fecha_nacimiento = st.date_input(
             "Fecha de nacimiento",
@@ -58,6 +75,11 @@ def mostrar_registrar_vaca(finca, supabase):
         elif not nombre_limpio:
             st.error(
                 "Debes escribir el nombre de la vaca."
+            )
+
+        elif not raza:
+            st.error(
+                "Debes seleccionar o escribir la raza de la vaca."
             )
 
         elif finca.buscar_vaca(identificacion_limpia):
