@@ -181,13 +181,12 @@ if st.session_state.usuario is None:
 if "finca" not in st.session_state:
 
     try:
-        finca = ControlLechero(
-            "Hato La Casita"
-        )
+        finca = ControlLechero("Hato La Casita")
 
         finca = cargar_vacas(
             supabase=supabase,
-            finca=finca
+            finca=finca,
+            cargar_historial=(st.session_state.rol == "admin")
         )
 
         st.session_state.finca = finca
