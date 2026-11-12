@@ -127,49 +127,40 @@ if st.session_state.usuario is None:
             "Ingresar"
         )
 
+    
     if ingresar:
-
         try:
             respuesta = supabase.auth.sign_in_with_password({
                 "email": correo.strip(),
                 "password": contrasena
             })
 
-            
-        if respuesta.user is not None:
-        
-            usuario = respuesta.user
-        
-            # Obtener el rol asignado desde Supabase Auth.
-            metadatos = usuario.app_metadata or {}
-            rol = metadatos.get("rol")
-        
-            # Solo aceptar los dos roles autorizados.
-            if rol not in ("admin", "empleado"):
-                supabase.auth.sign_out()
-        
-                st.error(
-                    "Tu cuenta no tiene un rol autorizado "
-                    "para ingresar a Control Lechero."
-                )
-                st.stop()
-        
-            st.session_state.usuario = usuario
-            st.session_state.rol = rol
-        
-            st.rerun()
+            if respuesta.user is not None:
+                usuario = respuesta.user
+                metadatos = usuario.app_metadata or {}
+                rol = metadatos.get("rol")
 
+                if rol not in ("admin", "empleado"):
+                    supabase.auth.sign_out()
+                    st.error(
+                        "Tu cuenta no tiene un rol autorizado "
+                        "para ingresar a Control Lechero."
+                    )
+                    st.stop()
+
+                st.session_state.usuario = usuario
+                st.session_state.rol = rol
+                st.rerun()
 
             else:
-                st.error(
-                    "No fue posible iniciar sesión."
-                )
+                st.error("No fue posible iniciar sesión.")
 
         except Exception:
             st.error(
                 "No se pudo iniciar sesión. "
                 "Verifica tus credenciales e inténtalo de nuevo."
             )
+
 
     st.stop()
 
