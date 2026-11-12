@@ -3,11 +3,11 @@
 from modelos.vaca import Vaca
 from servicios.fechas import normalizar_fecha
 
-
-def cargar_vacas(supabase, finca):
+def cargar_vacas(supabase, finca, cargar_historial=True):
     """
-    Carga las vacas y su historial de producción
-    desde Supabase al objeto ControlLechero.
+    Carga las vacas desde Supabase.
+    El historial de producción se carga únicamente
+    cuando cargar_historial=True.
     """
 
     respuesta_vacas = (
@@ -17,26 +17,29 @@ def cargar_vacas(supabase, finca):
         .execute()
     )
 
-    respuesta_produccion = (
-        supabase
-        .table("produccion")
-        .select("*")
-        .execute()
-    )
-
-    # Agrupar la producción por identificación de vaca.
+    # Solo el administrador consulta el historial.
     produccion_por_vaca = {}
 
-    for registro in respuesta_produccion.data:
-        identificacion = registro["identificacion_vaca"]
+    if cargar_historial:
 
-        if identificacion not in produccion_por_vaca:
-            produccion_por_vaca[identificacion] = []
+        respuesta_produccion = (
+            supabase
+            .table("produccion")
+            .select("*")
+            .execute()
+        )
 
-        produccion_por_vaca[identificacion].append(registro)
+        for registro in respuesta_produccion.data:
+            identificacion = registro["identificacion_vaca"]
 
-    # Reconstruir cada objeto Vaca.
+            if identificacion not in produccion_por_vaca:
+                produccion_por_vaca[identificacion] = []
+
+            produccion_por_vaca[identificacion].append(registro)
+
+    # Reconstruir los objetos Vaca.
     for datos in respuesta_vacas.data:
+
         nueva_vaca = Vaca(
             nombre=datos["nombre"],
             fecha_nacimiento=datos["fecha_nacimiento"],
@@ -60,6 +63,9 @@ def cargar_vacas(supabase, finca):
         finca.agregar_vaca(nueva_vaca)
 
     return finca
+
+
+
 
 
 def guardar_produccion(
