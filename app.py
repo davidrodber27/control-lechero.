@@ -655,6 +655,7 @@ with st.sidebar:
             pass
 
         st.session_state.usuario = None
+        st.session_state.pop("rol", None)
         st.session_state.pop("finca", None)
         st.session_state.pagina = "Inicio"
         st.rerun()
