@@ -155,11 +155,9 @@ if st.session_state.usuario is None:
             else:
                 st.error("No fue posible iniciar sesión.")
 
-        except Exception:
-            st.error(
-                "No se pudo iniciar sesión. "
-                "Verifica tus credenciales e inténtalo de nuevo."
-            )
+        except Exception as error:
+            st.error("Error al iniciar sesión:")
+            st.code(str(error))
 
 
     st.stop()
