@@ -479,43 +479,6 @@ with st.sidebar:
                 st.rerun()
     
     
-    # Menú de producción.
-    st.markdown(
-        '<div class="menu-label">Producción</div>',
-        unsafe_allow_html=True
-    )
-    
-    if rol == "admin":
-    
-        opciones_produccion = [
-            ("Registrar producción", "Registrar producción", ":material/water_drop:"),
-            ("Editar producción", "Editar producción", ":material/edit:"),
-            ("Reporte diario", "Reporte diario", ":material/analytics:"),
-        ]
-    
-    else:
-    
-        opciones_produccion = [
-            ("Registrar producción", "Registrar producción", ":material/water_drop:"),
-        ]
-    
-    for texto, pagina, icono in opciones_produccion:
-    
-        if st.button(
-            texto,
-            key=f"menu_{pagina.lower().replace(' ', '_')}",
-            icon=icono,
-            use_container_width=True,
-            type=(
-                "primary"
-                if st.session_state.pagina == pagina
-                else "secondary"
-            ),
-        ):
-            st.session_state.pagina = pagina
-            st.rerun()
-
-    
     # Menú de producción
     st.markdown(
         '<div class="menu-label">Producción</div>',
