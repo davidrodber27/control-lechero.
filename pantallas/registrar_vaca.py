@@ -5,6 +5,7 @@ from datetime import date
 from modelos.vaca import Vaca
 
 
+
 def mostrar_registrar_vaca(finca, supabase):
 
     st.title("Registrar una vaca")
@@ -25,7 +26,6 @@ def mostrar_registrar_vaca(finca, supabase):
             placeholder="Ejemplo: Roja"
         )
 
-        
         opciones_razas = [
             "Holstein",
             "Jersey",
@@ -37,22 +37,13 @@ def mostrar_registrar_vaca(finca, supabase):
 
         raza_seleccionada = st.selectbox(
             "Raza",
-            opciones_razas + ["Escribir una raza o cruce"]
+            opciones_razas
         )
 
-        if raza_seleccionada == "Escribir una raza o cruce":
-            raza = st.text_input(
-                "Escribe la raza o el cruce",
-                placeholder="Ejemplo: Holstein x Jersey"
-            ).strip()
-        elif raza_seleccionada == "Otra":
-            raza = st.text_input(
-                "Especifica la raza",
-                placeholder="Nombre de la raza"
-            ).strip()
-        else:
-            raza = raza_seleccionada
-
+        raza_personalizada = st.text_input(
+            "Especificar raza o cruce (si aplica)",
+            placeholder="Ejemplo: Holstein x Jersey"
+        )
 
         fecha_nacimiento = st.date_input(
             "Fecha de nacimiento",
@@ -66,6 +57,14 @@ def mostrar_registrar_vaca(finca, supabase):
 
         identificacion_limpia = identificacion.strip()
         nombre_limpio = nombre.strip()
+
+        # Determinar la raza que se guardará.
+        if raza_seleccionada in ("Cruce", "Otra"):
+            raza = raza_personalizada.strip()
+        elif raza_personalizada.strip():
+            raza = raza_personalizada.strip()
+        else:
+            raza = raza_seleccionada
 
         if not identificacion_limpia:
             st.error(
@@ -138,4 +137,3 @@ def mostrar_registrar_vaca(finca, supabase):
                 )
                 st.caption("Detalle técnico del error:")
                 st.code(str(error))
-
