@@ -42,7 +42,7 @@ class Vaca:
         self.nombre = nombre.strip().title()
         self.raza = raza.strip().title()
 
-        # 4. Normalizar la fecha y guardarla en formato ISO
+        # 4. Normalizar la fecha de nacimiento
         fecha_normalizada = normalizar_fecha(fecha_nacimiento)
 
         if isinstance(fecha_normalizada, datetime):
@@ -60,8 +60,7 @@ class Vaca:
                 "La fecha de nacimiento no puede estar en el futuro."
             )
 
-                # 5. Validar y guardar los datos reproductivos.
-
+        # 5. Validar y guardar los datos reproductivos
         if type(numero_partos) is not int or numero_partos < 0:
             raise ValueError(
                 "El número de partos debe ser un entero no negativo."
@@ -74,9 +73,6 @@ class Vaca:
 
             if isinstance(fecha_parto, datetime):
                 fecha_parto = fecha_parto.date()
-
-            if isinstance(fecha_parto, date):
-                fecha_parto = fecha_parto
 
             if not isinstance(fecha_parto, date):
                 raise ValueError("La fecha del último parto no es válida.")
@@ -101,10 +97,7 @@ class Vaca:
         else:
             self.fecha_ultimo_parto = None
 
-        # Historial de producción.
-        self.registros = {}
-
-        # Clave: fecha ISO. Valor: producción y potrero de ese día.
+        # 6. Inicializar el historial de producción
         self.registros = {}
 
     @property
@@ -185,7 +178,6 @@ class Vaca:
 
         return True
 
-    
     def actualizar_produccion(
         self,
         fecha,
@@ -221,7 +213,6 @@ class Vaca:
 
         return True
 
-
     def calcular_produccion(self, fecha):
         """Devuelve los litros del día o None si no hay registro."""
 
@@ -248,13 +239,13 @@ class Vaca:
             for registro in self.registros.values()
         )
 
-        def __repr__(self) -> str:
-            return (
-                f"Vaca: {self.nombre} | "
-                f"ID: {self.identificacion} | "
-                f"Raza: {self.raza} | "
-                f"Edad: {self.edad_actual} | "
-                f"Partos: {self.numero_partos} | "
-                f"Días posparto: {self.dias_posparto} | "
-                f"Producción acumulada: {self.produccion_acumulada()} L"
-            )
+    def __repr__(self) -> str:
+        return (
+            f"Vaca: {self.nombre} | "
+            f"ID: {self.identificacion} | "
+            f"Raza: {self.raza} | "
+            f"Edad: {self.edad_actual} | "
+            f"Partos: {self.numero_partos} | "
+            f"Días posparto: {self.dias_posparto} | "
+            f"Producción acumulada: {self.produccion_acumulada()} L"
+        )
