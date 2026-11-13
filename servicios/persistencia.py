@@ -3,6 +3,7 @@
 from modelos.vaca import Vaca
 from servicios.fechas import normalizar_fecha
 
+
 def cargar_vacas(supabase, finca, cargar_historial=True):
     """
     Carga las vacas desde Supabase.
@@ -44,7 +45,9 @@ def cargar_vacas(supabase, finca, cargar_historial=True):
             nombre=datos["nombre"],
             fecha_nacimiento=datos["fecha_nacimiento"],
             raza=datos["raza"],
-            identificacion=datos["identificacion"]
+            identificacion=datos["identificacion"],
+            fecha_ultimo_parto=datos.get("fecha_ultimo_parto"),
+            numero_partos=datos.get("numero_partos", 0)
         )
 
         registros = produccion_por_vaca.get(
@@ -63,6 +66,7 @@ def cargar_vacas(supabase, finca, cargar_historial=True):
         finca.agregar_vaca(nueva_vaca)
 
     return finca
+
 
 
 
