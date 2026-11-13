@@ -14,7 +14,9 @@ class Vaca:
         nombre: str,
         fecha_nacimiento: str,
         raza: str,
-        identificacion: str | None = None
+        identificacion: str | None = None,
+        fecha_ultimo_parto: str | None = None,
+        numero_partos: int = 0
     ):
         # 1. Validar el nombre
         if not isinstance(nombre, str) or not nombre.strip():
@@ -58,6 +60,50 @@ class Vaca:
                 "La fecha de nacimiento no puede estar en el futuro."
             )
 
+                # 5. Validar y guardar los datos reproductivos.
+
+        if type(numero_partos) is not int or numero_partos < 0:
+            raise ValueError(
+                "El número de partos debe ser un entero no negativo."
+            )
+
+        self.numero_partos = numero_partos
+
+        if fecha_ultimo_parto is not None:
+            fecha_parto = normalizar_fecha(fecha_ultimo_parto)
+
+            if isinstance(fecha_parto, datetime):
+                fecha_parto = fecha_parto.date()
+
+            if isinstance(fecha_parto, date):
+                fecha_parto = fecha_parto
+
+            if not isinstance(fecha_parto, date):
+                raise ValueError("La fecha del último parto no es válida.")
+
+            if fecha_parto > date.today():
+                raise ValueError(
+                    "La fecha del parto no puede estar en el futuro."
+                )
+
+            if fecha_parto < fecha_nac:
+                raise ValueError(
+                    "El parto no puede ser anterior al nacimiento."
+                )
+
+            if self.numero_partos == 0:
+                raise ValueError(
+                    "Una vaca con fecha de parto debe tener al menos un parto."
+                )
+
+            self.fecha_ultimo_parto = fecha_parto.isoformat()
+
+        else:
+            self.fecha_ultimo_parto = None
+
+        # Historial de producción.
+        self.registros = {}
+
         # Clave: fecha ISO. Valor: producción y potrero de ese día.
         self.registros = {}
 
@@ -79,6 +125,17 @@ class Vaca:
             meses += 12
 
         return f"{anos} años y {meses} meses"
+
+    @property
+    def dias_posparto(self) -> int | None:
+        """Calcula los días transcurridos desde el último parto."""
+
+        if self.fecha_ultimo_parto is None:
+            return None
+
+        fecha_parto = date.fromisoformat(self.fecha_ultimo_parto)
+
+        return (date.today() - fecha_parto).days
 
     @staticmethod
     def validar_litros(litros):
@@ -191,11 +248,13 @@ class Vaca:
             for registro in self.registros.values()
         )
 
-    def __repr__(self) -> str:
-        return (
-            f"Vaca: {self.nombre} | "
-            f"ID: {self.identificacion} | "
-            f"Raza: {self.raza} | "
-            f"Edad: {self.edad_actual} | "
-            f"Producción acumulada: {self.produccion_acumulada()} L"
-        )
+        def __repr__(self) -> str:
+            return (
+                f"Vaca: {self.nombre} | "
+                f"ID: {self.identificacion} | "
+                f"Raza: {self.raza} | "
+                f"Edad: {self.edad_actual} | "
+                f"Partos: {self.numero_partos} | "
+                f"Días posparto: {self.dias_posparto} | "
+                f"Producción acumulada: {self.produccion_acumulada()} L"
+            )
