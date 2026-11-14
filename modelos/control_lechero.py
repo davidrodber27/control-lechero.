@@ -118,6 +118,7 @@ class ControlLechero:
             for vaca in self.vacas.values()
         )
 
+    
     def produccion_por_potrero(self, fecha) -> dict:
         """Calcula la producción diaria agrupada por potrero."""
 
@@ -129,16 +130,18 @@ class ControlLechero:
 
             if registro is not None:
                 potrero = registro["potrero"]
-                litros = (
-                    registro["litros_manana"]
-                    + registro["litros_tarde"]
-                )
+
+                litros_manana = registro["litros_manana"] or 0
+                litros_tarde = registro["litros_tarde"] or 0
+
+                litros = litros_manana + litros_tarde
 
                 produccion[potrero] = (
                     produccion.get(potrero, 0) + litros
                 )
 
         return produccion
+
 
     def cantidad_vacas(self) -> int:
         """Devuelve el número de vacas registradas."""
