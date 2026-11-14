@@ -18,15 +18,12 @@ class Vaca:
         fecha_ultimo_parto: str | None = None,
         numero_partos: int = 0
     ):
-        # 1. Validar el nombre
         if not isinstance(nombre, str) or not nombre.strip():
             raise ValueError("El nombre de la vaca no puede estar vacío.")
 
-        # 2. Validar la raza
         if not isinstance(raza, str) or not raza.strip():
             raise ValueError("La raza no puede estar vacía.")
 
-        # 3. Validar y normalizar la identificación
         if identificacion is None:
             identificacion = nombre.strip()
 
@@ -42,7 +39,6 @@ class Vaca:
         self.nombre = nombre.strip().title()
         self.raza = raza.strip().title()
 
-        # 4. Normalizar la fecha de nacimiento
         fecha_normalizada = normalizar_fecha(fecha_nacimiento)
 
         if isinstance(fecha_normalizada, datetime):
@@ -60,7 +56,6 @@ class Vaca:
                 "La fecha de nacimiento no puede estar en el futuro."
             )
 
-        # 5. Validar y guardar los datos reproductivos
         if type(numero_partos) is not int or numero_partos < 0:
             raise ValueError(
                 "El número de partos debe ser un entero no negativo."
@@ -97,7 +92,6 @@ class Vaca:
         else:
             self.fecha_ultimo_parto = None
 
-        # 6. Inicializar el historial de producción
         self.registros = {}
 
     @property
@@ -131,33 +125,52 @@ class Vaca:
         return (date.today() - fecha_parto).days
 
     @staticmethod
-    def validar_litros(litros):
-        """Acepta únicamente litros enteros no negativos."""
+    def validar_litros(litros, permitir_pendiente=True):
+        """
+        Acepta enteros no negativos.
+        None representa un ordeño todavía no registrado.
+        """
+
+        if litros is None and permitir_pendiente:
+            return
 
         if type(litros) is not int:
-            raise TypeError("Los litros deben ser números enteros.")
+            raise TypeError(
+                "Los litros deben ser enteros o None si están pendientes."
+            )
 
         if litros < 0:
             raise ValueError("Los litros no pueden ser negativos.")
 
-    def registrar_produccion(
-        self,
-        fecha,
-        litros_manana: int,
-        litros_tarde: int,
-        potrero: int
-    ):
-        """Registra la producción de ambos ordeños para una fecha."""
-
+    @staticmethod
+    def validar_fecha_produccion(fecha):
         fecha_normalizada = normalizar_fecha(fecha)
+
+        if isinstance(fecha_normalizada, datetime):
+            fecha_normalizada = fecha_normalizada.date()
 
         if isinstance(fecha_normalizada, date):
             fecha_normalizada = fecha_normalizada.isoformat()
 
-        if date.fromisoformat(fecha_normalizada) > date.today():
+        fecha_objeto = date.fromisoformat(fecha_normalizada)
+
+        if fecha_objeto > date.today():
             raise ValueError(
                 "La fecha de producción no puede estar en el futuro."
             )
+
+        return fecha_normalizada
+
+    def registrar_produccion(
+        self,
+        fecha,
+        litros_manana: int | None,
+        litros_tarde: int | None,
+        potrero: int
+    ):
+        """Registra la producción de ambos ordeños para una fecha."""
+
+        fecha_normalizada = self.validar_fecha_produccion(fecha)
 
         self.validar_litros(litros_manana)
         self.validar_litros(litros_tarde)
@@ -181,18 +194,13 @@ class Vaca:
     def actualizar_produccion(
         self,
         fecha,
-        litros_manana: int,
-        litros_tarde: int,
+        litros_manana: int | None,
+        litros_tarde: int | None,
         potrero: int
     ) -> bool:
         """Actualiza un registro de producción existente."""
 
-        fecha_normalizada = normalizar_fecha(fecha).isoformat()
-
-        if date.fromisoformat(fecha_normalizada) > date.today():
-            raise ValueError(
-                "La fecha de producción no puede estar en el futuro."
-            )
+        fecha_normalizada = self.validar_fecha_produccion(fecha)
 
         self.validar_litros(litros_manana)
         self.validar_litros(litros_tarde)
@@ -214,7 +222,10 @@ class Vaca:
         return True
 
     def calcular_produccion(self, fecha):
-        """Devuelve los litros del día o None si no hay registro."""
+        """
+        Calcula los litros registrados para el día.
+        Los ordeños pendientes no se cuentan como producción.
+        """
 
         fecha_normalizada = normalizar_fecha(fecha)
 
@@ -226,16 +237,20 @@ class Vaca:
         if registro is None:
             return None
 
-        return (
-            registro["litros_manana"]
-            + registro["litros_tarde"]
-        )
+        litros_manana = registro["litros_manana"]
+        litros_tarde = registro["litros_tarde"]
+
+        if litros_manana is None and litros_tarde is None:
+            return None
+
+        return (litros_manana or 0) + (litros_tarde or 0)
 
     def produccion_acumulada(self) -> int:
-        """Suma la producción de todos los días registrados."""
+        """Suma los litros efectivamente registrados."""
 
         return sum(
-            registro["litros_manana"] + registro["litros_tarde"]
+            (registro["litros_manana"] or 0)
+            + (registro["litros_tarde"] or 0)
             for registro in self.registros.values()
         )
 
@@ -249,3 +264,4 @@ class Vaca:
             f"Días posparto: {self.dias_posparto} | "
             f"Producción acumulada: {self.produccion_acumulada()} L"
         )
+
