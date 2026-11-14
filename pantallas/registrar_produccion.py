@@ -67,9 +67,6 @@ def mostrar_registrar_produccion(finca, supabase):
         )
 
     if enviar_produccion:
-        st.write("DEBUG - Litros seleccionados:", litros)
-        st.write("DEBUG - Tipo de dato:", type(litros))
-        st.write("DEBUG - Orden seleccionado:", orden)
 
         identificacion = opciones_vacas[vaca_seleccionada]
 
