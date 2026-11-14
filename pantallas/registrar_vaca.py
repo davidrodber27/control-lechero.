@@ -58,6 +58,7 @@ def mostrar_registrar_vaca(finca, supabase):
         st.divider()
         st.subheader("Datos reproductivos")
 
+        
         tiene_partos = st.checkbox(
             "La vaca ya ha tenido partos"
         )
@@ -73,14 +74,16 @@ def mostrar_registrar_vaca(finca, supabase):
 
             fecha_ultimo_parto = st.date_input(
                 "Fecha del último parto",
-                value=date.today(),
+                value=None,
                 min_value=fecha_nacimiento,
-                max_value=date.today()
+                max_value=date.today(),
+                format="DD/MM/YYYY"
             )
 
         else:
             numero_partos = 0
             fecha_ultimo_parto = None
+
 
         enviar = st.form_submit_button("Registrar vaca")
 
@@ -108,8 +111,13 @@ def mostrar_registrar_vaca(finca, supabase):
         elif not raza:
             st.error("Debes seleccionar o escribir la raza de la vaca.")
 
+        elif tiene_partos and fecha_ultimo_parto is None:
+            st.error("Debes seleccionar la fecha del último parto.")
+
         elif finca.buscar_vaca(identificacion_limpia):
             st.error("Ya existe una vaca con esa identificación.")
+
+        
 
         else:
 
