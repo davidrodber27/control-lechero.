@@ -9,6 +9,10 @@ def mostrar_registrar_produccion(finca, supabase):
 
     st.divider()
     st.header("Registrar producción de leche")
+    # Mostrar el mensaje de confirmación después de guardar.
+    if "mensaje_produccion" in st.session_state:
+        st.success(st.session_state.mensaje_produccion)
+        del st.session_state.mensaje_produccion
 
     vacas_disponibles = finca.vacas
 
@@ -79,13 +83,14 @@ def mostrar_registrar_produccion(finca, supabase):
                 potrero=int(potrero)
             )
 
-            if respuesta is not None:
-                st.success(
-                    f"Ordeño de la {orden.lower()} guardado correctamente: "
-                    f"{int(litros)} litros para {vaca_seleccionada}."
-                )
+           if respuesta is not None:
 
-                # Recargar la aplicación para actualizar los datos.
+                st.session_state.mensaje_produccion = (
+                    f"¡Almacenado con éxito! Se registraron "
+                    f"{int(litros)} litros del ordeño de la "
+                    f"{orden.lower()} para {vaca_seleccionada}."
+                )
+            
                 st.rerun()
 
             else:
