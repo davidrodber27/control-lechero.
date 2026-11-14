@@ -108,3 +108,19 @@ def guardar_produccion(
 
     return respuesta.data
 
+
+def consultar_produccion_hoy(supabase):
+    """
+    Consulta el reporte de producción del día actual
+    mediante la función controlada de Supabase.
+    """
+
+    respuesta = (
+        supabase
+        .rpc("consultar_produccion_hoy")
+        .execute()
+    )
+
+    return respuesta.data or []
+
+
