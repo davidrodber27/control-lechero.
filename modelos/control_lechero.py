@@ -22,6 +22,12 @@ class ControlLechero:
     def agregar_vaca(self, vaca: Vaca) -> bool:
         """Agrega una vaca si su identificación no está registrada."""
 
+        print("CLASE RECIBIDA:", type(vaca))
+        print("CLASE ESPERADA:", Vaca)
+        print("¿ES INSTANCIA?:", isinstance(vaca, Vaca))
+        print("MÓDULO RECIBIDO:", type(vaca).__module__)
+        print("MÓDULO ESPERADO:", Vaca.__module__)
+
         if not isinstance(vaca, Vaca):
             raise TypeError("Solo se pueden agregar objetos de tipo Vaca.")
 
