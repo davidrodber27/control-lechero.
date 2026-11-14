@@ -131,6 +131,12 @@ def mostrar_registrar_vaca(finca, supabase):
                     fecha_ultimo_parto=fecha_ultimo_parto,
                     numero_partos=int(numero_partos)
                 )
+                st.write("Tipo del objeto:", type(nueva_vaca))
+                st.write("Clase Vaca importada:", Vaca)
+                st.write(
+                    "¿Es una instancia de Vaca?",
+                    isinstance(nueva_vaca, Vaca)
+                )
 
                 # Preparar datos para Supabase
                 datos_vaca = {
