@@ -50,7 +50,7 @@ def mostrar_registrar_produccion(finca, supabase):
         )
 
         litros = st.number_input(
-            f"Litros del ordeño de la {orden.lower()}",
+            "Litros del ordeño seleccionado",
             min_value=0,
             step=1,
             value=0
