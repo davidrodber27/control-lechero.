@@ -5,7 +5,6 @@ from supabase import create_client
 from pathlib import Path
 from modelos.control_lechero import ControlLechero
 from servicios.persistencia import cargar_vacas
-
 from pantallas.inicio import mostrar_inicio
 from pantallas.registrar_vaca import mostrar_registrar_vaca
 from pantallas.vacas_registradas import mostrar_vacas_registradas
