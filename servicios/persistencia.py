@@ -1,5 +1,4 @@
 
-
 from modelos.vaca import Vaca
 from servicios.fechas import normalizar_fecha
 
@@ -68,37 +67,44 @@ def cargar_vacas(supabase, finca, cargar_historial=True):
     return finca
 
 
-
-
-
-
 def guardar_produccion(
     supabase,
     identificacion,
     fecha,
-    litros_manana,
-    litros_tarde,
+    orden,
+    litros,
     potrero
 ):
     """
-    Guarda un registro diario de producción en Supabase.
+    Registra un ordeño individual mediante la función SQL
+    registrar_ordenio de Supabase.
+
+    Si ya existe un registro para esa vaca y fecha,
+    actualiza únicamente el ordeño seleccionado.
     """
 
     fecha_normalizada = normalizar_fecha(fecha).isoformat()
 
+    orden_normalizada = orden.strip().lower()
+
+    if orden_normalizada not in ("manana", "tarde"):
+        raise ValueError(
+            "El ordeño debe ser 'manana' o 'tarde'."
+        )
+
     datos = {
-        "identificacion_vaca": identificacion.strip().upper(),
-        "fecha": fecha_normalizada,
-        "litros_manana": litros_manana,
-        "litros_tarde": litros_tarde,
-        "potrero": potrero
+        "p_identificacion": identificacion.strip().upper(),
+        "p_fecha": fecha_normalizada,
+        "p_orden": orden_normalizada,
+        "p_litros": int(litros),
+        "p_potrero": int(potrero)
     }
 
     respuesta = (
         supabase
-        .table("produccion")
-        .insert(datos)
+        .rpc("registrar_ordenio", datos)
         .execute()
     )
 
     return respuesta.data
+
