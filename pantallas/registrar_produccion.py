@@ -83,7 +83,7 @@ def mostrar_registrar_produccion(finca, supabase):
                 potrero=int(potrero)
             )
 
-           if respuesta is not None:
+            if respuesta is not None:
 
                 st.session_state.mensaje_produccion = (
                     f"¡Almacenado con éxito! Se registraron "
@@ -92,13 +92,6 @@ def mostrar_registrar_produccion(finca, supabase):
                 )
             
                 st.rerun()
-
-            else:
-                st.error(
-                    "Supabase no confirmó el registro. "
-                    "No se pudo guardar la producción."
-                )
-
         except Exception as error:
             st.error(
                 "No se pudo guardar el ordeño. "
