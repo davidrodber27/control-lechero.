@@ -9,6 +9,7 @@ def mostrar_registrar_produccion(finca, supabase):
 
     st.divider()
     st.header("Registrar producción de leche")
+
     # Mostrar el mensaje de confirmación después de guardar.
     if "mensaje_produccion" in st.session_state:
         st.success(st.session_state.mensaje_produccion)
@@ -85,17 +86,66 @@ def mostrar_registrar_produccion(finca, supabase):
 
             if respuesta is not None:
 
+                # Buscar el objeto de la vaca en memoria.
+                vaca = finca.buscar_vaca(identificacion)
+
+                if vaca is None:
+                    raise ValueError(
+                        "El ordeño se guardó en Supabase, "
+                        "pero no se encontró la vaca en memoria."
+                    )
+
+                # Comprobar si ya existe un registro para esa fecha.
+                fecha_clave = fecha_produccion.isoformat()
+
+                registro_actual = vaca.registros.get(fecha_clave)
+
+                # Conservar el ordeño que ya estuviera registrado.
+                if registro_actual is None:
+                    litros_manana = None
+                    litros_tarde = None
+                else:
+                    litros_manana = registro_actual["litros_manana"]
+                    litros_tarde = registro_actual["litros_tarde"]
+
+                # Actualizar únicamente el ordeño seleccionado.
+                if orden == "Mañana":
+                    litros_manana = int(litros)
+                else:
+                    litros_tarde = int(litros)
+
+                # Crear o actualizar el registro en el objeto Vaca.
+                if registro_actual is None:
+                    vaca.registrar_produccion(
+                        fecha=fecha_produccion,
+                        litros_manana=litros_manana,
+                        litros_tarde=litros_tarde,
+                        potrero=int(potrero)
+                    )
+                else:
+                    vaca.actualizar_produccion(
+                        fecha=fecha_produccion,
+                        litros_manana=litros_manana,
+                        litros_tarde=litros_tarde,
+                        potrero=int(potrero)
+                    )
+
                 st.session_state.mensaje_produccion = (
                     f"¡Almacenado con éxito! Se registraron "
                     f"{int(litros)} litros del ordeño de la "
                     f"{orden.lower()} para {vaca_seleccionada}."
                 )
-            
+
                 st.rerun()
+
+            else:
+                st.error(
+                    "Supabase no confirmó el registro del ordeño."
+                )
+
         except Exception as error:
             st.error(
-                "No se pudo guardar el ordeño. "
-                "Verifica los datos e inténtalo nuevamente."
+                "No se pudo completar el proceso de registro."
             )
             st.code(str(error))
 
