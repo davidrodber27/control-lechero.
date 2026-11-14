@@ -50,10 +50,10 @@ def mostrar_reporte_diario(finca):
 
         if registro is not None:
 
-            total_vaca = (
-                registro["litros_manana"]
-                + registro["litros_tarde"]
-            )
+            litros_manana = registro["litros_manana"]
+            litros_tarde = registro["litros_tarde"]
+            
+            total_vaca = (litros_manana or 0) + (litros_tarde or 0)
 
             datos_vacas.append({
                 "Identificación": vaca.identificacion,
