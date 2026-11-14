@@ -1,7 +1,7 @@
 
 import streamlit as st
 from datetime import date
-
+from modelos.vaca import Vaca
 
 def mostrar_administrar_vacas(finca, supabase):
 
