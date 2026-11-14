@@ -44,6 +44,7 @@ def mostrar_administrar_vacas(finca, supabase):
         if vaca_edicion is None:
             st.error("No se encontró la vaca seleccionada.")
 
+       
         elif accion_vaca == "Editar vaca":
 
             razas_disponibles = [
@@ -57,7 +58,18 @@ def mostrar_administrar_vacas(finca, supabase):
             if vaca_edicion.raza not in razas_disponibles:
                 razas_disponibles.append(vaca_edicion.raza)
 
+            # Recuperar los datos reproductivos actuales
+            numero_partos_actual = vaca_edicion.numero_partos
+
+            fecha_parto_actual = (
+                date.fromisoformat(vaca_edicion.fecha_ultimo_parto)
+                if vaca_edicion.fecha_ultimo_parto
+                else None
+            )
+
             with st.form("formulario_editar_vaca"):
+
+                st.subheader("Datos generales")
 
                 st.text_input(
                     "Identificación (no editable por ahora)",
@@ -73,9 +85,7 @@ def mostrar_administrar_vacas(finca, supabase):
                 nueva_raza = st.selectbox(
                     "Raza",
                     options=razas_disponibles,
-                    index=razas_disponibles.index(
-                        vaca_edicion.raza
-                    )
+                    index=razas_disponibles.index(vaca_edicion.raza)
                 )
 
                 nueva_fecha_nacimiento = st.date_input(
@@ -84,6 +94,25 @@ def mostrar_administrar_vacas(finca, supabase):
                         vaca_edicion.fecha_nacimiento
                     ),
                     min_value=date(1900, 1, 1),
+                    max_value=date.today()
+                )
+
+                st.divider()
+                st.subheader("Datos reproductivos")
+
+                nuevo_numero_partos = st.number_input(
+                    "Número de partos registrados",
+                    min_value=0,
+                    value=numero_partos_actual,
+                    step=1
+                )
+
+                nueva_fecha_ultimo_parto = st.date_input(
+                    "Fecha del último parto",
+                    value=fecha_parto_actual,
+                    min_value=date.fromisoformat(
+                        vaca_edicion.fecha_nacimiento
+                    ),
                     max_value=date.today()
                 )
 
@@ -98,14 +127,39 @@ def mostrar_administrar_vacas(finca, supabase):
                         "El nombre de la vaca no puede estar vacío."
                     )
 
+                elif nuevo_numero_partos > 0 and nueva_fecha_ultimo_parto is None:
+                    st.error(
+                        "Debes seleccionar la fecha del último parto."
+                    )
+
+                elif nuevo_numero_partos == 0 and nueva_fecha_ultimo_parto is not None:
+                    st.error(
+                        "Si la vaca no ha tenido partos, "
+                        "la fecha del último parto debe quedar vacía."
+                    )
+
                 else:
                     try:
+                        # Validar los datos mediante el modelo Vaca
+                        vaca_validada = Vaca(
+                            nombre=nuevo_nombre.strip(),
+                            fecha_nacimiento=nueva_fecha_nacimiento,
+                            raza=nueva_raza,
+                            identificacion=vaca_edicion.identificacion,
+                            fecha_ultimo_parto=nueva_fecha_ultimo_parto,
+                            numero_partos=int(nuevo_numero_partos)
+                        )
+
                         datos_actualizados = {
-                            "nombre": nuevo_nombre.strip(),
-                            "raza": nueva_raza,
+                            "nombre": vaca_validada.nombre,
+                            "raza": vaca_validada.raza,
                             "fecha_nacimiento": (
-                                nueva_fecha_nacimiento.isoformat()
-                            )
+                                vaca_validada.fecha_nacimiento
+                            ),
+                            "fecha_ultimo_parto": (
+                                vaca_validada.fecha_ultimo_parto
+                            ),
+                            "numero_partos": vaca_validada.numero_partos
                         }
 
                         respuesta = (
@@ -120,31 +174,38 @@ def mostrar_administrar_vacas(finca, supabase):
                         )
 
                         if respuesta.data:
-                            vaca_edicion.nombre = (
-                                nuevo_nombre.strip().title()
-                            )
-                            vaca_edicion.raza = nueva_raza
+
+                            # Actualizar también el objeto en memoria
+                            vaca_edicion.nombre = vaca_validada.nombre
+                            vaca_edicion.raza = vaca_validada.raza
                             vaca_edicion.fecha_nacimiento = (
-                                nueva_fecha_nacimiento.isoformat()
+                                vaca_validada.fecha_nacimiento
+                            )
+                            vaca_edicion.fecha_ultimo_parto = (
+                                vaca_validada.fecha_ultimo_parto
+                            )
+                            vaca_edicion.numero_partos = (
+                                vaca_validada.numero_partos
                             )
 
                             st.success(
                                 f"Datos de {vaca_edicion.nombre} "
                                 "actualizados correctamente."
                             )
+
                             st.rerun()
 
                         else:
                             st.error(
-                                "Supabase no confirmó la actualización. "
-                                "No se modificó la vaca en memoria."
+                                "Supabase no confirmó la actualización."
                             )
 
                     except Exception as error:
                         st.error(
-                            "No fue posible actualizar la vaca."
+                            "No fue posible actualizar los datos de la vaca."
                         )
                         st.code(str(error))
+
 
         elif accion_vaca == "Eliminar vaca":
 
