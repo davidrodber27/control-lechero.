@@ -671,7 +671,8 @@ pagina = st.session_state.pagina
 
 # Verificar los permisos antes de mostrar una pantalla.
 paginas_empleado = [
-    "Registrar producción"
+    "Registrar producción",
+    "Reporte diario"
 ]
 
 if rol == "empleado" and pagina not in paginas_empleado:
@@ -727,7 +728,11 @@ elif pagina == "Editar producción":
 
 elif pagina == "Reporte diario":
 
-    mostrar_reporte_diario(finca)
+    mostrar_reporte_diario(
+        finca,
+        supabase,
+        rol
+    )
 
 
 else:
