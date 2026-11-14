@@ -1,7 +1,7 @@
 
 import streamlit as st
 from datetime import date
-
+from servicios.persistencia import cargar_vacas
 from modelos.vaca import Vaca
 
 
@@ -168,37 +168,32 @@ def mostrar_registrar_vaca(finca, supabase):
                         "Verifica la tabla antes de volver a intentarlo."
                     )
 
-                else:
-                    agregada = finca.agregar_vaca(nueva_vaca)
-
-                    if agregada:
+               else:
+                    try:
+                        # Recuperar los animales guardados en Supabase
+                        finca.vacas.clear()
+                
+                        cargar_vacas(
+                            supabase=supabase,
+                            finca=finca,
+                            cargar_historial=True
+                        )
+                
+                        st.session_state.finca = finca
+                
                         st.success(
-                            f"Vaca {nueva_vaca.nombre} "
-                            "registrada correctamente."
+                            f"¡Registro recuperado correctamente! "
+                            f"La vaca {nueva_vaca.nombre} ya está disponible."
                         )
-
-                        st.write(
-                            f"Identificación: {nueva_vaca.identificacion}"
+                
+                        st.rerun()
+                
+                    except Exception as error:
+                        st.error(
+                            "La vaca está guardada en Supabase, "
+                            "pero no fue posible recuperarla en la aplicación."
                         )
-
-                        st.write(
-                            f"Número de partos: {nueva_vaca.numero_partos}"
-                        )
-
-                        if nueva_vaca.dias_posparto is not None:
-                            st.write(
-                                f"Días posparto: "
-                                f"{nueva_vaca.dias_posparto}"
-                            )
-                        else:
-                            st.info("Esta vaca aún no tiene partos registrados.")
-
-                    else:
-                        st.warning(
-                            "La vaca se guardó en Supabase, "
-                            "pero no se agregó a la memoria de la aplicación. "
-                            "No vuelvas a registrarla todavía."
-                        )
+                        st.code(str(error))
 
             except Exception as error:
                 st.error("No fue posible completar el registro.")
