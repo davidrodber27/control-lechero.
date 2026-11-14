@@ -1,8 +1,10 @@
 
 import streamlit as st
 from datetime import date
-from servicios.persistencia import cargar_vacas
+
 from modelos.vaca import Vaca
+from modelos.control_lechero import ControlLechero
+from servicios.persistencia import cargar_vacas
 
 
 def mostrar_registrar_vaca(finca, supabase):
@@ -14,9 +16,12 @@ def mostrar_registrar_vaca(finca, supabase):
         "generales y reproductivos de cada animal."
     )
 
+    # --------------------------------------------------
+    # 1. FORMULARIO
+    # --------------------------------------------------
+
     with st.form("formulario_vaca"):
 
-        # 1. Datos generales
         st.subheader("Datos generales")
 
         identificacion = st.text_input(
@@ -51,14 +56,13 @@ def mostrar_registrar_vaca(finca, supabase):
         fecha_nacimiento = st.date_input(
             "Fecha de nacimiento",
             value=date.today(),
-            max_value=date.today()
+            max_value=date.today(),
+            format="DD/MM/YYYY"
         )
 
-        # 2. Datos reproductivos
         st.divider()
         st.subheader("Datos reproductivos")
 
-        
         tiene_partos = st.checkbox(
             "La vaca ya ha tenido partos"
         )
@@ -84,119 +88,192 @@ def mostrar_registrar_vaca(finca, supabase):
             numero_partos = 0
             fecha_ultimo_parto = None
 
+        enviar = st.form_submit_button(
+            "Registrar vaca"
+        )
 
-        enviar = st.form_submit_button("Registrar vaca")
+    # --------------------------------------------------
+    # 2. PROCESAR EL FORMULARIO
+    # --------------------------------------------------
 
-    # 3. Procesar el formulario
-    if enviar:
+    if not enviar:
+        return
 
-        identificacion_limpia = identificacion.strip().upper()
-        nombre_limpio = nombre.strip()
+    identificacion_limpia = identificacion.strip().upper()
+    nombre_limpio = nombre.strip()
+    raza_personalizada_limpia = raza_personalizada.strip()
 
-        # Determinar la raza
-        if raza_seleccionada in ("Cruce", "Otra"):
-            raza = raza_personalizada.strip()
-        elif raza_personalizada.strip():
-            raza = raza_personalizada.strip()
-        else:
-            raza = raza_seleccionada
+    # Determinar la raza
+    if raza_seleccionada in ("Cruce", "Otra"):
+        raza = raza_personalizada_limpia
+    elif raza_personalizada_limpia:
+        raza = raza_personalizada_limpia
+    else:
+        raza = raza_seleccionada
 
-        # Validaciones
-        if not identificacion_limpia:
-            st.error("Debes escribir la identificación de la vaca.")
+    # --------------------------------------------------
+    # 3. VALIDACIONES
+    # --------------------------------------------------
 
-        elif not nombre_limpio:
-            st.error("Debes escribir el nombre de la vaca.")
+    if not identificacion_limpia:
+        st.error("Debes escribir la identificación de la vaca.")
+        return
 
-        elif not raza:
-            st.error("Debes seleccionar o escribir la raza de la vaca.")
+    if not nombre_limpio:
+        st.error("Debes escribir el nombre de la vaca.")
+        return
 
-        elif tiene_partos and fecha_ultimo_parto is None:
-            st.error("Debes seleccionar la fecha del último parto.")
+    if not raza:
+        st.error("Debes seleccionar o escribir la raza de la vaca.")
+        return
 
-        elif finca.buscar_vaca(identificacion_limpia):
-            st.error("Ya existe una vaca con esa identificación.")
+    if tiene_partos and fecha_ultimo_parto is None:
+        st.error("Debes seleccionar la fecha del último parto.")
+        return
 
-        
+    if finca.buscar_vaca(identificacion_limpia):
+        st.error("Ya existe una vaca con esa identificación.")
+        return
 
-        else:
+    # --------------------------------------------------
+    # 4. CREAR EL OBJETO VACA
+    # --------------------------------------------------
 
-            try:
-                # Crear el objeto Vaca
-                nueva_vaca = Vaca(
-                    nombre=nombre_limpio,
-                    fecha_nacimiento=fecha_nacimiento,
-                    raza=raza,
-                    identificacion=identificacion_limpia,
-                    fecha_ultimo_parto=fecha_ultimo_parto,
-                    numero_partos=int(numero_partos)
-                )
-                st.write("Tipo del objeto:", type(nueva_vaca))
-                st.write("Clase Vaca importada:", Vaca)
-                st.write(
-                    "¿Es una instancia de Vaca?",
-                    isinstance(nueva_vaca, Vaca)
-                )
+    try:
 
-                # Preparar datos para Supabase
-                datos_vaca = {
-                    "identificacion": identificacion_limpia,
-                    "nombre": nombre_limpio,
-                    "raza": raza,
-                    "fecha_nacimiento": fecha_nacimiento.isoformat(),
-                    "fecha_ultimo_parto": (
-                        fecha_ultimo_parto.isoformat()
-                        if fecha_ultimo_parto is not None
-                        else None
-                    ),
-                    "numero_partos": int(numero_partos)
-                }
+        nueva_vaca = Vaca(
+            nombre=nombre_limpio,
+            fecha_nacimiento=fecha_nacimiento,
+            raza=raza,
+            identificacion=identificacion_limpia,
+            fecha_ultimo_parto=fecha_ultimo_parto,
+            numero_partos=int(numero_partos)
+        )
 
-                # Guardar en Supabase
-                respuesta = (
-                    supabase
-                    .table("vacas")
-                    .insert(datos_vaca)
-                    .execute()
-                )
+    except Exception as error:
+        st.error("No fue posible crear el registro de la vaca.")
+        st.caption("Detalle técnico:")
+        st.code(str(error))
+        return
 
-                registros_guardados = respuesta.data
+    # --------------------------------------------------
+    # 5. COMPROBAR SI YA EXISTE EN SUPABASE
+    # --------------------------------------------------
 
-                if not registros_guardados:
-                    st.error(
-                        "No se confirmó el registro en Supabase. "
-                        "Verifica la tabla antes de volver a intentarlo."
-                    )
+    try:
 
-               else:
-                    try:
-                        # Recuperar los animales guardados en Supabase
-                        finca.vacas.clear()
-                
-                        cargar_vacas(
-                            supabase=supabase,
-                            finca=finca,
-                            cargar_historial=True
-                        )
-                
-                        st.session_state.finca = finca
-                
-                        st.success(
-                            f"¡Registro recuperado correctamente! "
-                            f"La vaca {nueva_vaca.nombre} ya está disponible."
-                        )
-                
-                        st.rerun()
-                
-                    except Exception as error:
-                        st.error(
-                            "La vaca está guardada en Supabase, "
-                            "pero no fue posible recuperarla en la aplicación."
-                        )
-                        st.code(str(error))
+        consulta = (
+            supabase
+            .table("vacas")
+            .select("identificacion")
+            .eq("identificacion", identificacion_limpia)
+            .execute()
+        )
 
-            except Exception as error:
-                st.error("No fue posible completar el registro.")
-                st.caption("Detalle técnico del error:")
-                st.code(str(error))
+        if consulta.data:
+
+            st.warning(
+                "Esta identificación ya existe en Supabase. "
+                "No se realizará un segundo registro."
+            )
+
+            # Recuperar los datos existentes
+            finca_actualizada = ControlLechero(
+                finca.nombre_finca
+            )
+
+            finca_actualizada = cargar_vacas(
+                supabase=supabase,
+                finca=finca_actualizada,
+                cargar_historial=True
+            )
+
+            st.session_state.finca = finca_actualizada
+            st.rerun()
+
+            return
+
+    except Exception as error:
+        st.error("No fue posible comprobar la identificación en Supabase.")
+        st.caption("Detalle técnico:")
+        st.code(str(error))
+        return
+
+    # --------------------------------------------------
+    # 6. PREPARAR LOS DATOS PARA SUPABASE
+    # --------------------------------------------------
+
+    datos_vaca = {
+        "identificacion": identificacion_limpia,
+        "nombre": nombre_limpio,
+        "raza": raza,
+        "fecha_nacimiento": fecha_nacimiento.isoformat(),
+        "fecha_ultimo_parto": (
+            fecha_ultimo_parto.isoformat()
+            if fecha_ultimo_parto is not None
+            else None
+        ),
+        "numero_partos": int(numero_partos)
+    }
+
+    # --------------------------------------------------
+    # 7. GUARDAR EN SUPABASE
+    # --------------------------------------------------
+
+    try:
+
+        respuesta = (
+            supabase
+            .table("vacas")
+            .insert(datos_vaca)
+            .execute()
+        )
+
+        if not respuesta.data:
+            st.error(
+                "Supabase no confirmó el registro. "
+                "Verifica la tabla antes de volver a intentarlo."
+            )
+            return
+
+    except Exception as error:
+        st.error("No fue posible guardar la vaca en Supabase.")
+        st.caption("Detalle técnico:")
+        st.code(str(error))
+        return
+
+    # --------------------------------------------------
+    # 8. RECARGAR LOS ANIMALES DESDE SUPABASE
+    # --------------------------------------------------
+
+    try:
+
+        finca_actualizada = ControlLechero(
+            finca.nombre_finca
+        )
+
+        finca_actualizada = cargar_vacas(
+            supabase=supabase,
+            finca=finca_actualizada,
+            cargar_historial=True
+        )
+
+        # Actualizar la finca guardada en la sesión
+        st.session_state.finca = finca_actualizada
+
+        st.success(
+            f"¡Vaca {nombre_limpio} registrada correctamente!"
+        )
+
+        st.rerun()
+
+    except Exception as error:
+
+        st.error(
+            "La vaca quedó guardada en Supabase, "
+            "pero no fue posible actualizar la lista de la aplicación."
+        )
+
+        st.caption("Detalle técnico:")
+        st.code(str(error))
 
