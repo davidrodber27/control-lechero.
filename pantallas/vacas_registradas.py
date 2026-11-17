@@ -18,7 +18,10 @@ def mostrar_vacas_registradas(finca):
                 f"{vaca.identificacion} - {vaca.nombre}"
             ):
 
-                # Datos generales
+                # --------------------------------------------------
+                # 1. DATOS GENERALES
+                # --------------------------------------------------
+
                 st.subheader("Datos generales")
 
                 st.write("**Nombre:**", vaca.nombre)
@@ -34,7 +37,10 @@ def mostrar_vacas_registradas(finca):
 
                 st.write("**Edad actual:**", vaca.edad_actual)
 
-                # Datos reproductivos
+                # --------------------------------------------------
+                # 2. DATOS REPRODUCTIVOS
+                # --------------------------------------------------
+
                 st.divider()
                 st.subheader("Control reproductivo")
 
@@ -62,13 +68,57 @@ def mostrar_vacas_registradas(finca):
                 else:
                     st.info("No hay fecha de parto registrada.")
 
-                st.write("**Estado de preñez:** Pendiente de diagnóstico")
+                st.write(
+                    "**Estado de preñez:** "
+                    "Pendiente de diagnóstico"
+                )
+
                 st.caption(
                     "El estado de preñez se actualizará cuando "
                     "incorporemos el registro de servicios y diagnósticos."
                 )
 
-                # Producción
+                # --------------------------------------------------
+                # 3. ASCENDENCIA
+                # --------------------------------------------------
+
+                st.divider()
+                st.subheader("Ascendencia")
+
+                col_madre, col_padre = st.columns(2)
+
+                with col_madre:
+
+                    st.markdown("**Madre**")
+
+                    st.write(
+                        "**Nombre:**",
+                        vaca.madre_nombre or "No registrado"
+                    )
+
+                    st.write(
+                        "**Raza:**",
+                        vaca.madre_raza or "No registrada"
+                    )
+
+                with col_padre:
+
+                    st.markdown("**Padre**")
+
+                    st.write(
+                        "**Nombre:**",
+                        vaca.padre_nombre or "No registrado"
+                    )
+
+                    st.write(
+                        "**Raza:**",
+                        vaca.padre_raza or "No registrada"
+                    )
+
+                # --------------------------------------------------
+                # 4. PRODUCCIÓN
+                # --------------------------------------------------
+
                 st.divider()
                 st.subheader("Producción")
 
@@ -78,6 +128,7 @@ def mostrar_vacas_registradas(finca):
                 )
 
     else:
+
         st.info(
             "Todavía no hay vacas registradas. "
             "Utiliza el formulario para agregar la primera."
