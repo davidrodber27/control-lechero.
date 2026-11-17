@@ -1,4 +1,12 @@
 
+    with col3:
+        mostrar_tarjeta(
+            "Días incompletos",
+            dias_incompletos,
+            "Días",
+            "⚠️",
+        )
+
     if dias_incompletos > 0:
 
         st.warning(
@@ -118,10 +126,5 @@
             "Total (L)",
             "Potrero",
         ]
-    ]
 
-    st.dataframe(
-        df_tabla,
-        use_container_width=True,
-        hide_index=True,
-    )
+  
