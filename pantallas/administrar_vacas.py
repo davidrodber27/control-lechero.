@@ -96,6 +96,34 @@ def mostrar_administrar_vacas(finca, supabase):
                     min_value=date(1900, 1, 1),
                     max_value=date.today()
                 )
+                
+                st.divider()
+                st.subheader("Ascendencia")
+
+                st.markdown("**Madre**")
+
+                nuevo_madre_nombre = st.text_input(
+                    "Nombre de la madre",
+                    value=vaca_edicion.madre_nombre or ""
+                )
+
+                nuevo_madre_raza = st.text_input(
+                    "Raza de la madre",
+                    value=vaca_edicion.madre_raza or ""
+                )
+
+                st.markdown("**Padre**")
+
+                nuevo_padre_nombre = st.text_input(
+                    "Nombre del padre",
+                    value=vaca_edicion.padre_nombre or ""
+                )
+
+                nuevo_padre_raza = st.text_input(
+                    "Raza del padre",
+                    value=vaca_edicion.padre_raza or ""
+                )
+
 
                 st.divider()
                 st.subheader("Datos reproductivos")
@@ -141,15 +169,23 @@ def mostrar_administrar_vacas(finca, supabase):
                 else:
                     try:
                         # Validar los datos mediante el modelo Vaca
+                        
                         vaca_validada = Vaca(
                             nombre=nuevo_nombre.strip(),
                             fecha_nacimiento=nueva_fecha_nacimiento,
                             raza=nueva_raza,
                             identificacion=vaca_edicion.identificacion,
                             fecha_ultimo_parto=nueva_fecha_ultimo_parto,
-                            numero_partos=int(nuevo_numero_partos)
+                            numero_partos=int(nuevo_numero_partos),
+
+                            madre_nombre=nuevo_madre_nombre.strip() or None,
+                            madre_raza=nuevo_madre_raza.strip() or None,
+                            padre_nombre=nuevo_padre_nombre.strip() or None,
+                            padre_raza=nuevo_padre_raza.strip() or None
                         )
 
+
+                        
                         datos_actualizados = {
                             "nombre": vaca_validada.nombre,
                             "raza": vaca_validada.raza,
@@ -159,8 +195,14 @@ def mostrar_administrar_vacas(finca, supabase):
                             "fecha_ultimo_parto": (
                                 vaca_validada.fecha_ultimo_parto
                             ),
-                            "numero_partos": vaca_validada.numero_partos
+                            "numero_partos": vaca_validada.numero_partos,
+
+                            "madre_nombre": vaca_validada.madre_nombre,
+                            "madre_raza": vaca_validada.madre_raza,
+                            "padre_nombre": vaca_validada.padre_nombre,
+                            "padre_raza": vaca_validada.padre_raza
                         }
+
 
                         respuesta = (
                             supabase
@@ -187,6 +229,20 @@ def mostrar_administrar_vacas(finca, supabase):
                             vaca_edicion.numero_partos = (
                                 vaca_validada.numero_partos
                             )
+                            
+                            vaca_edicion.madre_nombre = (
+                                vaca_validada.madre_nombre
+                            )
+                            vaca_edicion.madre_raza = (
+                                vaca_validada.madre_raza
+                            )
+                            vaca_edicion.padre_nombre = (
+                                vaca_validada.padre_nombre
+                            )
+                            vaca_edicion.padre_raza = (
+                                vaca_validada.padre_raza
+                            )
+
 
                             st.success(
                                 f"Datos de {vaca_edicion.nombre} "
