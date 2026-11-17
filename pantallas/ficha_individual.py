@@ -193,6 +193,8 @@ def mostrar_ficha_individual(finca):
 
     df = pd.DataFrame(registros)
     df = df.sort_values("Fecha").reset_index(drop=True)
+    st.write("Registros cargados:", len(df))
+    st.dataframe(df)
 
     fecha_minima = df["Fecha"].min().date()
     fecha_maxima = df["Fecha"].max().date()
