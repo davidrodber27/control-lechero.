@@ -5,6 +5,7 @@ from supabase import create_client
 from pathlib import Path
 from modelos.control_lechero import ControlLechero
 from servicios.persistencia import cargar_vacas
+from pantallas.ficha_individual import mostrar_ficha_individual
 from pantallas.inicio import mostrar_inicio
 from pantallas.registrar_vaca import mostrar_registrar_vaca
 from pantallas.vacas_registradas import mostrar_vacas_registradas
@@ -459,6 +460,7 @@ with st.sidebar:
             ("Registrar vaca", "Registrar vaca", ":material/pets:"),
             ("Vacas registradas", "Vacas registradas", ":material/list_alt:"),
             ("Administrar vacas", "Administrar vacas", ":material/settings:"),
+            ("Ficha individual", "Ficha individual", ":material/assignment_ind:"),
         ]
     
         for texto, pagina, icono in opciones_principales:
@@ -701,7 +703,10 @@ elif pagina == "Vacas registradas":
 
     mostrar_vacas_registradas(finca)
 
+elif pagina == "Ficha individual":
 
+    mostrar_ficha_individual(finca)
+    
 elif pagina == "Administrar vacas":
 
     mostrar_administrar_vacas(
