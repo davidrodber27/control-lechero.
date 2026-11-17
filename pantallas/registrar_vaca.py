@@ -60,6 +60,37 @@ def mostrar_registrar_vaca(finca, supabase):
             format="DD/MM/YYYY"
         )
 
+        
+        st.divider()
+        st.subheader("Ascendencia")
+
+        st.markdown("**Madre**")
+
+        madre_nombre = st.text_input(
+            "Nombre de la madre",
+            placeholder="Ejemplo: Lucero"
+        )
+
+        madre_raza = st.text_input(
+            "Raza de la madre",
+            placeholder="Ejemplo: Holstein"
+        )
+
+        st.markdown("**Padre**")
+
+        padre_nombre = st.text_input(
+            "Nombre del padre",
+            placeholder="Ejemplo: Toro 45"
+        )
+
+        padre_raza = st.text_input(
+            "Raza del padre",
+            placeholder="Ejemplo: Jersey"
+        )
+
+
+
+        
         st.divider()
         st.subheader("Datos reproductivos")
 
@@ -102,6 +133,14 @@ def mostrar_registrar_vaca(finca, supabase):
     identificacion_limpia = identificacion.strip().upper()
     nombre_limpio = nombre.strip()
     raza_personalizada_limpia = raza_personalizada.strip()
+
+    
+    madre_nombre_limpio = madre_nombre.strip() or None
+    madre_raza_limpia = madre_raza.strip() or None
+
+    padre_nombre_limpio = padre_nombre.strip() or None
+    padre_raza_limpia = padre_raza.strip() or None
+
 
     # Determinar la raza
     if raza_seleccionada in ("Cruce", "Otra"):
@@ -203,6 +242,7 @@ def mostrar_registrar_vaca(finca, supabase):
     # 6. PREPARAR LOS DATOS PARA SUPABASE
     # --------------------------------------------------
 
+    
     datos_vaca = {
         "identificacion": identificacion_limpia,
         "nombre": nombre_limpio,
@@ -213,8 +253,14 @@ def mostrar_registrar_vaca(finca, supabase):
             if fecha_ultimo_parto is not None
             else None
         ),
-        "numero_partos": int(numero_partos)
+        "numero_partos": int(numero_partos),
+
+        "madre_nombre": madre_nombre_limpio,
+        "madre_raza": madre_raza_limpia,
+        "padre_nombre": padre_nombre_limpio,
+        "padre_raza": padre_raza_limpia
     }
+
 
     # --------------------------------------------------
     # 7. GUARDAR EN SUPABASE
