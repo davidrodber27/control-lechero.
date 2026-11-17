@@ -16,7 +16,12 @@ class Vaca:
         raza: str,
         identificacion: str | None = None,
         fecha_ultimo_parto: str | None = None,
-        numero_partos: int = 0
+        numero_partos: int = 0,
+        numero_partos: int = 0,
+        madre_nombre: str | None = None,
+        madre_raza: str | None = None,
+        padre_nombre: str | None = None,
+        padre_raza: str | None = None
     ):
         if not isinstance(nombre, str) or not nombre.strip():
             raise ValueError("El nombre de la vaca no puede estar vacío.")
@@ -38,6 +43,32 @@ class Vaca:
         self.identificacion = identificacion.strip().upper()
         self.nombre = nombre.strip().title()
         self.raza = raza.strip().title()
+        
+        # Datos de ascendencia
+        self.madre_nombre = (
+            madre_nombre.strip().title()
+            if isinstance(madre_nombre, str) and madre_nombre.strip()
+            else None
+        )
+
+        self.madre_raza = (
+            madre_raza.strip().title()
+            if isinstance(madre_raza, str) and madre_raza.strip()
+            else None
+        )
+
+        self.padre_nombre = (
+            padre_nombre.strip().title()
+            if isinstance(padre_nombre, str) and padre_nombre.strip()
+            else None
+        )
+
+        self.padre_raza = (
+            padre_raza.strip().title()
+            if isinstance(padre_raza, str) and padre_raza.strip()
+            else None
+        )
+
 
         fecha_normalizada = normalizar_fecha(fecha_nacimiento)
 
