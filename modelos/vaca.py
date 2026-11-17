@@ -9,6 +9,7 @@ class Vaca:
     Representa una vaca de la finca y su historial de producción.
     """
 
+    
     def __init__(
         self,
         nombre: str,
@@ -17,12 +18,12 @@ class Vaca:
         identificacion: str | None = None,
         fecha_ultimo_parto: str | None = None,
         numero_partos: int = 0,
-        numero_partos: int = 0,
         madre_nombre: str | None = None,
         madre_raza: str | None = None,
         padre_nombre: str | None = None,
         padre_raza: str | None = None
     ):
+
         if not isinstance(nombre, str) or not nombre.strip():
             raise ValueError("El nombre de la vaca no puede estar vacío.")
 
