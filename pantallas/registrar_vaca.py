@@ -180,14 +180,21 @@ def mostrar_registrar_vaca(finca, supabase):
 
     try:
 
+        
         nueva_vaca = Vaca(
             nombre=nombre_limpio,
             fecha_nacimiento=fecha_nacimiento,
             raza=raza,
             identificacion=identificacion_limpia,
             fecha_ultimo_parto=fecha_ultimo_parto,
-            numero_partos=int(numero_partos)
+            numero_partos=int(numero_partos),
+
+            madre_nombre=madre_nombre_limpio,
+            madre_raza=madre_raza_limpia,
+            padre_nombre=padre_nombre_limpio,
+            padre_raza=padre_raza_limpia
         )
+
 
     except Exception as error:
         st.error("No fue posible crear el registro de la vaca.")
