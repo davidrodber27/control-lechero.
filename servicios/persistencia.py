@@ -38,16 +38,17 @@ def cargar_vacas(supabase, finca, cargar_historial=True):
             produccion_por_vaca[identificacion].append(registro)
 
     # Reconstruir los objetos Vaca.
+    
+    # Reconstruir los objetos Vaca.
     for datos in respuesta_vacas.data:
 
-          nueva_vaca = Vaca(
+        nueva_vaca = Vaca(
             nombre=datos["nombre"],
             fecha_nacimiento=datos["fecha_nacimiento"],
             raza=datos["raza"],
             identificacion=datos["identificacion"],
             fecha_ultimo_parto=datos.get("fecha_ultimo_parto"),
             numero_partos=datos.get("numero_partos", 0),
-
             madre_nombre=datos.get("madre_nombre"),
             madre_raza=datos.get("madre_raza"),
             padre_nombre=datos.get("padre_nombre"),
@@ -68,6 +69,8 @@ def cargar_vacas(supabase, finca, cargar_historial=True):
             )
 
         finca.agregar_vaca(nueva_vaca)
+
+
 
     return finca
 
